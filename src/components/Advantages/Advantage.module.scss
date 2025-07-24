@@ -1,0 +1,55 @@
+@use "../../App.scss" as app;
+
+.Advantages {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 150px;
+    .container {
+        @include app.container;
+        h3 {
+            @include app.h3;
+        }
+        .grid {
+            margin-top: 50px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(342px, 1fr));
+            grid-gap: 24px;
+            @media (max-width: 350px) {
+                grid-template-columns: 1fr;
+            }
+            .card {
+                border: 1px solid app.$gray;
+                padding: 30px;
+                border-radius: 20px;
+                display: flex;
+                flex-direction: column;
+                cursor: pointer;
+                transition: .3s ease-in-out all;
+
+                gap: 16px;
+                img {
+                    height: 72px;
+                    width: fit-content;
+                }
+                .text__card {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 8px;
+                    h6 {
+                        @include app.h6;
+                        font-weight: 600;
+                    }
+                    p {
+                        color: app.$p__color;
+                        font-size: 15px;
+                    }
+                }
+                &:hover {
+                    transform: translateY(-10px);
+                    transition: .3s ease-in-out all;
+                }
+            }
+        }
+    }
+}

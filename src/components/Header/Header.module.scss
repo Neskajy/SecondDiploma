@@ -1,0 +1,67 @@
+@use "../../App.scss" as app;
+
+.Header {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    top: 20px;
+    z-index: 20;
+    .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        @include app.container;
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            img {
+
+            }
+            p {
+                @include app.p;
+                font-weight: 600;
+                white-space: nowrap
+            }
+        }
+        .nav {
+            ul {
+                display: flex;
+                align-items: center;
+                gap: 50px;
+                @media (max-width: 1200px) {
+                    display: none;
+                }
+                li {
+                    a {
+                        font-weight: 600;
+                        font-size: 20px;
+                        white-space: nowrap;
+                        transition: .3s ease-in-out all;
+
+                        &.active {
+                            color: app.$accent__color;
+                            transition: .3s ease-in-out all;
+                            &:hover {
+                                color: app.$accent__color__dark;
+                                transition: .3s ease-in-out all;
+                            }
+                        }
+                        &:hover {
+                            color: app.$accent__color__bright;
+                            transition: .3s ease-in-out all;
+                        }
+                    }
+                }
+            }
+        }
+        .login {
+            @include app.button1(app.$accent__color);
+            padding: 15px 30px;
+            @media (max-width: 1200px) {
+                display: none;
+            }
+        }
+    }
+}

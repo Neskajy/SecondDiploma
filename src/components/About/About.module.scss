@@ -1,0 +1,62 @@
+@use "../../App.scss" as app;
+
+.About {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    .container {
+        display: flex;
+        flex-direction: column;
+        gap: 50px;
+        @include app.container;
+        .text__info {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            h3 {
+                @include app.h3;
+            }
+            p {
+                @include app.p;
+            }
+        }
+        .cards__grid {
+            display: grid;
+            grid-gap: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+            @media (max-width: 350px) {
+                grid-template-columns: 1fr;
+            }
+            .card {
+                padding: 40px 30px;
+                border: 1px solid app.$gray;
+                border-radius: 20px;
+                cursor: pointer;
+                transition: .3s ease-in-out all;
+                &:hover {
+                    transform: translateY(-10px);
+                    transition: .3s ease-in-out all;
+                }
+                .main__info {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 20px;
+                    .img {
+                        img {
+
+                        }
+                    }
+                    h4 {
+                        @include app.h4;
+                        height: 64px;
+                    }
+                }
+                p {
+                    margin-top: 20px;
+                    font-size: 20px;
+                    color: app.$p__color;
+                }
+            }
+        }
+    }
+}

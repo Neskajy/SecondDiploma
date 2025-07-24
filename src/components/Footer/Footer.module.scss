@@ -1,0 +1,125 @@
+@use "../../App.scss" as app;
+
+.Footer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 150px;
+    display: flex;
+    justify-content: center;
+    padding: 27px 0px;
+    @media (max-width: 475px) {
+        bottom: -600px;
+    }
+    .container {
+        display: flex;
+        gap: 150px;
+        @include app.container;
+        @media (max-width: 1300px) {
+            flex-direction: column;
+            gap: 50px;
+            .nav__columns__grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                grid-gap: 50px
+            }
+        }
+        .column__main {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 130px;
+            min-height: 130px;
+            max-height: 130px;
+            .upper {
+                display: flex;
+                gap: 12px;
+                align-items: center;
+                .logo {
+                    img {
+                        height: 62px;
+                    }
+                }
+                .text {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    gap: 6px;
+                    span {
+                        font-size: 20px;
+                        font-weight: 600;
+                    }
+                    p {
+                        font-size: 12px;
+                        color: app.$footer;
+                        width: 172px;
+                        font-weight: 400;
+                    }
+                }
+            }
+            p {
+                font-size: 16px;
+                font-weight: 400;
+                color: app.$footer;
+                span {
+                    color: app.$accent__color;
+                }
+            }
+        }
+        .nav__columns__grid {
+            display: grid;
+            height: 100%;
+            width: 100%;
+            grid-template-columns: repeat(auto-fit, minmax(138px, 1fr));
+            .column {
+                height: 130px;
+                max-width: 253px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                .nav__header {
+                    font-size: 22px;
+                    font-weight: 500;
+                }
+                ul {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 18px;
+                    li {
+                        cursor: pointer;
+                        font-size: 16px;
+                        color: app.$footer;
+                        transition: .3s ease-in-out all;
+                        &.active {
+                            color: black;
+                        }
+                        &:hover {
+                            transition: .3s ease-in-out all;
+                            color: app.$p__color;
+                        }
+                    }
+                }
+                &.client {
+                    justify-content: flex-start;
+                    gap: 18px;
+                }
+                &.contacts {
+                    .social {
+                        display: flex;
+                        flex-direction: row;
+                        gap: 20px;
+                        li {
+                            width: fit-content;
+                            a {
+                                width: fit-content;
+                                img {
+                                    width: fit-content;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,10 @@
+@use "../../App.scss" as app;
+
+.FAQ {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    .container {
+        @include app.container;
+    }
+}

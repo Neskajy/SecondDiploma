@@ -1,0 +1,56 @@
+$burgerWidth: 32px;
+
+.BurgerButton {
+    display: none;
+    cursor: pointer;
+    aspect-ratio: 1 / 1;
+    width: $burgerWidth;
+    
+    @media (max-width: 1200px) {
+        display: flex;
+    }
+    .inner {
+        height: 100%;
+        width: 100%;
+        position: relative;
+
+        div {
+            position: absolute;
+            width: 100%;
+            transition: .3s all ease-in-out;
+            height: 2px;
+            background: black;
+        }
+
+        .top {
+            top: calc($burgerWidth / 6);
+            transform-origin: left top;
+        }
+
+        .center {
+            top: calc($burgerWidth / 2);
+            // transform: translateY(-50%);
+        }
+
+        .bottom {
+            top: calc(5 * $burgerWidth / 6);
+            transform-origin: left bottom;
+        }
+    }
+
+    &.active {
+        .inner {
+            .top {
+                transform: rotate(45deg);
+            }
+
+            .center {
+                opacity: 0;
+            }
+
+            .bottom {
+                transform: rotate(-45deg);
+            }
+        }
+    }
+}

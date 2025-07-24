@@ -1,0 +1,71 @@
+@use "../../App.scss" as app;
+
+.Banner {
+    width: 100%;
+    padding-top: 80px;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .container {
+        @include app.container;
+        max-height: 560px;
+        display: flex;
+        gap: 20px;
+        @media (max-width: 1300px) {
+            flex-direction: column-reverse;
+            .hero__text {
+                max-width: 808px;
+                h1 {
+                    width: fit-content;
+                }
+                p {
+                    width: fit-content;
+                }
+            }
+            .hero__img {
+                width: 100%;
+                display: flex;
+                justify-content: flex-start;
+                img {
+                    max-height: 400px;
+                    height: 100%;
+                    width: fit-content;
+                }
+            }
+            .appeal {
+                max-width: 100%;
+            }
+        }
+        @media (max-width: 720px) {
+            .hero__img {
+                img {
+                    width: 100%;
+                }
+            }
+        }
+        .hero__text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 50px;
+            .text__info {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;                
+            }
+            .appeal {
+                @include app.button1(app.$accent__color);
+            }
+            h1 {
+                @include app.h1;
+                font-weight: 600;
+            }
+            p {
+                @include app.p;
+                color: app.$p__color;
+                font-weight: 500;
+            }
+        }
+    }
+}
