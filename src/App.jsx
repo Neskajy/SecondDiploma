@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import './App.scss';
 
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
-import LandingPage from './pages/landingPage.ksx';
+import LandingPage from './pages/landingPage.jsx';
 import { BurgerContext } from "./Contexts.jsx";
 
 function App() {
