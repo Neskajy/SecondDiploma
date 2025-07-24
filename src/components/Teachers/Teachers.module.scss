@@ -9,6 +9,7 @@
         @include app.container;
         display: flex;
         flex-direction: column;
+        justify-content: center;
         gap: 50px;
         h3 {
             @include app.h3;
@@ -55,22 +56,48 @@
                     }
                 }
             }
-            @media (max-width: 404px) {
-                grid-template-columns: 1fr;
+            // @media (max-width: 404px) {
+            //     grid-template-columns: 1fr;
+            //     .teacher__card {
+            //         .img {
+            //             img {
+            //                 width: 100%;
+            //                 max-width: none;
+            //             }
+            //         }
+            //         .text {
+            //             h6 {
+            //                 font-size: 40px;
+            //             }
+            //         }
+            //     }
+            // }
+
+            @media (max-width: 618px) {
+                transition: .3s ease-in-out all;
+                overflow: hidden;
+                width: 100%;
+                display: flex;
+                overflow-x: auto;
+                
+                gap: 20px;
+
+                &::-webkit-scrollbar {
+                    width: 0;
+                }
+                
                 .teacher__card {
-                    .img {
-                        img {
-                            width: 100%;
-                            max-width: none;
-                        }
-                    }
-                    .text {
-                        h6 {
-                            font-size: 40px;
-                        }
+                    flex-shrink: 0;
+                    width: 180px;
+                    &:hover {
+                        transform: none;
+                        transition: none;
                     }
                 }
             }
+        }
+        @media (max-width: 618px) {
+            align-items: center;
         }
     }
 }
