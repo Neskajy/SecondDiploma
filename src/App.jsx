@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
 import './App.scss';
 
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
-import LandingPage from './pages/landingPage';
+import LandingPage from './pages/landingPage.ksx';
 import { BurgerContext } from "./Contexts.jsx";
 
 function App() {
