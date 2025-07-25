@@ -1,5 +1,10 @@
 @use "../../App.scss" as app;
 
+.low__space {
+    position: absolute;
+    bottom: 0;
+}
+
 .Footer {
     width: 100%;
     display: flex;
@@ -9,8 +14,12 @@
     display: flex;
     justify-content: center;
     padding: 27px 0px;
-    @media (max-width: 475px) {
-        bottom: -600px;
+    &.low__space {
+        position: absolute;
+        bottom: -400px;
+        @media (max-width: 344px) {
+            bottom: -100vh;
+        }
     }
     .container {
         display: flex;

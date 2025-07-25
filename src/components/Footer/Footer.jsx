@@ -3,13 +3,16 @@ import vk from "../../assets/imgs/vector/social/vk.svg";
 import tg from "../../assets/imgs/vector/social/tg.svg";
 import mail from "../../assets/imgs/vector/social/mail.svg";
 import s from "./Footer.module.scss";
-
+import { useLocation } from "react-router-dom";
 
 
 export default function Footer() {
+    const path = useLocation().pathname;
+
+    const lowSpaceAblePaths = ["/reg", "/auth"];
     return (
         <>
-            <footer className={s.Footer}>
+            <footer className={`${s.Footer} ${lowSpaceAblePaths.includes(path) ? s.low__space : ""}`}>
                 <div className={s.container}>
                     <div className={s.column__main}>
                         <div className={s.upper}>

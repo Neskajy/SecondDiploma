@@ -1,0 +1,127 @@
+@use "../../App.scss" as app;
+
+.Auth, .Reg {
+    max-width: 464px;
+    width: 100%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    @media (max-width: 500px) {
+        width: 95%;
+    }
+    .heading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        h3 {
+            @include app.h3;
+        }
+        p {
+            @include app.p;
+        }
+    }
+    .input__blocks {
+        margin-top: 40px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+        .input__block {
+            position: relative;
+            width: 100%;
+            .warning__img {
+                position: absolute;
+                top: 50%;
+                left: -40px;
+                transform: translateY(-50%);
+                display: none;
+                &.active {
+                    display: block;
+                }
+            }
+            input {
+                width: 100%;
+                border-radius: 30px;
+                border: 1px solid app.$gray;
+                padding: 15px 0px;
+                padding-left: 15px;
+                color: app.$p__color;
+                font-size: 16px;
+                &::placeholder {
+                    font-size: 14px;
+                    color: app.$p__color;
+                }
+            }
+            .message {
+                margin-top: 3px;
+                display: flex;
+                align-items: flex-end;
+                gap: 10px;
+                color: app.$warning__red;
+                font-weight: 500;
+                font-size: 14px;
+                p {
+                    line-height: 1;
+                    font-size: 12px;
+                }
+                img {
+                    width: 15px;
+                }
+                // bottom: -20px;
+            }
+        }
+    }
+    .useful__actions {
+        margin-top: 35px;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .remember__me {
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            input[type="checkbox"] {
+                cursor: pointer;
+                accent-color: app.$accent__color;
+            }
+            p {
+                font-size: 16px;
+                color: app.$p__color;
+            }
+        }
+        a {
+            cursor: pointer;
+            .forget__password {
+                color: app.$accent__color;
+            }
+        }
+    }
+    .do__authentication {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+        width: 100%;
+        .login {
+            margin-top: 10px;
+            width: 100%;
+            @include app.button1(app.$accent__color);
+        }
+        .or {
+            display: flex;
+            gap: 5px;
+            a {
+                color: app.$accent__color;
+            }
+        }
+    }
+}

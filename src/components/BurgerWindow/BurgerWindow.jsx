@@ -43,9 +43,11 @@ export default function BurgerWindow() {
                             </li>
                         </ul>
                     </nav>
-                    <button className={s.login}>
-                        Авторизация
-                    </button>
+                    <Link to="/auth">
+                        <button className={s.login}>
+                            Авторизация
+                        </button> 
+                    </Link>
                     <div className={s.copyright}>© 2025 Паутина. Все права защищены.</div>
                 </div>
             </div>

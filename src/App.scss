@@ -25,6 +25,10 @@
     line-height: 1
 }
 
+body {
+    min-height: 100vh;
+}
+
 p {
     line-height: 1.3;
 }
@@ -32,6 +36,7 @@ p {
 $accent__color: #8D79F3;
 $accent__color__bright: #b1a5ee;
 $accent__color__dark: #7b64ed;
+$warning__red: #E74C3C;
 
 $p__color: #333333;
 $footer: #000000b3;
