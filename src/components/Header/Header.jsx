@@ -31,9 +31,11 @@ export default function Header() {
                             </li>
                         </ul>
                     </div>
-                    <button className={s.login}>
-                        Авторизация
-                    </button>
+                    <Link to="/auth">
+                        <button className={s.login}>
+                            Авторизация
+                        </button>
+                    </Link>
                     <BurgerButton />
                 </div>
             </header>
