@@ -56,22 +56,6 @@
                     }
                 }
             }
-            // @media (max-width: 404px) {
-            //     grid-template-columns: 1fr;
-            //     .teacher__card {
-            //         .img {
-            //             img {
-            //                 width: 100%;
-            //                 max-width: none;
-            //             }
-            //         }
-            //         .text {
-            //             h6 {
-            //                 font-size: 40px;
-            //             }
-            //         }
-            //     }
-            // }
 
             @media (max-width: 917px) {
                 transition: .3s ease-in-out all;
@@ -80,10 +64,17 @@
                 display: flex;
                 overflow-x: auto;
                 
-                gap: 20px;
+                padding-bottom: 20px;
 
+                gap: 20px;
+                
                 &::-webkit-scrollbar {
-                    width: 0;
+                    height: 10px;
+                    scroll-padding-top: 10px;
+                }
+                &::-webkit-scrollbar-thumb {
+                    background: app.$accent__color;
+                    border-radius: 100px;
                 }
                 
                 .teacher__card {

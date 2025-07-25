@@ -1,13 +1,24 @@
 import { Link } from "react-router-dom";
 import s from "./BurgerWindow.module.scss";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 import { BurgerContext } from "../../Contexts.jsx";
-
 import { useLocation } from "react-router-dom";
+import { uriHistoryContext } from "../../Contexts.jsx";
 
 export default function BurgerWindow() {
-    const {isActiveBurger} = useContext(BurgerContext);
-
+    const {isActiveBurger, setIsActiveBurger} = useContext(BurgerContext);
+    const path = useLocation().pathname;
+    const {uriHistory, setUriHistory} = useContext(uriHistoryContext);
+    
+    useEffect(() => {
+        if (uriHistory.at(-1) != path) {
+            setUriHistory([...uriHistory, path]);
+            setIsActiveBurger(false);
+        } else {
+            console.log("Первая страница");
+        }
+    }, []);
+    
     let [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
     useEffect(() => {
@@ -21,7 +32,6 @@ export default function BurgerWindow() {
         };
     }, []);
 
-    const path = useLocation();
 
     return (
         <>
@@ -29,16 +39,16 @@ export default function BurgerWindow() {
                 <div className={s.container}>
                     <nav className={s.nav}>
                         <ul>
-                            <li className={path.pathname == "/" ? `${s.active}` : ""}>
+                            <li className={path == "/" ? s.active : ""}>
                                 <Link to="/">Главная</Link>
                             </li>
-                            <li className={path.pathname == "/carpark" ? `${s.active}` : ""}>
+                            <li className={path == "/carpark" ? `${s.active}` : ""}>
                                 <Link to="/carpark">Преподаватели</Link>
                             </li>
-                            <li className={path.pathname === "/map" ? `${s.active}` : ""}>
+                            <li className={path === "/map" ? `${s.active}` : ""}>
                                 <Link to="/map">Подать заявку</Link>
                             </li>
-                            <li className={path.pathname === "/contacts" ? `${s.active}` : ""}>
+                            <li className={path === "/contacts" ? `${s.active}` : ""}>
                                 <Link to="/contacts">Контакты</Link>
                             </li>
                         </ul>

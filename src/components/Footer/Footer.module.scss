@@ -16,9 +16,9 @@
     padding: 27px 0px;
     &.low__space {
         position: absolute;
-        bottom: -400px;
+        bottom: -80vh;
         @media (max-width: 344px) {
-            bottom: -100vh;
+            bottom: -120vh;
         }
     }
     .container {

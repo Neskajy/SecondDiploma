@@ -88,10 +88,6 @@ export default function Auth() {
                     <button className={s.login}>
                         Войти
                     </button>
-                    <div className={s.or}>
-                        <span>Нет аккаунта?</span> 
-                        <Link to="/reg">Зарегистрироваться</Link>
-                    </div>
                 </div>
             </form>
         </>
