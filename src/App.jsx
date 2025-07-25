@@ -6,7 +6,7 @@ import LandingPage from './pages/LandingPage.jsx';
 import { BurgerContext } from "./Contexts.jsx";
 import AuthPage from './pages/AuthPage.jsx';
 import RegPage from "./pages/RegPage.jsx";
-import ForgetPassword from './components/ForgetPassword/ForgetPassword.jsx';
+import ForgetPassword from './pages/ForgetPasswordPage.jsx';
 
 function App() {
   const [isActiveBurger, setIsActiveBurger] = useState(false);
