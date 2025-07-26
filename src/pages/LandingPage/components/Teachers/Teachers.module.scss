@@ -6,11 +6,11 @@
     justify-content: center;
     margin-top: 150px;
     .container {
-        @include app.container;
         display: flex;
         flex-direction: column;
         justify-content: center;
         gap: 50px;
+        @include app.container;
         h3 {
             @include app.h3;
         }
@@ -18,12 +18,6 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             grid-gap: 24px;
-            @media (max-width: 1002px) {
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            }
-            @media (max-width: 683px) {
-                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            }
             .teacher__card {
                 transition: .3s ease-in-out all;
                 cursor: pointer;
@@ -56,7 +50,12 @@
                     }
                 }
             }
-
+            @media (max-width: 1002px) {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+            @media (max-width: 683px) {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            }
             @media (max-width: 917px) {
                 transition: .3s ease-in-out all;
                 overflow: hidden;

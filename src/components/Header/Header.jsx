@@ -21,13 +21,13 @@ export default function Header() {
                                 <Link to="/" className={`${path === "/" ? s.active : ""}`}>Главная</Link>
                             </li>
                             <li>
-                                <Link to="/">Преподаватели</Link>
+                                <Link to="/admin">Админ панель</Link>
                             </li>
                             <li>
-                                <Link to="/">Подать заявку</Link>
+                                <Link to="/bid">Подать заявку</Link>
                             </li>
                             <li>
-                                <Link to="/">Контакты</Link>
+                                <Link to="/contacts">Контакты</Link>
                             </li>
                         </ul>
                     </div>

@@ -43,10 +43,10 @@ export default function BurgerWindow() {
                                 <Link to="/">Главная</Link>
                             </li>
                             <li className={path == "/carpark" ? `${s.active}` : ""}>
-                                <Link to="/carpark">Преподаватели</Link>
+                                <Link to="/admin">Админ панель</Link>
                             </li>
-                            <li className={path === "/map" ? `${s.active}` : ""}>
-                                <Link to="/map">Подать заявку</Link>
+                            <li className={path === "/bid" ? `${s.active}` : ""}>
+                                <Link to="/bid">Подать заявку</Link>
                             </li>
                             <li className={path === "/contacts" ? `${s.active}` : ""}>
                                 <Link to="/contacts">Контакты</Link>

@@ -8,10 +8,33 @@
     justify-content: center;
     align-items: center;
     .container {
-        @include app.container;
         max-height: 560px;
         display: flex;
         gap: 20px;
+        @include app.container;
+        .hero__text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 50px;
+            .text__info {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;                
+            }
+            .appeal {
+                @include app.button1(app.$accent__color);
+            }
+            h1 {
+                @include app.h1;
+                font-weight: 600;
+            }
+            p {
+                @include app.p;
+                color: app.$p__color;
+                font-weight: 500;
+            }
+        }
         @media (max-width: 1300px) {
             flex-direction: column-reverse;
             .hero__text {
@@ -42,29 +65,6 @@
                 img {
                     width: 100%;
                 }
-            }
-        }
-        .hero__text {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 50px;
-            .text__info {
-                display: flex;
-                flex-direction: column;
-                gap: 20px;                
-            }
-            .appeal {
-                @include app.button1(app.$accent__color);
-            }
-            h1 {
-                @include app.h1;
-                font-weight: 600;
-            }
-            p {
-                @include app.p;
-                color: app.$p__color;
-                font-weight: 500;
             }
         }
     }
