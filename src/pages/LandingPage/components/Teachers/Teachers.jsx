@@ -1,5 +1,5 @@
 import s from "./Teachers.module.scss";
-import user404 from "../../assets/imgs/vector/user.svg";
+import user404 from "../../../../assets/imgs/vector/user.svg";
 import { useRef } from "react";
 
 export default function Teachers() {

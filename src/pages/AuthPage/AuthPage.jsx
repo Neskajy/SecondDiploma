@@ -1,11 +1,10 @@
-import Header from "../components/Header/Header.jsx";
-import Footer from "../components/Footer/Footer.jsx";
-import Auth from "../components/Auth/Auth.jsx";
-import { useContext, useEffect, useRef } from "react";
+import Header from "../../components/Header/Header.jsx";
+import Footer from "../../components/Footer/Footer.jsx";
+import Auth from "./components/Auth/Auth.jsx";
+import { useContext, useEffect } from "react";
 
-import footerStyles from "../components/Footer/Footer.module.scss";
-import BurgerWindow from "../components/BurgerWindow/BurgerWindow.jsx";
-import { uriHistoryContext } from "../Contexts.jsx";
+import BurgerWindow from "../../components/BurgerWindow/BurgerWindow.jsx";
+import { uriHistoryContext } from "../../Contexts.jsx";
 import { useLocation } from "react-router-dom";
 
 

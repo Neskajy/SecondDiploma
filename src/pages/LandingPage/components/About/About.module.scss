@@ -1,8 +1,9 @@
-@use "../../App.scss" as app;
+@use "../../../../App.scss" as app;
 
 .About {
     width: 100%;
     display: flex;
+    margin-top: 50px;
     justify-content: center;
     .container {
         display: flex;

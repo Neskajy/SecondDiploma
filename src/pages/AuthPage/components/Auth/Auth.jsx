@@ -1,11 +1,9 @@
-import warning from "../../assets/imgs/vector/warning.svg";
-import s from "./Auth.module.scss";
+import warning from "../../../../assets/imgs/vector/warning.svg";
+import s from "../Auth/Auth.module.scss";
 import { Link } from "react-router-dom";
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 import { useForm } from "react-hook-form";
-
-import validator from "validator";
 
 export default function Auth() {
     const [isChecked, setIsChecked] = useState(false);

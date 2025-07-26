@@ -1,7 +1,7 @@
-import money from "../../assets/imgs/vector/advantages/money.svg";
-import strong from "../../assets/imgs/vector/advantages/strong.svg";
-import web_dev_icon from "../../assets/imgs/vector/advantages/web_dev_icon.svg";
-import itInBrain from "../../assets/imgs/vector/advantages/itInBrain.svg";
+import money from "../../../../assets/imgs/vector/advantages/money.svg";
+import strong from "../../../../assets/imgs/vector/advantages/strong.svg";
+import web_dev_icon from "../../../../assets/imgs/vector/advantages/web_dev_icon.svg";
+import itInBrain from "../../../../assets/imgs/vector/advantages/itInBrain.svg";
 
 import s from "./Advantage.module.scss";
 

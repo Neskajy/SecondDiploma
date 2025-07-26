@@ -1,6 +1,6 @@
-import web_design_icon from "../../assets/imgs/vector/directions/web_design_icon.svg";
-import web_frontend_icon from "../../assets/imgs/vector/directions/web_frontend_icon.svg";
-import web_backend_icon from "../../assets/imgs/vector/directions/web_backend_icon.svg";
+import web_design_icon from "../../../../assets/imgs/vector/directions/web_design_icon.svg";
+import web_frontend_icon from "../../../../assets/imgs/vector/directions/web_frontend_icon.svg";
+import web_backend_icon from "../../../../assets/imgs/vector/directions/web_backend_icon.svg";
 
 import s from "./About.module.scss";
 

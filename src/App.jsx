@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react'
 import './App.scss';
-
+import { useState, useEffect } from 'react'
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
-import LandingPage from './pages/LandingPage.jsx';
+
+import LandingPage from './pages/LandingPage/LandingPage.jsx';
+import ForgetPassword from './pages/ForgetPasswordPage/ForgetPasswordPage.jsx';
+import AuthPage from './pages/AuthPage/AuthPage.jsx';
 import { BurgerContext } from "./Contexts.jsx";
-import AuthPage from './pages/AuthPage.jsx';
-import ForgetPassword from './pages/ForgetPasswordPage.jsx';
 import { uriHistoryContext } from './Contexts.jsx';
 
 function App() {

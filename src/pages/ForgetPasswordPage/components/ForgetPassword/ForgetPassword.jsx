@@ -1,5 +1,5 @@
-import warning from "../../assets/imgs/vector/warning.svg";
-import s from "../Auth/Auth.module.scss";
+import warning from "../../../../assets/imgs/vector/warning.svg";
+import s from "../../../AuthPage/components/Auth/Auth.module.scss";
 import { Link } from "react-router-dom";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";

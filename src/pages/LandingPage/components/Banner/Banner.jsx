@@ -1,4 +1,4 @@
-import hero__img from "../../assets/imgs/vector/hero__img.svg";
+import hero__img from "../../../../assets/imgs/vector/hero__img.svg";
 import s from "./Banner.module.scss";
 
 
