@@ -1,0 +1,174 @@
+@use "../../../../App.scss" as app;
+
+
+.SideBar {
+    transition: .3s ease-in-out width;
+    border: 1px solid app.$gray__smooth;
+    min-height: 100vh;
+    padding: 0px 20px;
+    width: 290px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: app.$gray__smooth__shadow;
+    span {
+        white-space: nowrap;
+    }
+    .logo {
+        padding: 32px 0px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        img {
+
+        }
+        p {
+            @include app.p;
+            font-weight: 600;
+            white-space: nowrap
+        }
+    }
+    .menu {
+        .menu__category {
+            span {
+                text-transform: uppercase;
+                color: app.$gray;
+                font-size: 16px;
+            }
+            ul {
+                margin-top: 30px;
+                li {
+                    a {
+                        display: flex;
+                        padding: 15px 15px;
+                        display: flex;
+                        align-items: center;
+                        gap: 12px;
+                        .icon {
+                            width: 20px;
+                            height: 20px;
+                        }
+                        .icon * {
+                            transition: .3s ease-in-out all;
+                        }
+                        span {
+                            font-weight: 500;
+                            font-size: 16px;
+                            color: app.$aside__unactive;
+                            text-transform:capitalize;
+                            transition: .3s ease-in-out;
+                        }
+                    }
+                    &:hover {
+                        a {
+                            .icon * {
+                                fill: app.$accent__color__bright;
+                                stroke: app.$accent__color__bright;
+                            }
+                            span {
+                                transition: .3s ease-in-out;
+                                color: app.$accent__color__bright;
+                            }
+                        }
+                    }
+                    &.active {
+                        a {
+                            .icon * {
+                                fill: app.$accent__color;
+                                stroke: app.$accent__color;
+                            }
+                            span {
+                                color: app.$accent__color;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .exit {
+            margin-top: 30px;
+
+            a {
+                display: flex;
+                padding: 10px 15px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                .icon {
+                    width: 20px;
+                    height: 20px;
+                }
+                .icon * {
+                    transition: .3s ease-in-out all;
+                }
+                span {
+                    font-weight: 500;
+                    font-size: 16px;
+                    color: app.$aside__unactive;
+                    text-transform:capitalize;
+                    transition: .3s ease-in-out;
+                }
+            }
+            &:hover {
+                .icon * {
+                    transition: .3s ease-in-out all;
+                    // fill: app.$accent__color__bright;
+                    stroke: app.$accent__color__bright;
+                }
+                a {
+                    span {
+                        transition: .3s ease-in-out;
+                        color: app.$accent__color__bright;
+                    }
+                }
+            }
+            &.active {
+                a {
+                    span {
+                        transition: .3s ease-in-out;
+                        color: app.$accent__color;
+                    }
+                }
+            }
+        }
+    }
+    &.active {
+        transition: .3s ease-in-out all;
+        width: 90px;
+        .menu {
+            .menu__category {
+                .category {
+                    display: block;
+                    font-size: 20px;
+                    width: 100%;
+                    text-align: center;
+                }
+                ul {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 30px;
+                    justify-content: center;
+                    align-items: center;
+                    li {
+                        a {
+                            padding: 0;
+                            gap: 0;
+                            .icon {
+                                width: 20px;
+                                height: 20px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .exit {
+            a {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 0;
+                gap: 0px;
+            }
+        }
+    }
+}

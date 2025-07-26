@@ -1,0 +1,66 @@
+@use "../../../../App.scss" as app;
+
+.AdminHeader {
+    width: 100%;
+    box-sizing: content-box;
+    max-height: 47px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 32px 0px;
+    .container {
+        width: 90%;
+        justify-content: space-between;
+        display: flex;
+    }
+    .left {
+        display: flex;
+        gap: 20px;
+    }
+    .right {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        .img {
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            box-sizing: border-box;
+            border: 1px solid app.$gray__smooth;
+            box-shadow: app.$gray__smooth__shadow;
+            border-radius: 50%;
+            .bell {
+                height: 20px;
+                aspect-ratio: 1 / 1;
+            }
+        }
+        .profile__preview {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            .user__name {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                .text {
+                    height: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 4px;
+                    .name {
+                        font-size: 18px;
+                        font-weight: 600;
+                    }
+                }
+            }
+            .user__img {
+                width: 50px;
+                aspect-ratio: 1 / 1;
+                border-radius: 50%;
+            }
+        }
+    }
+}

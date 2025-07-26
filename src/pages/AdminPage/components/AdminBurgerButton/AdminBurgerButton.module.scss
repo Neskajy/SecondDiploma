@@ -1,7 +1,15 @@
-$burgerWidth: 32px;
+@use "../../../../App.scss" as app;
+
+
+$burgerWidth: 15px;
 
 .BurgerButton {
-    display: none;
+    box-shadow: app.$gray__smooth__shadow;
+    box-sizing: content-box;
+    border: 1px solid app.$gray__smooth;
+    border-radius: 8px;
+    padding: 15px;
+    // display: none;
     cursor: pointer;
     aspect-ratio: 1 / 1;
     width: $burgerWidth;
@@ -10,6 +18,8 @@ $burgerWidth: 32px;
         display: flex;
     }
     .inner {
+        display: flex;
+        justify-content: center;
         height: 100%;
         width: 100%;
         position: relative;
@@ -19,7 +29,7 @@ $burgerWidth: 32px;
             width: 100%;
             transition: .3s all ease-in-out;
             height: 2px;
-            background: black;
+            background: app.$p__color;
         }
 
         .top {
@@ -29,28 +39,14 @@ $burgerWidth: 32px;
 
         .center {
             top: calc($burgerWidth / 2);
+            left: 0;
+            width: calc($burgerWidth / 2);
             // transform: translateY(-50%);
         }
 
         .bottom {
             top: calc(5 * $burgerWidth / 6);
             transform-origin: left bottom;
-        }
-    }
-
-    &.active {
-        .inner {
-            .top {
-                transform: rotate(45deg);
-            }
-
-            .center {
-                opacity: 0;
-            }
-
-            .bottom {
-                transform: rotate(-45deg);
-            }
         }
     }
 }
