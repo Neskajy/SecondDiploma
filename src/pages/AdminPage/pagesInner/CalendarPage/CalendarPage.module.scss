@@ -1,4 +1,4 @@
-@use "../../../../App.scss";
+@use "../../../../App.scss" as app;
 
 .CalendarPage {
     .HeaderAndContent {
@@ -8,6 +8,106 @@
             justify-content: center;
             .container {
                 width: 90%;
+                h5 {
+                    @include app.h5;
+                }
+                .calendar__header {
+                    margin-top: 30px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    position: relative;
+                    .left {
+                        display: flex;
+                        align-items: center;
+                        gap: 20px;
+                        .time__remotes {
+                            display: flex;
+                            gap: 10px;
+                            .decrement__button, .increment__button {
+                                cursor: pointer;
+                                padding: 15px;
+                                width: 50px;
+                                height: 50px;
+                                border-radius: 50%;
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                border: 1px solid app.$gray__smooth;
+                                box-shadow: app.$gray__smooth__shadow;
+                                .icon {
+                                }
+                            }
+                            .decrement__button {
+                                transform: rotate(90deg);
+                            }
+                            .increment__button {
+                                transform: rotate(-90deg);
+                            }
+                        }
+                        .addEvent {
+                            @include app.button1(app.$accent__color);
+                            padding-left: 30px;
+                            padding-right: 30px;
+                            font-size: 14px;
+                            height: 100%
+                        }
+                    }
+                    .center {
+                        position: absolute;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        h6 {
+                            font-size: 20px;
+                        }
+
+                    }
+                    .right {
+                        .time {
+                            display: flex;
+                            gap: 10px;
+                            li {
+                                cursor: pointer;
+                                font-size: 18px;
+                                font-weight: 500;
+                            }
+                        }
+                    }
+                }
+                .calendar__main {
+                    margin-top: 30px;
+                    width: 100%;
+                    height: 100vh;
+                    border-spacing: 0;
+                    thead {
+                        tr {
+                            th {
+                                color: app.$gray;
+                                font-size: 20px;
+                                font-weight: 700;
+                                padding: 30px 20px;
+                                border: 1px solid app.$gray__smooth;
+                                text-align: left;
+                                font-size: 16px;
+                                background: rgb(250, 250, 250);
+                            }
+                        }
+                    }
+                    tbody {
+                        tr {
+                            td {
+                                padding: 20px 20px;
+                                border: 1px solid app.$gray__smooth;
+                                text-align: left;
+                                vertical-align: top;
+                            }
+                            .lastMonth, .nextMonth {
+                                color: app.$gray;
+                            }
+                        }
+
+                    }
+                }
             }
         }
     }
