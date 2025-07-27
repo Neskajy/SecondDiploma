@@ -3,6 +3,7 @@ import s from "./AdminHeader.module.scss";
 import Search from "../Search/Search.jsx";
 import bell from "../../../../assets/imgs/vector/bell.svg";
 import user404 from "../../../../assets/imgs/vector/user.svg";
+import { Link } from "react-router-dom";
 
 export default function AdminHeader() {
     return (
@@ -17,7 +18,7 @@ export default function AdminHeader() {
                         <div className={s.img}>
                             <img src={bell} alt="" className={s.bell} />
                         </div>
-                        <div className={s.profile__preview}>
+                        <Link to="/admin/profile" className={s.profile__preview}>
                             <img className={s.user__img} src={user404} alt="" />
                             <div className={s.user__name}>
                                 <div className={s.text}>
@@ -25,7 +26,7 @@ export default function AdminHeader() {
                                     <span className={s.status}>Методист</span>
                                 </div>
                             </div>
-                        </div>
+                        </Link>
                     </div>
                 </div>
             </header>

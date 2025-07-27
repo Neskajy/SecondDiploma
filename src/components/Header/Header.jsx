@@ -8,37 +8,35 @@ export default function Header() {
     const path = useLocation().pathname;
 
     return (
-        <>
-            <header className={s.Header}>
-                <div className={s.container}>
-                    <div className={s.logo}>
-                        <img src={logo} alt="" />
-                        <p>Второй диплом</p>
-                    </div>
-                    <div className={s.nav}>
-                        <ul>
-                            <li>
-                                <Link to="/" className={`${path === "/" ? s.active : ""}`}>Главная</Link>
-                            </li>
-                            <li>
-                                <Link to="/admin">Админ панель</Link>
-                            </li>
-                            <li>
-                                <Link to="/bid">Подать заявку</Link>
-                            </li>
-                            <li>
-                                <Link to="/contacts">Контакты</Link>
-                            </li>
-                        </ul>
-                    </div>
-                    <Link to="/auth">
-                        <button className={s.login}>
-                            Авторизация
-                        </button>
-                    </Link>
-                    <BurgerButton />
+        <header className={s.Header}>
+            <div className={s.container}>
+                <div className={s.logo}>
+                    <img src={logo} alt="" />
+                    <p>Второй диплом</p>
                 </div>
-            </header>
-        </>
+                <div className={s.nav}>
+                    <ul>
+                        <li>
+                            <Link to="/" className={`${path === "/" ? s.active : ""}`}>Главная</Link>
+                        </li>
+                        <li>
+                            <Link to="/admin/profile">Админ панель</Link>
+                        </li>
+                        <li>
+                            <Link to="/bid">Подать заявку</Link>
+                        </li>
+                        <li>
+                            <Link to="/contacts">Контакты</Link>
+                        </li>
+                    </ul>
+                </div>
+                <Link to="/auth">
+                    <button className={s.login}>
+                        Авторизация
+                    </button>
+                </Link>
+                <BurgerButton />
+            </div>
+        </header>
     )
 }

@@ -25,7 +25,7 @@ export default function SideBar () {
             <aside className={`${s.SideBar} ${isActiveBurger ? s.active : ""}`} onMouseEnter={handleOnMouseEnter}>
                 <div className={s.logo}>
                     <img src={logo} alt="" />
-                    <p>{isActiveBurger ? "" : "Админка"}</p>
+                    <p>Диплом</p>
                 </div>
                 <menu className={s.menu}>
                     {
@@ -41,7 +41,7 @@ export default function SideBar () {
                                                 <li key={item.id} className={isActive ? s.active : ""}>
                                                     <Link to={`/admin/${item.page}`}>
                                                         <Icon alt={item.text} className={s.icon}/>
-                                                        <span>{isActiveBurger ? "" : item.text}</span>
+                                                        <span>{item.text}</span>
                                                     </Link>
                                                 </li>
                                             );
@@ -54,7 +54,7 @@ export default function SideBar () {
                     <div className={s.exit}>
                         <Link to={`${path}/exit`}>
                             <Exit className={s.icon}/>
-                            <span>{isActiveBurger ? "" : "Выйти"}</span>
+                            <span>Выйти</span>
                         </Link>
                     </div>
                 </menu>

@@ -9,40 +9,63 @@
     width: 290px;
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     box-shadow: app.$gray__smooth__shadow;
+    position: relative;
     span {
         white-space: nowrap;
     }
     .logo {
+        transition: .3s ease-in-out all;
+        width: 160px;
         padding: 32px 0px;
         display: flex;
         align-items: center;
         gap: 10px;
+        overflow: hidden;
+        position: relative;
         img {
+            width: 50px;
 
         }
         p {
             @include app.p;
             font-weight: 600;
-            white-space: nowrap
+            white-space: nowrap;
+            position: absolute;
+            left: 60px;
         }
     }
     .menu {
+        max-width: 100px;
+        width: 100%;
+        position: absolute;
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+        top: 100px;
         .menu__category {
             span {
                 text-transform: uppercase;
                 color: app.$gray;
                 font-size: 16px;
+                height: 22px;
+                display: block;
             }
             ul {
+                display: flex;
+                align-items: center;
+                flex-direction: column;
                 margin-top: 30px;
                 li {
+                    display: flex;
                     a {
+                        transition: .3s ease-in-out all;
+                        overflow: hidden;
+                        position: relative;
                         display: flex;
+                        width: 150px;
                         padding: 15px 15px;
-                        display: flex;
-                        align-items: center;
-                        gap: 12px;
                         .icon {
                             width: 20px;
                             height: 20px;
@@ -51,6 +74,8 @@
                             transition: .3s ease-in-out all;
                         }
                         span {
+                            left: 50px;
+                            position: absolute;
                             font-weight: 500;
                             font-size: 16px;
                             color: app.$aside__unactive;
@@ -85,14 +110,15 @@
             }
         }
         .exit {
+            width: 50px;
             margin-top: 30px;
-
             a {
+                width: 150px;
+                overflow: hidden;
+                position: relative;
                 display: flex;
-                padding: 10px 15px;
-                display: flex;
-                align-items: center;
-                gap: 12px;
+                transition: .3s ease-in-out all;
+                padding: 15px 15px;
                 .icon {
                     width: 20px;
                     height: 20px;
@@ -101,11 +127,14 @@
                     transition: .3s ease-in-out all;
                 }
                 span {
+                    left: 50px;
+                    position: absolute;
                     font-weight: 500;
                     font-size: 16px;
                     color: app.$aside__unactive;
                     text-transform:capitalize;
                     transition: .3s ease-in-out;
+                    
                 }
             }
             &:hover {
@@ -134,7 +163,12 @@
     &.active {
         transition: .3s ease-in-out all;
         width: 90px;
+        .logo {
+            transition: .3s ease-in-out all;
+            width: 50px;
+        }
         .menu {
+            max-width: 40px;
             .menu__category {
                 .category {
                     display: block;
@@ -144,14 +178,11 @@
                 }
                 ul {
                     display: flex;
-                    flex-direction: column;
-                    gap: 30px;
-                    justify-content: center;
-                    align-items: center;
+                    align-items: flex-start;
                     li {
                         a {
-                            padding: 0;
-                            gap: 0;
+                            transition: .3s ease-in-out all;
+                            width: 50px;
                             .icon {
                                 width: 20px;
                                 height: 20px;
@@ -163,11 +194,11 @@
         }
         .exit {
             a {
+                width: 50px;
+                overflow: hidden;
+                position: relative;
                 display: flex;
-                justify-content: center;
-                align-items: center;
-                padding: 0;
-                gap: 0px;
+                padding: 15px 15px;
             }
         }
     }

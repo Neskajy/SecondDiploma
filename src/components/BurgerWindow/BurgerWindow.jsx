@@ -34,33 +34,31 @@ export default function BurgerWindow() {
 
 
     return (
-        <>
-            <div className={`${s.BurgerWindow} ${isActiveBurger && windowWidth <= 1200 ? s.active : ""}`}>
-                <div className={s.container}>
-                    <nav className={s.nav}>
-                        <ul>
-                            <li className={path == "/" ? s.active : ""}>
-                                <Link to="/">Главная</Link>
-                            </li>
-                            <li className={path == "/carpark" ? `${s.active}` : ""}>
-                                <Link to="/admin">Админ панель</Link>
-                            </li>
-                            <li className={path === "/bid" ? `${s.active}` : ""}>
-                                <Link to="/bid">Подать заявку</Link>
-                            </li>
-                            <li className={path === "/contacts" ? `${s.active}` : ""}>
-                                <Link to="/contacts">Контакты</Link>
-                            </li>
-                        </ul>
-                    </nav>
-                    <Link to="/auth">
-                        <button className={s.login}>
-                            Авторизация
-                        </button> 
-                    </Link>
-                    <div className={s.copyright}>© 2025 Паутина. Все права защищены.</div>
-                </div>
+        <div className={`${s.BurgerWindow} ${isActiveBurger && windowWidth <= 1200 ? s.active : ""}`}>
+            <div className={s.container}>
+                <nav className={s.nav}>
+                    <ul>
+                        <li className={path == "/" ? s.active : ""}>
+                            <Link to="/">Главная</Link>
+                        </li>
+                        <li className={path == "/carpark" ? `${s.active}` : ""}>
+                            <Link to="/admin/profile">Админ панель</Link>
+                        </li>
+                        <li className={path === "/bid" ? `${s.active}` : ""}>
+                            <Link to="/bid">Подать заявку</Link>
+                        </li>
+                        <li className={path === "/contacts" ? `${s.active}` : ""}>
+                            <Link to="/contacts">Контакты</Link>
+                        </li>
+                    </ul>
+                </nav>
+                <Link to="/auth">
+                    <button className={s.login}>
+                        Авторизация
+                    </button> 
+                </Link>
+                <div className={s.copyright}>© 2025 Паутина. Все права защищены.</div>
             </div>
-        </>
+        </div>
     )
 }

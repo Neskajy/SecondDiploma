@@ -1,0 +1,14 @@
+@use "../../../../App.scss";
+
+.CalendarPage {
+    .HeaderAndContent {
+        .main {
+            display: flex;
+            width: 100%;
+            justify-content: center;
+            .container {
+                width: 90%;
+            }
+        }
+    }
+}

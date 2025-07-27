@@ -121,7 +121,8 @@
                             width: fit-content;
                             a {
                                 width: fit-content;
-                                img {
+                                .icon {
+                                    fill: app.$footer;
                                     width: fit-content;
                                 }
                             }

@@ -1,0 +1,116 @@
+@use "../../../../../../App.scss" as app;
+
+.Modal {
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    background: rgba(0, 0, 0, .4);
+    backdrop-filter: blur(5px);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .container {
+        background: white;
+        padding: 30px;
+        max-width: 800px;
+        max-height: 80%;
+        overflow-y: scroll;
+        width: 100%;
+        position: relative;
+
+        border-radius: 20px;
+
+        display: flex;
+        flex-direction: column;
+        gap: 50px;
+
+        h5 {
+            @include app.h5;
+        }
+
+        h6 {
+            @include app.h6;
+        }
+
+        &::-webkit-scrollbar {
+            width: 10px;
+            // background: app.$gray__smooth;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: app.$gray;
+            border-radius: 20px;
+        }
+
+        .links, .personal__info {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            .items {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+                .item {
+                    p {
+                        font-size: 16px;
+                        font-weight: 500;
+                    }
+                    input {
+                        margin-top: 10px;
+                        width: 100%;
+                        border: 1px solid app.$gray__smooth;
+                        padding: 10px 20px;
+                        box-shadow: app.$gray__smooth__shadow;
+                    }
+                }
+            }
+        }
+
+        .buttons {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            .close {
+                @include app.button1(transparent);
+                color: white;
+                background: app.$warning__red;
+                padding: 15px 30px;
+                &:hover {
+                    background: app.$warning__red__dark;
+                }
+            }
+            .apply {
+                @include app.button1(transparent);
+                color: white;
+                background: app.$warning__green;
+                padding: 15px 30px;
+                &:hover {
+                    background: app.$warning__green__dark;
+                }
+            }
+        }
+
+
+
+
+        .close__cross {
+            cursor: pointer;
+            position: absolute;
+            top: 30px;
+            right: 30px;
+        }
+
+
+
+
+        @media (max-width: 850px) {
+            max-width: none;
+            width: 90%;
+        }
+    }
+}

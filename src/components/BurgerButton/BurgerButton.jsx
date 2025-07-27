@@ -11,15 +11,12 @@ export default function BurgerButton() {
     }
     
     return (
-        <>
-            <div className={`${s.BurgerButton} ${isActiveBurger ? s.active : ""}`} onClick={clickOnBurgerButton}>
-                <div className={s.inner}>
-                    <div className={s.top}></div>
-                    <div className={s.center}></div>
-                    <div className={s.bottom}></div>
-                </div>
+        <div className={`${s.BurgerButton} ${isActiveBurger ? s.active : ""}`} onClick={clickOnBurgerButton}>
+            <div className={s.inner}>
+                <div className={s.top}></div>
+                <div className={s.center}></div>
+                <div className={s.bottom}></div>
             </div>
-
-        </>
+        </div>
     )
 }
