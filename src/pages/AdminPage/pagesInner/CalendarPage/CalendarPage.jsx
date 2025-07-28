@@ -14,6 +14,8 @@ import PlanEventModal from "../ProfilePage/modals/PlanEventModal/PlanEventModal.
 export default function CalendarPage() {
 
     const [isActivePlanEventModal, setIsActivePlanEventModal] = useState(false);
+
+    const [data, setData] = useState({});
     
     const getScrollbarWidth = () =>
         window.innerWidth - document.documentElement.clientWidth;
@@ -21,8 +23,9 @@ export default function CalendarPage() {
 
     const scrollBarWidth = getScrollbarWidth();
 
-    function returnPlanEventModal() {
+    function returnPlanEventModal(arg) {
         setIsActivePlanEventModal(true);
+        setData(arg)
         document.body.style.overflow = "hidden";
         document.body.style.marginRight = `${scrollBarWidth}px`;
     }
@@ -54,7 +57,7 @@ export default function CalendarPage() {
                                         </button>
                                     </div>
                                     <time className={s.center}>
-                                        <h6>{response.time}</h6>
+                                        <h6>{`${response.month} ${response.year}`}</h6>
                                     </time>
                                     <div className={s.right}>
                                         <ul className={s.time}>
@@ -88,11 +91,16 @@ export default function CalendarPage() {
                                                                 const isLastMonth = (week__index === 0 && int_day > 7 ? s.lastMonth : "");
                                                                 const isNextMonth = week__index === response.weeks.length - 1 && int_day < 10;
                                                                 
+                                                                const time = {
+                                                                    "year": response.year,
+                                                                    "month": response.month,
+                                                                    "day": int_day
+                                                                }
                                                                 return (
                                                                     <td 
                                                                         key={day__index} 
                                                                         className={`${isLastMonth ? s.lastMonth : ''} ${isNextMonth ? s.nextMonth : ''}`}
-                                                                        onClick={returnPlanEventModal}
+                                                                        onClick={() => returnPlanEventModal(time)}
                                                                     >
                                                                         {int_day}
                                                                     </td>
@@ -111,7 +119,7 @@ export default function CalendarPage() {
                     </main>
                 </div>
             </div>
-            {isActivePlanEventModal ? <PlanEventModal data={{"year": "year", "month": "month", "day": "day"}}/> : ""}
+            {isActivePlanEventModal ? <PlanEventModal data__props={data}/> : ""}
         </PlanEventModalContext.Provider>
     )
 }
