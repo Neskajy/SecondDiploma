@@ -3,7 +3,7 @@
 .Modal {
     width: 100vw;
     height: 100vh;
-    position: absolute;
+    position: fixed;
     background: rgba(0, 0, 0, .4);
     backdrop-filter: blur(5px);
     top: 0;
@@ -19,7 +19,6 @@
         padding: 30px;
         max-width: 800px;
         max-height: 80%;
-        overflow-y: scroll;
         width: 100%;
         position: relative;
 
@@ -33,93 +32,95 @@
             @include app.h5;
         }
 
-        h6 {
-            @include app.h6;
-        }
+        
 
-        &::-webkit-scrollbar {
-            width: 10px;
-            // background: app.$gray__smooth;
-        }
-
-        &::-webkit-scrollbar-thumb {
-            background: app.$gray;
-            border-radius: 20px;
-        }
-
-        .links, .personal__info {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            .items {
+        .inner {
+            overflow-y: scroll;
+            &::-webkit-scrollbar {
+                width: 8px;
+                // background: app.$gray__smooth;
+            }
+    
+            &::-webkit-scrollbar-thumb {
+                background: app.$gray;
+                border-radius: 20px;
+            }
+    
+            .links, .personal__info {
+                h6 {
+                    @include app.h6;
+                }
                 display: flex;
                 flex-direction: column;
-                gap: 15px;
-                .item {
-                    p {
-                        font-size: 16px;
-                        font-weight: 500;
-                    }
-                    input {
-                        margin-top: 10px;
-                        width: 100%;
-                        border: 1px solid app.$gray__smooth;
-                        padding: 10px 20px;
-                        border-radius: 8px;
-                        box-shadow: app.$gray__smooth__shadow;
-                    }
-                    .color__input {
-                        width: 50px;
-                        height: 50px;
-                        border-radius: 20px;
-                        padding: 0;
-                        border: 0;
-                        background: transparent;
+                gap: 20px;
+                .items {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 15px;
+                    .item {
+                        p {
+                            font-size: 16px;
+                            font-weight: 500;
+                        }
+                        input {
+                            margin-top: 10px;
+                            width: 100%;
+                            border: 1px solid app.$gray__smooth;
+                            padding: 10px 20px;
+                            border-radius: 8px;
+                            box-shadow: app.$gray__smooth__shadow;
+                        }
+                        .color__input {
+                            width: 50px;
+                            height: 50px;
+                            border-radius: 20px;
+                            padding: 0;
+                            border: 0;
+                            background: transparent;
+                        }
                     }
                 }
             }
-        }
 
-        .buttons {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            .close {
-                @include app.button1(transparent);
-                color: white;
-                background: app.$warning__red;
-                padding: 15px 30px;
-                &:hover {
-                    background: app.$warning__red__dark;
+            .personal__info {
+                margin-top: 30px;
+            }
+    
+            .buttons {
+                margin-top: 20px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                .close {
+                    @include app.button1(transparent);
+                    color: white;
+                    background: app.$warning__red;
+                    padding: 15px 30px;
+                    &:hover {
+                        background: app.$warning__red__dark;
+                    }
+                }
+                .apply {
+                    @include app.button1(transparent);
+                    color: white;
+                    background: app.$warning__green;
+                    padding: 15px 30px;
+                    &:hover {
+                        background: app.$warning__green__dark;
+                    }
                 }
             }
-            .apply {
-                @include app.button1(transparent);
-                color: white;
-                background: app.$warning__green;
-                padding: 15px 30px;
-                &:hover {
-                    background: app.$warning__green__dark;
-                }
+            .close__cross {
+                cursor: pointer;
+                position: absolute;
+                top: 30px;
+                right: 30px;
+            }
+            @media (max-width: 850px) {
+                max-width: none;
+                width: 90%;
             }
         }
 
-
-
-
-        .close__cross {
-            cursor: pointer;
-            position: absolute;
-            top: 30px;
-            right: 30px;
-        }
-
-
-
-
-        @media (max-width: 850px) {
-            max-width: none;
-            width: 90%;
-        }
     }
 }

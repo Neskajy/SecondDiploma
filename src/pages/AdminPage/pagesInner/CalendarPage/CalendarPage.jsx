@@ -5,7 +5,7 @@ import s from "./CalendarPage.module.scss";
 import Arrow__no__stick from "../../../../assets/imgs/vector/actions/arrow__no__stick.svg?react";
 
 import { response } from "./Response.jsx";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { PlanEventModalContext } from "../../../../Contexts.jsx";
 
@@ -14,10 +14,19 @@ import PlanEventModal from "../ProfilePage/modals/PlanEventModal/PlanEventModal.
 export default function CalendarPage() {
 
     const [isActivePlanEventModal, setIsActivePlanEventModal] = useState(false);
+    
+    const getScrollbarWidth = () =>
+        window.innerWidth - document.documentElement.clientWidth;
+    
+
+    const scrollBarWidth = getScrollbarWidth();
 
     function returnPlanEventModal() {
         setIsActivePlanEventModal(true);
+        document.body.style.overflow = "hidden";
+        document.body.style.marginRight = `${scrollBarWidth}px`;
     }
+
 
     return (
         <PlanEventModalContext.Provider value={{isActivePlanEventModal, setIsActivePlanEventModal}}>
@@ -40,7 +49,7 @@ export default function CalendarPage() {
                                                 <Arrow__no__stick className={s.icon} />
                                             </div>
                                         </div>
-                                        <button className={s.addEvent}>
+                                        <button className={s.addEvent} onClick={returnPlanEventModal}>
                                             Добавить событие
                                         </button>
                                     </div>
