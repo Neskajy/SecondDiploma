@@ -1,18 +1,10 @@
 import AdminHeader from "../../../../components/AdminHeader/AdminHeader.jsx";
 import SideBar from "../../../../components/SideBar/SideBar.jsx";
 import s from "./GroupPage.module.scss";
-
-import Search from "../../../../components/Search/Search.jsx";
-
 import Plus from "../../../../../../assets/imgs/vector/plus.svg?react";
 
-import { AddColumnModalContext } from "../../../../../../Contexts.jsx";
-import { OpenGradeModalContext } from "../../../../../../Contexts.jsx";
 
 import { useState } from "react";
-
-import AddGroupModal from "../../modals/AddColumnModal/AddColumnModal.jsx";
-import OpenGradeModal from "../../modals/OpenGradeModal/OpenGradeModal.jsx";
 
 export default function GroupPage() {
 
@@ -51,72 +43,66 @@ export default function GroupPage() {
 
 
     return (
-        <OpenGradeModalContext.Provider value={{isOpenedGradeModal, setIsOpenedGradeModal}}>
-            <AddColumnModalContext.Provider value={{isActiveAddColumnModalContext, setIsActiveAddColumnModalContext}}>
-                <div className={s.GroupPage} style={{ display: "flex" }}>
-                    <SideBar />
-                    <div className={s.HeaderAndContent} style={{ width: "100%" }}>
-                        <AdminHeader />
-                        <main className={s.main}>
-                            <div className={s.container}>
-                                <h5>Управление группой</h5>
-                                <div className={s.table__outer}>
-                                    <div className={s.table__header}>
-                                        <p>Группа 12/23 (Модуль 1 2025)</p>
-                                    </div>
-                                    <div className={s.table__abertka}>
-                                        <table className={s.group__table}>
-                                            <thead>
-                                                <tr>
-                                                    {
-                                                        Object.entries(response.at(0)).map(([key, value]) => {
-                                                            return <th key={key}>{key}</th>;
-                                                        })
-                                                    }
-                                                </tr>
-                                            </thead>
+        <div className={s.GroupPage} style={{ display: "flex" }}>
+            <SideBar />
+            <div className={s.HeaderAndContent} style={{ width: "100%" }}>
+                <AdminHeader />
+                <main className={s.main}>
+                    <div className={s.container}>
+                        <h5>Управление группой</h5>
+                        <div className={s.table__outer}>
+                            <div className={s.table__header}>
+                                <p>Группа 12/23 (Модуль 1 2025)</p>
+                            </div>
+                            <div className={s.table__abertka}>
+                                <table className={s.group__table}>
+                                    <thead>
+                                        <tr>
+                                            {
+                                                Object.entries(response.at(0)).map(([key, value]) => {
+                                                    return <th key={key}>{key}</th>;
+                                                })
+                                            }
+                                        </tr>
+                                    </thead>
 
-                                            <tbody>
-                                                {
-                                                    response.map((item) => {
-                                                        return (
-                                                            <tr key={item.id}>
-                                                                {Object.entries(item).map(([key, value]) => {
-                                                                    // Определяем, является ли это ячейка оценкой
-                                                                    const isGrade = /^\d{1,2}\.\d{2}$/.test(key) &&
-                                                                        key !== 'ср.балл' &&
-                                                                        !key.startsWith('ср.балл');
+                                    <tbody>
+                                        {
+                                            response.map((item) => {
+                                                return (
+                                                    <tr key={item.id}>
+                                                        {Object.entries(item).map(([key, value]) => {
+                                                            // Определяем, является ли это ячейка оценкой
+                                                            const isGrade = /^\d{1,2}\.\d{2}$/.test(key) &&
+                                                                key !== 'ср.балл' &&
+                                                                !key.startsWith('ср.балл');
 
-                                                                    return (
-                                                                        <td
-                                                                            key={key}
-                                                                            onClick={() => {
-                                                                                clickOnGrade(isGrade)
-                                                                            }}
-                                                                        >
-                                                                            {value}
-                                                                        </td>
-                                                                    );
-                                                                })}
-                                                            </tr>
-                                                        );
-                                                    })
-                                                }
+                                                            return (
+                                                                <td
+                                                                    key={key}
+                                                                    onClick={() => {
+                                                                        clickOnGrade(isGrade)
+                                                                    }}
+                                                                >
+                                                                    {value}
+                                                                </td>
+                                                            );
+                                                        })}
+                                                    </tr>
+                                                );
+                                            })
+                                        }
 
-                                            </tbody>
-                                        </table>
-                                        <div className={s.add__button} onClick={openModal}>
-                                            <Plus className={s.icon} />
-                                        </div>
-                                    </div>
+                                    </tbody>
+                                </table>
+                                <div className={s.add__button} onClick={openModal}>
+                                    <Plus className={s.icon} />
                                 </div>
                             </div>
-                        </main>
+                        </div>
                     </div>
-                </div>
-                
-                {isActiveAddColumnModalContext ? <AddGroupModal /> : ""}
-            </AddColumnModalContext.Provider>
-        </OpenGradeModalContext.Provider>
+                </main>
+            </div>
+        </div>
     )
 }

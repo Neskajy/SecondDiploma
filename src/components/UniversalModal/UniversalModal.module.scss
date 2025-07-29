@@ -1,4 +1,4 @@
-@use "../../../../../../App.scss" as app;
+@use "../../App.scss" as app;
 
 .Modal {
     width: 100vw;
@@ -36,6 +36,10 @@
 
         .inner {
             overflow-y: scroll;
+
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
             &::-webkit-scrollbar {
                 width: 8px;
                 // background: app.$gray__smooth;
@@ -46,7 +50,7 @@
                 border-radius: 20px;
             }
     
-            .links, .personal__info {
+            .common {
                 h6 {
                     @include app.h6;
                 }
@@ -81,10 +85,6 @@
                     }
                 }
             }
-
-            .personal__info {
-                margin-top: 20px;
-            }
     
             .buttons {
                 margin-top: 20px;
@@ -116,11 +116,10 @@
                 top: 30px;
                 right: 30px;
             }
-            @media (max-width: 850px) {
-                max-width: none;
-                width: 90%;
-            }
         }
-
+        @media (max-width: 900px) {
+            max-width: none;
+            width: 90%;
+        }
     }
 }
