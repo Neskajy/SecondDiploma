@@ -26,7 +26,7 @@
 
         display: flex;
         flex-direction: column;
-        gap: 50px;
+        gap: 10px;
 
         h5 {
             @include app.h5;
@@ -83,7 +83,7 @@
             }
 
             .personal__info {
-                margin-top: 30px;
+                margin-top: 20px;
             }
     
             .buttons {

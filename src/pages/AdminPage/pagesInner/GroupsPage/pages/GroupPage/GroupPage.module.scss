@@ -1,0 +1,78 @@
+@use "../../../../../../App.scss" as app;
+
+.GroupPage {
+    .HeaderAndContent {
+        .main {
+            display: flex;
+            width: 100%;
+            justify-content: center;
+            .container {
+                width: 90%;
+                h5 {
+                    @include app.h5;
+                }
+                .table__outer {
+                    margin-top: 40px;
+                    .table__header {
+                        p {
+                            @include app.p;
+                            font-weight: 500;
+                        }
+                    }
+                    .table__abertka {
+                        position: relative;
+                        min-width: max-content;
+                        .group__table {
+                            min-width: 100%;
+                            margin-top: 20px;
+                            border-spacing: 0;
+    
+                            thead {
+                                tr {
+                                    th {
+                                        font-size: 18px;
+                                        font-weight: 500;
+                                        padding: 20px;
+                                        border: 1px solid app.$gray__smooth;
+                                    }
+                                }
+                            }
+    
+                            tbody {
+                                tr {
+                                    td {
+                                        border: 1px solid app.$gray__smooth;
+                                        padding: 20px;
+                                        text-align: center;
+                                    }
+                                }
+                            }
+                        } 
+                        .add__button {
+                            position: absolute;
+                            transform: translateY(-50%);
+                            top: 50%;
+                            right: -25px;
+                            background: white;
+                            border-radius: 50%;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            cursor: pointer;
+                            width: 50px;
+                            aspect-ratio: 1 / 1;
+                            border: 1px solid app.$gray__smooth;
+                            box-shadow: app.$gray__smooth__shadow;
+                            .icon {
+                                width: 15px;
+                                height: 15px;
+                                fill: app.$accent__color;
+                            }
+                        }
+                    }
+                }
+            }
+            
+        }
+    }
+}

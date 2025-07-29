@@ -1,6 +1,6 @@
 export const response = {
     "year": 2025,
-    "month": "Июль",
+    "month": 7,
     "weekdays": ["ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ", "ВС"],
     "weeks": [
         [30, 1, 2, 3, 4, 5, 6],

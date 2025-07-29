@@ -30,6 +30,21 @@ export default function CalendarPage() {
         document.body.style.marginRight = `${scrollBarWidth}px`;
     }
 
+    const NumberToMonth = {
+        1: "Январь",
+        2: "Февраль",
+        3: "Март",
+        4: "Апрель",
+        5: "Май",
+        6: "Июнь",
+        7: "Июль",
+        8: "Август",
+        9: "Сентябрь",
+        10: "Октябрь",
+        11: "Ноябрь",
+        12: "Декабрь"
+    };
+
 
     return (
         <PlanEventModalContext.Provider value={{isActivePlanEventModal, setIsActivePlanEventModal}}>
@@ -57,7 +72,7 @@ export default function CalendarPage() {
                                         </button>
                                     </div>
                                     <time className={s.center}>
-                                        <h6>{`${response.month} ${response.year}`}</h6>
+                                        <h6>{`${NumberToMonth[response.month]} ${response.year}`}</h6>
                                     </time>
                                     <div className={s.right}>
                                         <ul className={s.time}>
@@ -94,7 +109,8 @@ export default function CalendarPage() {
                                                                 const time = {
                                                                     "year": response.year,
                                                                     "month": response.month,
-                                                                    "day": int_day
+                                                                    "day": int_day,
+                                                                    "week__index": week__index
                                                                 }
                                                                 return (
                                                                     <td 

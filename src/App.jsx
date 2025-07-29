@@ -11,8 +11,10 @@ import AppealsPage from './pages/AdminPage/pagesInner/AppealsPage/AppealsPage.js
 import ArticlesPage from './pages/AdminPage/pagesInner/ArticlesPage/ArticlesPage.jsx';
 import CalendarPage from './pages/AdminPage/pagesInner/CalendarPage/CalendarPage.jsx';
 import GroupsPage from './pages/AdminPage/pagesInner/GroupsPage/GroupsPage.jsx';
+import GroupPage from './pages/AdminPage/pagesInner/GroupsPage/pages/GroupPage/GroupPage.jsx';
 import LessonsPage from './pages/AdminPage/pagesInner/LessonsPage/LessonsPage.jsx';
 import ProfilePage from './pages/AdminPage/pagesInner/ProfilePage/ProfilePage.jsx';
+import BidPage from "./pages/BidPage/BidPage.jsx"
 
 import { BurgerContext } from "./Contexts.jsx";
 import { uriHistoryContext } from './Contexts.jsx';
@@ -30,15 +32,16 @@ function App() {
               <Route path="/" element={<LandingPage />}/>
               <Route path="/auth" element={<AuthPage />}></Route>
               <Route path="/forgetPassword" element={<ForgetPassword />}></Route>
+              <Route path="/bid" element={<BidPage />}></Route>
               <Route path="/admin">
                 <Route path="/admin/profile" element={<ProfilePage />}></Route>
                 <Route path="/admin/calendar" element={<CalendarPage />}></Route>
                 <Route path="/admin/groups" element={<GroupsPage />}></Route>
+                <Route path="/admin/groups/group" element={<GroupPage />}></Route>
                 <Route path="/admin/lessons" element={<LessonsPage />}></Route>
                 <Route path="/admin/articles" element={<ArticlesPage />}></Route>
                 <Route path="/admin/appeals" element={<AppealsPage />}></Route>
               </Route>
-
             </Routes>
           </BrowserRouter>
         </BurgerContext.Provider>

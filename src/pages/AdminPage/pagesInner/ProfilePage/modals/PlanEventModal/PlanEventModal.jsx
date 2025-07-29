@@ -9,13 +9,10 @@ export default function PlanEventModal({data__props}) {
     const {isActivePlanEventModal, setIsActivePlanEventModal} = useContext(PlanEventModalContext);
     
     const [color, setColor] = useState("#8D79F3");
-    // value="#A271FE"
 
     function handleColorChange(e) {
         setColor(e.target.value);
     }
-
-    console.log(data__props);
 
     function closeModal() {
         setIsActivePlanEventModal(false);
@@ -23,43 +20,40 @@ export default function PlanEventModal({data__props}) {
         document.body.style.marginRight = "0px";
     }
 
-    const NumberToMonth = {
-        "1": "Январь",
-        "2": "Февраль",
-        "3": "Март",
-        "4": "Апрель",
-        "5": "Май",
-        "6": "Июнь",
-        "7": "Июль",
-        "8": "Август",
-        "9": "Сентябрь",
-        "10": "Октябрь",
-        "11": "Ноябрь",
-        "12": "Декабрь"
-    };
+    const formatDateForCalendar = () => {
+        const { year, month, day, week__index } = data__props;
 
-    const MonthToNumber = Object.fromEntries(
-        Object.entries(NumberToMonth).map(([key, value]) => [value, key])
-    );
+        // Форматируем число: 1 → "01", 12 → "12"
+        const pad = (num) => (num < 10 ? `0${num}` : `${num}`);
 
-    const formatMonth = () => {
-        if (MonthToNumber[data__props.month] > 9) {
-            return MonthToNumber[data__props.month];
-        } else {
-            return "0" + MonthToNumber[data__props.month]
+        let adjustedMonth = month;
+        let adjustedYear = year;
+
+        // Логика: если неделя "перетекает" в соседний месяц,
+        // мы корректируем месяц (и год при переходе)
+        if (week__index === 0 && day > 7) {
+            // Начало недели, но день уже > 7 → вероятно, это не первая неделя месяца
+            // Значит, реальный месяц — предыдущий
+            adjustedMonth = month - 1;
+            if (adjustedMonth === 0) {
+                adjustedMonth = 12;
+                adjustedYear -= 1;
+            }
+        } else if (week__index === 6 && day <= 7) {
+            // Конец недели, день <= 7 → возможно, уже следующий месяц
+            adjustedMonth = month + 1;
+            if (adjustedMonth === 13) {
+                adjustedMonth = 1;
+                adjustedYear += 1;
+            }
         }
-    };
-    const formatDay = () => {
-        if (data__props.day > 9) {
-            return data__props.day;
-        } else {
-            return "0" + data__props.day;
-        }
+        // Иначе — оставляем текущие month и year
+
+        return `${adjustedYear}-${pad(adjustedMonth)}-${pad(day)}`;
     };
 
-    const [_month, _day] = [formatMonth(), formatDay()];
 
-    const formatDate = `${data__props.year}-${_month}-${_day}`;
+    const formatDate = formatDateForCalendar();
 
 
     return (
@@ -72,11 +66,35 @@ export default function PlanEventModal({data__props}) {
                         <div className={s.items}>
                             <div className={s.item}>
                                 <p>Название</p>
-                                <input type="text"/>
+                                <input 
+                                    type="text"
+                                    value="хз, придумай че-нибудь"
+                                />
+                            </div>
+                            <div className={s.item}>
+                                <p>Тип события</p>
+                                <input
+                                    type="text"
+                                    value="Занятие"
+                                />
+                            </div>
+                            <div className={s.item}>
+                                <p>Кабинет</p>
+                                <input
+                                    type="text"
+                                    value="1201"
+                                />
+                            </div>
+                            <div className={s.item}>
+                                <p>Группа</p>
+                                <input
+                                    type="text"
+                                    value="1224"
+                                />
                             </div>
                             <div className={s.item}>
                                 <p>Цвет события</p>
-                                <input type="color" className={s.color__input}  value={color} onChange={(e) => {handleColorChange(e)}}/>
+                                <input type="color" className={s.color__input} value={color} onChange={(e) => {handleColorChange(e)}}/>
                             </div>
                             <div className={s.item}>
                                 <p>Нчало события</p>
