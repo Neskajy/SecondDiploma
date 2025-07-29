@@ -89,6 +89,9 @@
                                 align-items: center;
                                 input[type="radio"] {
                                     width: 20px;
+                                    &:checked {
+                                        accent-color: app.$accent__color;
+                                    }
                                 }
                                 p {
                                     font-size: 20px;
@@ -115,20 +118,24 @@
                 gap: 10px;
                 .close {
                     @include app.button1(transparent);
-                    color: white;
-                    background: app.$warning__red;
+                    color: app.$accent__color;
                     padding: 15px 30px;
+                    border: 2px solid app.$accent__color;
+                    font-weight: 700;
+                    background: transparent;
                     &:hover {
-                        background: app.$warning__red__dark;
+                        transform: translateY(-5px);
+                        background: transparent;
                     }
                 }
                 .apply {
                     @include app.button1(transparent);
                     color: white;
-                    background: app.$warning__green;
+                    background: app.$accent__color;
                     padding: 15px 30px;
                     &:hover {
-                        background: app.$warning__green__dark;
+                        transform: translateY(-5px);
+                        background: app.$accent__color;
                     }
                 }
             }

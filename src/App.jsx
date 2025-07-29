@@ -14,6 +14,7 @@ import GroupsPage from './pages/AdminPage/pagesInner/GroupsPage/GroupsPage.jsx';
 import GroupPage from './pages/AdminPage/pagesInner/GroupsPage/pages/GroupPage/GroupPage.jsx';
 import LessonsPage from './pages/AdminPage/pagesInner/LessonsPage/LessonsPage.jsx';
 import ProfilePage from './pages/AdminPage/pagesInner/ProfilePage/ProfilePage.jsx';
+import ReallyAdminPage from "./pages/AdminPage/pagesInner/ReallyAdminPage/ReallyAdminPage.jsx"
 import BidPage from "./pages/BidPage/BidPage.jsx"
 
 import { BurgerContext } from "./Contexts.jsx";
@@ -41,6 +42,7 @@ function App() {
                 <Route path="/admin/lessons" element={<LessonsPage />}></Route>
                 <Route path="/admin/articles" element={<ArticlesPage />}></Route>
                 <Route path="/admin/appeals" element={<AppealsPage />}></Route>
+                <Route path="/admin/reallyadmin" element={<ReallyAdminPage />}></Route>
               </Route>
             </Routes>
           </BrowserRouter>
