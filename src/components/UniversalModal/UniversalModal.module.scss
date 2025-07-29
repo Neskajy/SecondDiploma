@@ -39,7 +39,7 @@
 
             display: flex;
             flex-direction: column;
-            gap: 50px;
+            gap: 30px;
             &::-webkit-scrollbar {
                 width: 8px;
                 // background: app.$gray__smooth;
@@ -66,13 +66,35 @@
                             font-size: 16px;
                             font-weight: 500;
                         }
-                        input {
+                        .note {
+                            font-size: 14px;
+                            color: app.$footer;
+                        }
+                        input[type="text"], input[type="date"] {
                             margin-top: 10px;
                             width: 100%;
                             border: 1px solid app.$gray__smooth;
                             padding: 10px 20px;
                             border-radius: 8px;
                             box-shadow: app.$gray__smooth__shadow;
+                        }
+                        
+                        .checkboxes {
+                            margin-top: 20px;
+                            display: flex;
+                            gap: 20px;
+                            .checkbox {
+                                display: flex;
+                                gap: 10px;
+                                align-items: center;
+                                input[type="radio"] {
+                                    width: 20px;
+                                }
+                                p {
+                                    font-size: 20px;
+                                    font-weight: 600;
+                                }
+                            }
                         }
                         .color__input {
                             width: 50px;

@@ -27,6 +27,8 @@ export default function CalendarPage() {
     const formatDateForCalendar = () => {
         const { year, month, day, week__index } = response;
 
+        console.log( year, month, day, week__index);
+
         // Форматируем число: 1 → "01", 12 → "12"
         const pad = (num) => (num < 10 ? `0${num}` : `${num}`);
 
@@ -43,7 +45,7 @@ export default function CalendarPage() {
                 adjustedMonth = 12;
                 adjustedYear -= 1;
             }
-        } else if (week__index === 6 && day <= 7) {
+        } else if (response.week__index === 4 && day < 10) {
             // Конец недели, день <= 7 → возможно, уже следующий месяц
             adjustedMonth = month + 1;
             if (adjustedMonth === 13) {
@@ -186,13 +188,14 @@ export default function CalendarPage() {
                                                         week.map((int_day, day__index) => {
                                                             const isLastMonth = (week__index === 0 && int_day > 7 ? s.lastMonth : "");
                                                             const isNextMonth = week__index === response.weeks.length - 1 && int_day < 10;
+
                                                             return (
                                                                 <td
                                                                     key={day__index}
                                                                     className={`${isLastMonth ? s.lastMonth : ''} ${isNextMonth ? s.nextMonth : ''}`}
                                                                     onClick={() => {
+                                                                        setResponse({...response, "day": int_day, "week__index": week__index});
                                                                         setIsActivePlanEventModal_2(true);
-                                                                        setResponse({...response, "day": int_day})
                                                                     }}
                                                                 >
                                                                     {int_day}

@@ -17,6 +17,10 @@
                         p {
                             @include app.p;
                             font-weight: 500;
+                            span {
+                                color: app.$accent__color;
+                                font-weight: 700;
+                            }
                         }
                     }
                     .table__abertka {
@@ -32,8 +36,10 @@
                                     th {
                                         font-size: 18px;
                                         font-weight: 500;
-                                        padding: 20px;
+                                        padding: 40px;
                                         border: 1px solid app.$gray__smooth;
+                                        background: rgba(250, 250, 250);
+                                        color: #A7A7A7;
                                     }
                                 }
                             }
@@ -42,7 +48,7 @@
                                 tr {
                                     td {
                                         border: 1px solid app.$gray__smooth;
-                                        padding: 20px;
+                                        padding: 40px;
                                         text-align: center;
                                     }
                                 }

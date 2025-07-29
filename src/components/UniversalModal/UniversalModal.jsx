@@ -41,8 +41,6 @@ export default function UniversalModal({
 
     if (!isOpen) return null;
 
-
-
     return createPortal(
         <div className={s.Modal} onClick={onClose}>
             <div className={s.container} onClick={(e) => e.stopPropagation()}>
