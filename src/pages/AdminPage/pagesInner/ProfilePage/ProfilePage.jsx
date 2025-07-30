@@ -10,9 +10,12 @@ import Tg from "../../../../assets/imgs/vector/social/tg.svg?react";
 
 import { useState } from "react";
 
+import warning from "../../../../assets/imgs/vector/warning.svg";
 
 import UniversalModal from "../../../../components/UniversalModal/UniversalModal.jsx";
 import modal_s from "../../../../components/UniversalModal/UniversalModal.module.scss";
+
+import { useForm } from "react-hook-form";
 
 export default function ProfilePage() {
 
@@ -23,6 +26,22 @@ export default function ProfilePage() {
         console.log("Сохранено");
         setIsModalDataOpen(false)
     }
+
+    const {
+        register,
+        formState: {
+            errors,
+        },
+        handleSubmit,
+        reset
+    } = useForm({
+        mode: "onBlur",
+    });
+
+    const mySubmit = (data) => {
+        alert(JSON.stringify(data));
+        reset();
+    };
 
     return (
         <div className={s.ProfilePage} style={{ display: "flex" }}>
@@ -59,74 +78,71 @@ export default function ProfilePage() {
                                         onClose={() => setIsModalDataOpen(false)}
                                         onApply={handleSave}
                                         content={
-                                            <>
-                                                <section className={modal_s.common}>
-                                                    <h6>Социальные сети</h6>
-                                                    <div className={modal_s.items}>
-                                                        <div className={modal_s.item}>
-                                                            <p>Telegram</p>
-                                                            <input type="text" placeholder="response" />
-                                                        </div>
-                                                        <div className={modal_s.item}>
-                                                            <p>Github</p>
-                                                            <input type="text" placeholder="response" />
-                                                        </div>
-                                                        <div className={modal_s.item}>
-                                                            <p>Youtube</p>
-                                                            <input type="text" placeholder="response" />
-                                                        </div>
-                                                        <div className={modal_s.item}>
-                                                            <p>Rutube</p>
-                                                            <input type="text" placeholder="response" />
-                                                        </div>
-                                                        <div className={modal_s.item}>
-                                                            <p>Instagram</p>
-                                                            <input type="text" placeholder="response" />
-                                                        </div>
-                                                        <div className={modal_s.item}>
-                                                            <p>Facebook</p>
-                                                            <input type="text" placeholder="response" />
-                                                        </div>
-                                                        <div className={modal_s.item}>
-                                                            <p>Tiktok</p>
-                                                            <input type="text" placeholder="response" />
-                                                        </div>
-                                                        <div className={modal_s.item}>
-                                                            <p>X</p>
-                                                            <input type="text" placeholder="response" />
-                                                        </div>
+                                            <section className={modal_s.common}>
+                                                <h5>Добавить пользователя</h5>
+                                                <div className={modal_s.items}>
+                                                    <div className={modal_s.item}>
+                                                        <p>Имя</p>
+                                                        <input
+                                                            type="text"
+                                                            {...register("name", {
+                                                                required: "Поле обязательно к заполнению"
+                                                            })}
+                                                        />
+                                                        <div className={modal_s.message}>{errors?.name && <div className={s.message}><img src={warning} /><p>{errors?.name.message || "Error!"}</p></div>}</div>
                                                     </div>
-                                                </section>
-                                                <section className={modal_s.common}>
-                                                    <h6>Персональные данные</h6>
-                                                    <div className={modal_s.items}>
-                                                        <div className={modal_s.item}>
-                                                            <p>Имя</p>
-                                                            <input type="text" placeholder="response" />
-                                                        </div>
-                                                        <div className={modal_s.item}>
-                                                            <p>Фамилия</p>
-                                                            <input type="text" placeholder="response" />
-                                                        </div>
-                                                        <div className={modal_s.item}>
-                                                            <p>Отчество</p>
-                                                            <input type="text" placeholder="response" />
-                                                        </div>
-                                                        <div className={modal_s.item}>
-                                                            <p>Почта</p>
-                                                            <input type="text" placeholder="response" />
-                                                        </div>
-                                                        <div className={modal_s.item}>
-                                                            <p>Телефон</p>
-                                                            <input type="text" placeholder="response" />
-                                                        </div>
-                                                        <div className={modal_s.item}>
-                                                            <p>О себе</p>
-                                                            <input type="text" placeholder="response" />
-                                                        </div>
+                                                    <div className={modal_s.item}>
+                                                        <p>Фамилия</p>
+                                                        <input
+                                                            type="text"
+                                                            {...register("surname", {
+                                                                required: "Поле обязательно к заполнению"
+                                                            })}
+                                                        />
+                                                        <div className={modal_s.message}>{errors?.surname && <div className={s.message}><img src={warning} /><p>{errors?.surname.message || "Error!"}</p></div>}</div>
                                                     </div>
-                                                </section>
-                                            </>
+                                                    <div className={modal_s.item}>
+                                                        <p>Отчество</p>
+                                                        <input
+                                                            type="text"
+                                                            {...register("patronymic", {
+                                                                required: "Поле обязательно к заполнению"
+                                                            })}
+                                                        />
+                                                        <div className={modal_s.message}>{errors?.patronymic && <div className={s.message}><img src={warning} /><p>{errors?.patronymic.message || "Error!"}</p></div>}</div>
+                                                    </div>
+
+
+                                                    <div className={modal_s.item}>
+                                                        <p>Почта</p>
+                                                        <input
+                                                            type="text"
+                                                            {...register("email", {
+                                                                required: "Поле обязательно к заполнению",
+                                                                pattern: {
+                                                                    value: /^[\w.][\w]+@[\w]+\.[a-zA-Z]{2,}$/,
+                                                                    message: "Не правильный формат почты"
+                                                                }
+                                                            })}
+                                                        />
+                                                        <div className={modal_s.message}>{errors?.email && <div className={s.message}><img src={warning} /><p>{errors?.email.message || "Error!"}</p></div>}</div>
+                                                    </div>
+                                                    <div className={modal_s.item}>
+                                                        <p>Телефон</p>
+                                                        <input
+                                                            type="text"
+                                                            {...register("phone", {
+                                                                required: "Поле обязательно к заполнению",
+                                                                pattern: {
+                                                                    value: /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/,
+                                                                    message: "Не правильный формат номера телефона"
+                                                                }
+                                                            })}
+                                                        />
+                                                        <div className={modal_s.message}>{errors?.phone && <div className={s.message}><img src={warning} /><p>{errors?.phone.message || "Error!"}</p></div>}</div>
+                                                    </div>
+                                                </div>
+                                            </section>
                                         }
                                     />
 

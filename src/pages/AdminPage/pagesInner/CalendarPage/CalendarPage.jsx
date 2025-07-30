@@ -6,7 +6,17 @@ import Arrow__no__stick from "../../../../assets/imgs/vector/actions/arrow__no__
 import UniversalModal from "../../../../components/UniversalModal/UniversalModal.jsx";
 import modal_s from "../../../../components/UniversalModal/UniversalModal.module.scss";
 
+import FollowButton from "../../../../components/FollowButton/FollowButton.jsx";
+
 import { useState } from "react";
+
+import React from "react";
+
+import { useEffect } from "react";
+
+import warning from "../../../../assets/imgs/vector/warning.svg";
+
+import { useForm } from "react-hook-form";
 
 export default function CalendarPage() {
     const [response, setResponse] = useState({
@@ -26,8 +36,6 @@ export default function CalendarPage() {
 
     const formatDateForCalendar = () => {
         const { year, month, day, week__index } = response;
-
-        console.log( year, month, day, week__index);
 
         // Форматируем число: 1 → "01", 12 → "12"
         const pad = (num) => (num < 10 ? `0${num}` : `${num}`);
@@ -63,8 +71,6 @@ export default function CalendarPage() {
 
 
     const [isActivePlanEventModal, setIsActivePlanEventModal] = useState(false);
-    const [isActivePlanEventModal_2, setIsActivePlanEventModal_2] = useState(false);
-
 
     const NumberToMonth = {
         1: "Январь",
@@ -81,10 +87,23 @@ export default function CalendarPage() {
         12: "Декабрь"
     };
 
-    function handleSave() {
-        alert("Успешно");
-        setIsActivePlanEventModal(false);
-    }
+
+    const {
+        register,
+        formState: {
+            errors,
+        },
+        handleSubmit,
+        reset
+    } = useForm({
+        mode: "onBlur",
+    });
+    
+    const mySubmit = (data) => {
+        alert(JSON.stringify(data));
+        reset();
+    };
+    
 
 
     return (
@@ -112,42 +131,59 @@ export default function CalendarPage() {
                                     <UniversalModal
                                         onClose={() => setIsActivePlanEventModal(false)}
                                         isOpen={isActivePlanEventModal}
-                                        onApply={handleSave}
                                         title="Событие"
                                         content={
                                             <section className={modal_s.common}>
                                                 <div className={modal_s.items}>
                                                     <div className={modal_s.item}>
                                                         <p>Кабинет</p>
-                                                        <input
+                                                        <input 
                                                             type="text"
-                                                            defaultValue="1201"
+                                                            placeholder="response"
+                                                            {...register("cabinet", {
+                                                                required: "Поле обязательно к заполнению"
+                                                            })}
                                                         />
+                                                        <div className={modal_s.message}>{errors?.cabinet && <div className={s.message}><img src={warning}/><p>{errors?.cabinet.message || "Error!"}</p></div>}</div>
                                                     </div>
                                                     <div className={modal_s.item}>
                                                         <p>Группа</p>
-                                                        <input
+                                                        <input 
                                                             type="text"
-                                                            defaultValue="1224"
+                                                            placeholder="response"
+                                                            {...register("group", {
+                                                                required: "Поле обязательно к заполнению"
+                                                            })}
                                                         />
+                                                        <div className={modal_s.message}>{errors?.group && <div className={s.message}><img src={warning}/><p>{errors?.group.message || "Error!"}</p></div>}</div>
                                                     </div>
                                                     <div className={modal_s.item}>
                                                         <p>Цвет события</p>
                                                         <input type="color" className={modal_s.color__input} defaultValue={color} />
                                                     </div>
                                                     <div className={modal_s.item}>
-                                                        <p>Нчало события</p>
-                                                        <input
+                                                        <p>Начало события</p>
+                                                        <input 
                                                             type="date"
+                                                            placeholder="response"
+                                                            {...register("date__start", {
+                                                                required: "Поле обязательно к заполнению"
+                                                            })}
                                                             defaultValue={formatDate}
                                                         />
+                                                        <div className={modal_s.message}>{errors?.date__start && <div className={s.message}><img src={warning}/><p>{errors?.date__start.message || "Error!"}</p></div>}</div>
                                                     </div>
                                                     <div className={modal_s.item}>
-                                                        <p>Окончание события</p>
-                                                        <input
+                                                        <p>Начало события</p>
+                                                        <input 
                                                             type="date"
+                                                            placeholder="response"
+                                                            {...register("date__end", {
+                                                                required: "Поле обязательно к заполнению"
+                                                            })}
                                                             defaultValue={formatDate}
                                                         />
+                                                        <div className={modal_s.message}>{errors?.date__end && <div className={s.message}><img src={warning}/><p>{errors?.date__end.message || "Error!"}</p></div>}</div>
                                                     </div>
                                                 </div>
                                             </section>
@@ -165,95 +201,55 @@ export default function CalendarPage() {
                                     </ul>
                                 </div>
                             </header>
-                            <table className={s.calendar__main}>
-                                <thead>
-                                    <tr>
+                            <FollowButton onClick={() => alert('Кнопка нажата!')}>
+
+                                <table className={s.calendar__main}
+                                >
+                                    <thead>
+                                        <tr>
+                                            {
+                                                response.weekdays.map((day, weekday__index) => {
+                                                    return (
+                                                        <th key={weekday__index}>
+                                                            {day}
+                                                        </th>
+                                                    )
+                                                })
+                                            }
+                                        </tr>
+                                    </thead>
+                                    <tbody>
                                         {
-                                            response.weekdays.map((day, weekday__index) => {
+                                            response.weeks.map((week, week__index) => {
                                                 return (
-                                                    <th key={weekday__index}>
-                                                        {day}
-                                                    </th>
+                                                    <tr key={week__index}>
+                                                        {
+                                                            week.map((int_day, day__index) => {
+                                                                const isLastMonth = (week__index === 0 && int_day > 7 ? s.lastMonth : "");
+                                                                const isNextMonth = week__index === response.weeks.length - 1 && int_day < 10;
+
+                                                                return (
+                                                                    <td
+                                                                        key={day__index}
+                                                                        className={`${isLastMonth ? s.lastMonth : ''} ${isNextMonth ? s.nextMonth : ''}`}
+                                                                        onClick={() => {
+                                                                            setResponse({...response, "day": int_day, "week__index": week__index});
+                                                                            setIsActivePlanEventModal(true);
+                                                                        }}
+                                                                    >
+                                                                        {int_day}
+                                                                    </td >
+                                                                );
+                                                            })
+                                                        }
+                                                    </tr>
                                                 )
                                             })
                                         }
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        response.weeks.map((week, week__index) => {
-                                            return (
-                                                <tr key={week__index}>
-                                                    {
-                                                        week.map((int_day, day__index) => {
-                                                            const isLastMonth = (week__index === 0 && int_day > 7 ? s.lastMonth : "");
-                                                            const isNextMonth = week__index === response.weeks.length - 1 && int_day < 10;
+                                    </tbody>
 
-                                                            return (
-                                                                <td
-                                                                    key={day__index}
-                                                                    className={`${isLastMonth ? s.lastMonth : ''} ${isNextMonth ? s.nextMonth : ''}`}
-                                                                    onClick={() => {
-                                                                        setResponse({...response, "day": int_day, "week__index": week__index});
-                                                                        setIsActivePlanEventModal_2(true);
-                                                                    }}
-                                                                >
-                                                                    {int_day}
-                                                                </td >
-                                                            );
-                                                        })
-                                                    }
-                                                </tr>
-                                            )
-                                        })
-                                    }
-                                    <UniversalModal
-                                        onClose={() => setIsActivePlanEventModal_2(false)}
-                                        isOpen={isActivePlanEventModal_2}
-                                        onApply={handleSave}
-                                        title="Событие"
-                                        content={
-                                            <section className={modal_s.common}>
-                                                <div className={modal_s.items}>
-                                                    <div className={modal_s.item}>
-                                                        <p>Кабинет</p>
-                                                        <input
-                                                            type="text"
-                                                            defaultValue="1201"
-                                                        />
-                                                    </div>
-                                                    <div className={modal_s.item}>
-                                                        <p>Группа</p>
-                                                        <input
-                                                            type="text"
-                                                            defaultValue="1224"
-                                                        />
-                                                    </div>
-                                                    <div className={modal_s.item}>
-                                                        <p>Цвет события</p>
-                                                        <input type="color" className={modal_s.color__input} defaultValue={color}/>
-                                                    </div>
-                                                    <div className={modal_s.item}>
-                                                        <p>Нчало события</p>
-                                                        <input
-                                                            type="date"
-                                                            defaultValue={formatDate}
-                                                        />
-                                                    </div>
-                                                    <div className={modal_s.item}>
-                                                        <p>Окончание события</p>
-                                                        <input
-                                                            type="date"
-                                                            defaultValue={formatDate}
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </section>
-                                        }
-                                    />
-                                </tbody>
-
-                            </table>
+                                </table>
+                            </FollowButton>
                         </div>
                     </div>
                 </main>

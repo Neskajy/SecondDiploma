@@ -14,7 +14,7 @@ import GroupsPage from './pages/AdminPage/pagesInner/GroupsPage/GroupsPage.jsx';
 import GroupPage from './pages/AdminPage/pagesInner/GroupsPage/pages/GroupPage/GroupPage.jsx';
 import LessonsPage from './pages/AdminPage/pagesInner/LessonsPage/LessonsPage.jsx';
 import ProfilePage from './pages/AdminPage/pagesInner/ProfilePage/ProfilePage.jsx';
-import ReallyAdminPage from "./pages/AdminPage/pagesInner/ReallyAdminPage/ReallyAdminPage.jsx"
+import ControlUsersPage from './pages/AdminPage/pagesInner/ReallyAdminPage/ControlUsersPage.jsx';
 import BidPage from "./pages/BidPage/BidPage.jsx"
 
 import { BurgerContext } from "./Contexts.jsx";
@@ -34,14 +34,17 @@ function App() {
               <Route path="/auth" element={<AuthPage />}></Route>
               <Route path="/forgetPassword" element={<ForgetPassword />}></Route>
               <Route path="/bid" element={<BidPage />}></Route>
-              <Route path="/admin">
-                <Route path="/admin/profile" element={<ProfilePage />}></Route>
-                <Route path="/admin/calendar" element={<CalendarPage />}></Route>
-                <Route path="/admin/groups" element={<GroupsPage />}></Route>
-                <Route path="/admin/groups/group" element={<GroupPage />}></Route>
-                <Route path="/admin/lessons" element={<LessonsPage />}></Route>
-                <Route path="/admin/articles" element={<ArticlesPage />}></Route>
-                <Route path="/admin/appeals" element={<AppealsPage />}></Route>
+              <Route path="/diploma">
+                <Route path="/diploma/profile" element={<ProfilePage />}></Route>
+                <Route path="/diploma/calendar" element={<CalendarPage />}></Route>
+                <Route path="/diploma/groups" element={<GroupsPage />}></Route>
+                <Route path="/diploma/groups/group" element={<GroupPage />}></Route>
+                <Route path="/diploma/lessons" element={<LessonsPage />}></Route>
+                <Route path="/diploma/articles" element={<ArticlesPage />}></Route>
+                <Route path="/diploma/appeals" element={<AppealsPage />}></Route>
+                <Route path="/diploma/reallyadmin">
+                  <Route path="/diploma/reallyadmin/usersControl" element={<ControlUsersPage />}></Route>
+                </Route>
               </Route>
             </Routes>
           </BrowserRouter>

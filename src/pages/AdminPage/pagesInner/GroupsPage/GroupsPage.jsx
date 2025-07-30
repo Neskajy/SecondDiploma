@@ -8,7 +8,12 @@ import { useState } from "react";
 
 import UniversalModal from "../../../../components/UniversalModal/UniversalModal.jsx";
 
+import { useForm } from "react-hook-form";
+
 import { Link, useLocation } from "react-router-dom";
+import warning from "../../../../assets/imgs/vector/warning.svg";
+
+
 
 
 export default function GroupsPage() {
@@ -17,10 +22,23 @@ export default function GroupsPage() {
 
     const [isAddGroupModalActive, setIsAddGroupModalActive] = useState(false);
 
-    const handleSave = () => {
-        alert("сохранено");
-        setIsAddGroupModalActive(false);
-    }
+    const {
+        register,
+        formState: {
+            errors,
+        },
+        handleSubmit,
+        reset
+    } = useForm({
+        mode: "onBlur",
+    });
+    
+    const mySubmit = (data) => {
+        alert(JSON.stringify(data));
+        reset();
+    };
+
+
     // const response = [
     //     {
 
@@ -43,16 +61,20 @@ export default function GroupsPage() {
                         <UniversalModal 
                             isOpen={isAddGroupModalActive}
                             onClose={() => setIsAddGroupModalActive(false)}
-                            onApply={handleSave}
                             title={"Добавить группу"}
                             content={
-                                <section className={modal_s.common}>
+                                <form className={modal_s.common}>
                                     <div className={modal_s.items}>
                                         <div className={modal_s.item}>
-                                            <p>Название</p>
+                                            <p>Начало события</p>
                                             <input 
-                                                type="text"
+                                                type="name"
+                                                placeholder="response"
+                                                {...register("Название", {
+                                                    required: "Поле обязательно к заполнению"
+                                                })}
                                             />
+                                            <div className={modal_s.message}>{errors?.name && <div className={s.message}><img src={warning}/><p>{errors?.name.message || "Error!"}</p></div>}</div>
                                         </div>
                                         <div className={modal_s.item}>
                                             <p>Год поступления</p>
@@ -61,7 +83,7 @@ export default function GroupsPage() {
                                             />
                                         </div>
                                     </div>
-                                </section>
+                                </form>
                             }
                             applyText="Сохранить"
                             closeText="Закрыть"

@@ -6,6 +6,8 @@ import Plus from "../../../../../../assets/imgs/vector/plus.svg?react";
 import UniversalModal from "../../../../../../components/UniversalModal/UniversalModal.jsx";
 import modal_s from "../../../../../../components/UniversalModal/UniversalModal.module.scss";
 
+import FollowButton from "../../../../../../components/FollowButton/FollowButton.jsx";
+
 import { useState } from "react";
 
 export default function GroupPage() {
@@ -140,92 +142,95 @@ export default function GroupPage() {
                             <div className={s.table__header}>
                                 <p>Группа <span>12/23</span> (Модуль 1 2025)</p>
                             </div>
-                            <div className={s.table__abertka}>
-                                <table className={s.group__table}>
-                                    <thead>
-                                        <tr>
+                            <FollowButton>
+
+                                <div className={s.table__abertka}>
+                                    <table className={s.group__table}>
+                                        <thead>
+                                            <tr>
+                                                {
+                                                    Object.entries(response.at(0)).map(([key, value]) => {
+                                                        return <th key={key}>{key}</th>;
+                                                    })
+                                                }
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
                                             {
-                                                Object.entries(response.at(0)).map(([key, value]) => {
-                                                    return <th key={key}>{key}</th>;
+                                                response.map((item) => {
+                                                    return (
+                                                        <tr key={item.id}>
+                                                            {Object.entries(item).map(([key, value]) => {
+                                                                // Определяем, является ли это ячейка оценкой
+                                                                const isGrade = /^\d{1,2}\.\d{2}$/.test(key) &&
+                                                                    key !== 'ср.балл' &&
+                                                                    !key.startsWith('ср.балл');
+                                                                return (
+                                                                    <td
+                                                                        key={key}
+                                                                        onClick={() => {
+                                                                            clickOnGrade(isGrade)
+                                                                        }}
+                                                                    >
+                                                                        {value}
+                                                                    </td>
+                                                                );
+                                                            })}
+                                                        </tr>
+                                                    );
                                                 })
                                             }
-                                        </tr>
-                                    </thead>
 
-                                    <tbody>
-                                        {
-                                            response.map((item) => {
-                                                return (
-                                                    <tr key={item.id}>
-                                                        {Object.entries(item).map(([key, value]) => {
-                                                            // Определяем, является ли это ячейка оценкой
-                                                            const isGrade = /^\d{1,2}\.\d{2}$/.test(key) &&
-                                                                key !== 'ср.балл' &&
-                                                                !key.startsWith('ср.балл');
-                                                            return (
-                                                                <td
-                                                                    key={key}
-                                                                    onClick={() => {
-                                                                        clickOnGrade(isGrade)
-                                                                    }}
-                                                                >
-                                                                    {value}
-                                                                </td>
-                                                            );
-                                                        })}
-                                                    </tr>
-                                                );
-                                            })
-                                        }
-
-                                    </tbody>
+                                        </tbody>
+                                        <UniversalModal
+                                            isOpen={isOpenedGradeModal}
+                                            onClose={() => setIsOpenedGradeModal(false)}
+                                            onApply={handleSave}
+                                            title={"Изменить / поставить оценку"}
+                                            content={
+                                                <section className={modal_s.common}>
+                                                    <div className={modal_s.items}>
+                                                        <div className={modal_s.item}>
+                                                            <p>Заслужил</p>
+                                                            <div className={modal_s.checkboxes}>
+                                                                {['пусто', 'н', '2', '3', '4', '5'].map((value) => (
+                                                                    <div className={modal_s.checkbox} key={value}>
+                                                                        <p>{value}</p>
+                                                                        <input type="radio" name="grade" value={value} />
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </section>
+                                            }
+                                        />
+                                    </table>
+                                    <div className={s.add__button} onClick={openModal}>
+                                        <Plus className={s.icon} />
+                                    </div>
                                     <UniversalModal
-                                        isOpen={isOpenedGradeModal}
-                                        onClose={() => setIsOpenedGradeModal(false)}
+                                        isOpen={isActiveAddColumnModalContext}
+                                        onClose={() => setIsActiveAddColumnModalContext(false)}
                                         onApply={handleSave}
-                                        title={"Изменить / поставить оценку"}
+                                        title={"Добавить колонку"}
                                         content={
                                             <section className={modal_s.common}>
                                                 <div className={modal_s.items}>
                                                     <div className={modal_s.item}>
-                                                        <p>Заслужил</p>
-                                                        <div className={modal_s.checkboxes}>
-                                                            {['н', '2', '3', '4', '5'].map((value) => (
-                                                                <div className={modal_s.checkbox} key={value}>
-                                                                    <p>{value}</p>
-                                                                    <input type="radio" name="grade" value={value} />
-                                                                </div>
-                                                            ))}
-                                                        </div>
+                                                        <p>Дата</p>
+                                                        <span className={modal_s.note}>Примечание: колонка добавится до итоговой оценки месяца</span>
+                                                        <input
+                                                            type="date"
+                                                        />
                                                     </div>
                                                 </div>
                                             </section>
                                         }
                                     />
-                                </table>
-                                <div className={s.add__button} onClick={openModal}>
-                                    <Plus className={s.icon} />
                                 </div>
-                                <UniversalModal
-                                    isOpen={isActiveAddColumnModalContext}
-                                    onClose={() => setIsActiveAddColumnModalContext(false)}
-                                    onApply={handleSave}
-                                    title={"Добавить колонку"}
-                                    content={
-                                        <section className={modal_s.common}>
-                                            <div className={modal_s.items}>
-                                                <div className={modal_s.item}>
-                                                    <p>Дата</p>
-                                                    <span className={modal_s.note}>Примечание: колонка добавится до итоговой оценки месяца</span>
-                                                    <input
-                                                        type="date"
-                                                    />
-                                                </div>
-                                            </div>
-                                        </section>
-                                    }
-                                />
-                            </div>
+                            </FollowButton>
                         </div>
                     </div>
                 </main>

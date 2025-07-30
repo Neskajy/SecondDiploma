@@ -73,7 +73,7 @@ export const Items = [
                         id: 1,
                         icon: user,
                         text: "Пользователи",
-                        page: "wtfreallyadmin",
+                        page: "reallyadmin/usersControl",
                     },
                     {
                         id: 2,
@@ -161,7 +161,7 @@ export default function SideBar () {
                                                         function returnItem() {
                                                             if (!item.isAccordion) {
                                                                 return (
-                                                                    <Link to={`/admin/${item.page}`} className={s.Link}>
+                                                                    <Link to={`/diploma/${item.page}`} className={s.Link}>
                                                                         <Icon alt={item.text} className={s.icon}/>
                                                                         <span>{item.text}</span>
                                                                     </Link>

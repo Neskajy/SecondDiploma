@@ -88,6 +88,21 @@
                     }
                 }
             }
+            &.active {
+                .innerLink {
+                    .icon__inner {
+                        * {
+                            transition: .3s ease-in-out;
+                            fill: app.$accent__color;
+                            stroke: app.$accent__color;
+                        }
+                    }
+                    span {
+                        transition: .3s ease-in-out;
+                        color: app.$accent__color;
+                    }
+                }
+            }
         }
     }
     &:hover {
