@@ -59,12 +59,12 @@
                 margin-top: 30px;
                 li {
                     display: flex;
-                    a {
+                    .Link {
                         transition: .3s ease-in-out all;
                         overflow: hidden;
                         position: relative;
                         display: flex;
-                        width: 150px;
+                        width: 180px;
                         padding: 15px 15px;
                         .icon {
                             width: 20px;
@@ -79,12 +79,12 @@
                             font-weight: 500;
                             font-size: 16px;
                             color: app.$aside__unactive;
-                            text-transform:capitalize;
+                            text-transform: capitalize;
                             transition: .3s ease-in-out;
                         }
                     }
                     &:hover {
-                        a {
+                        .Link {
                             .icon * {
                                 fill: app.$accent__color__bright;
                                 stroke: app.$accent__color__bright;
@@ -151,7 +151,7 @@
                 }
             }
             &.active {
-                a {
+                .Link {
                     span {
                         transition: .3s ease-in-out;
                         color: app.$accent__color;
@@ -180,7 +180,7 @@
                     display: flex;
                     align-items: flex-start;
                     li {
-                        a {
+                        .Link {
                             transition: .3s ease-in-out all;
                             width: 50px;
                             .icon {
@@ -193,7 +193,7 @@
             }
         }
         .exit {
-            a {
+            .Link {
                 width: 50px;
                 overflow: hidden;
                 position: relative;

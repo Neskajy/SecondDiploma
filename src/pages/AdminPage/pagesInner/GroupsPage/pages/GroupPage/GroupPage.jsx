@@ -216,7 +216,7 @@ export default function GroupPage() {
                                             <div className={modal_s.items}>
                                                 <div className={modal_s.item}>
                                                     <p>Дата</p>
-                                                    <span className={modal_s.note}>Примечание: колонка добавиться до итоговой оценки месяца</span>
+                                                    <span className={modal_s.note}>Примечание: колонка добавится до итоговой оценки месяца</span>
                                                     <input
                                                         type="date"
                                                     />

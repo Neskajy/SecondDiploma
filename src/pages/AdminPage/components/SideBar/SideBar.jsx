@@ -2,8 +2,10 @@ import s from "./SideBar.module.scss";
 import logo from "../../../../assets/imgs/vector/logo.svg";
 import Exit from "../../../../assets/imgs/vector/exit.svg?react"
 
+import Accordion from "./Accordion/Accordion.jsx";
+
 import { useLocation, Link } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { BurgerContext } from "../../../../Contexts.jsx";
 
 
@@ -14,6 +16,15 @@ import lessons from "../../../../assets/imgs/vector/aside__icons/lessons.svg?rea
 import articles from "../../../../assets/imgs/vector/aside__icons/articles.svg?react";
 import appeals from "../../../../assets/imgs/vector/aside__icons/appeals.svg?react";
 import admin from "../../../../assets/imgs/vector/aside__icons/admin.svg?react";
+
+import teacher from "../../../../assets/imgs/vector/aside__icons/teacher.svg?react";
+import user from "../../../../assets/imgs/vector/aside__icons/user.svg?react";
+import schedule from "../../../../assets/imgs/vector/aside__icons/schedule.svg?react";
+import programs from "../../../../assets/imgs/vector/aside__icons/programs.svg?react";
+import methodist from "../../../../assets/imgs/vector/aside__icons/methodist.svg?react";
+import group__control from "../../../../assets/imgs/vector/aside__icons/group__control.svg?react";
+import appeals__control from "../../../../assets/imgs/vector/aside__icons/appeals__control.svg?react";
+import plan from "../../../../assets/imgs/vector/aside__icons/plan.svg?react";
 
 export const Items = [
     {
@@ -34,52 +45,80 @@ export const Items = [
             },
             {
                 id: 3,
-                icon: groups,
-                text: "Группы",
-                page: "groups"
-            },
-            {
-                id: 4,
-                icon: lessons,
-                text: "Занятия",
-                page: "lessons"
-            },
-            {
-                id: 5,
-                icon: articles,
-                text: "Статьи",
-                page: "articles"
-            },
-            {
-                id: 6,
-                icon: appeals,
-                text: "Обращения",
-                page: "appeals"
-            },
-            {
-                id: 7,
-                icon: admin,
-                text: "Админу",
-                page: "reallyadmin",
+                icon: teacher,
+                text: "Учителю",
+                isAccordion: true,
                 innerMenu: [
                     {
                         id: 1,
-                        icon: admin,
-                        text: "Админу",
-                        page: "reallyadmin",
+                        icon: groups,
+                        text: "Группы",
+                        page: "groups",
                     },
                     {
                         id: 2,
-                        icon: admin,
-                        text: "Админу",
-                        page: "reallyadmin",
+                        icon: lessons,
+                        text: "Занятия",
+                        page: "lessons",
+                    },
+                ]
+            },
+            {
+                id: 4,
+                icon: admin,
+                text: "Админу",
+                isAccordion: true,
+                innerMenu: [
+                    {
+                        id: 1,
+                        icon: user,
+                        text: "Пользователи",
+                        page: "wtfreallyadmin",
+                    },
+                    {
+                        id: 2,
+                        icon: group__control,
+                        text: "Группы",
+                        page: "lolcreallyadmin",
                     },
                     {
                         id: 3,
-                        icon: admin,
-                        text: "Админу",
-                        page: "reallyadmin",
+                        icon: appeals__control,
+                        text: "Заявки",
+                        page: "nereallyadmin",
+                    },
+                    {
+                        id: 4,
+                        icon: schedule,
+                        text: "Расписание",
+                        page: "nereallyadmin",
                     }
+                ]
+            },
+            {
+                id: 5,
+                icon: methodist,
+                text: "Методисту",
+                isAccordion: true,
+                innerMenu: [
+                    {
+                        id: 1,
+                        icon: articles,
+                        text: "Статьи",
+                        page: "wtfreallyadmin",
+                    },
+                    {
+                        id: 2,
+                        icon: plan,
+                        text: "Учебный план",
+                        page: "lolcreallyadmin",
+                    },
+                    {
+                        id: 3,
+                        icon: programs,
+                        text: "Программы",
+                        page: "nereallyadmin",
+                    },
                 ]
             },
         ]
@@ -118,10 +157,22 @@ export default function SideBar () {
                                             const Icon = item.icon;
                                             return (
                                                 <li key={item.id} className={isActive ? s.active : ""}>
-                                                    <Link to={`/admin/${item.page}`}>
-                                                        <Icon alt={item.text} className={s.icon}/>
-                                                        <span>{item.text}</span>
-                                                    </Link>
+                                                    {
+                                                        function returnItem() {
+                                                            if (!item.isAccordion) {
+                                                                return (
+                                                                    <Link to={`/admin/${item.page}`} className={s.Link}>
+                                                                        <Icon alt={item.text} className={s.icon}/>
+                                                                        <span>{item.text}</span>
+                                                                    </Link>
+                                                                )
+                                                            } else {
+                                                                return (
+                                                                    <Accordion item={item} isActive={isActive}/>
+                                                                )
+                                                            }
+                                                        }()
+                                                    }
                                                 </li>
                                             );
                                         })
@@ -131,7 +182,7 @@ export default function SideBar () {
                         ))
                     }
                     <div className={s.exit}>
-                        <Link to={`${path}/exit`}>
+                        <Link to={`${path}/exit`} className={s.Link}>
                             <Exit className={s.icon}/>
                             <span>Выйти</span>
                         </Link>

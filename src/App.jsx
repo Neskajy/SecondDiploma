@@ -42,7 +42,6 @@ function App() {
                 <Route path="/admin/lessons" element={<LessonsPage />}></Route>
                 <Route path="/admin/articles" element={<ArticlesPage />}></Route>
                 <Route path="/admin/appeals" element={<AppealsPage />}></Route>
-                <Route path="/admin/reallyadmin" element={<ReallyAdminPage />}></Route>
               </Route>
             </Routes>
           </BrowserRouter>

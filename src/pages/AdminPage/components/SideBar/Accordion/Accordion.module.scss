@@ -1,0 +1,141 @@
+@use "../../../../../App.scss" as app;
+
+.accordion {
+    user-select: none;
+    transition: .3s ease-in-out all;
+    cursor: pointer;
+    position: relative;
+    width: 180px;
+    max-height: 50px;
+    overflow: hidden;
+    .preview {
+        padding: 15px 15px;
+        position: relative;
+        transition: .3s ease-in-out all;
+        display: flex;
+        height: 50px;
+        cursor: pointer;
+        .icon {
+            width: 20px;
+            height: 20px;
+        }
+        .icon * {
+            transition: .3s ease-in-out all;
+        }
+        .text__span {
+            left: 50px;
+            position: absolute;
+            font-weight: 500;
+            font-size: 16px;
+            color: app.$aside__unactive;
+            text-transform: capitalize;
+            transition: .3s ease-in-out;
+        }
+        .expand__icon {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            width: 15px;
+            transform: translateY(25%);
+            height: 15px;
+            fill: app.$aside__unactive;
+            transition: .3s ease-in-out all;
+        }
+    }
+    .itemsInner {
+        margin-top: 20px !important;
+        height: 0;
+        width: 100%;
+        transition: .3s ease-in-out all;
+        .itemInner {
+            width: 100%;
+            padding: 0px 15px;
+            padding-left: 20px;
+            position: relative;
+            height: 50px;
+            .innerLink {
+                width: 100%;
+                .icon__inner {
+                    width: 20px;
+                    height: 20px;
+                    * {
+                        transition: .3s ease-in-out;
+                    }
+                }
+                span {
+                    top: 0px;
+                    left: 50px;
+                    position: absolute;
+                    font-weight: 500;
+                    font-size: 16px;
+                    color: app.$aside__unactive;
+                    text-transform: capitalize;
+                    transition: .3s ease-in-out;
+                }
+            }
+            &:hover {
+                .innerLink {
+                    .icon__inner {
+                        * {
+                            transition: .3s ease-in-out;
+                            fill: app.$accent__color__bright;
+                            stroke: app.$accent__color__bright;
+                        }
+                    }
+                    span {
+                        transition: .3s ease-in-out;
+                        color: app.$accent__color__bright;
+                    }
+                }
+            }
+        }
+    }
+    &:hover {
+        .preview {
+            transition: .3s ease-in-out all;
+            .icon * {
+                fill: app.$accent__color__bright;
+                stroke: app.$accent__color__bright;
+            }
+            .text__span {
+                transition: .3s ease-in-out;
+                color: app.$accent__color__bright;
+            }
+            .expand__icon {
+                transition: .3s ease-in-out all;
+                fill: app.$accent__color__bright;
+            }
+        }
+    }
+    &.active {
+        max-height: 250px;
+        transition: .3s ease-in-out all;
+        .preview {
+            transition: .3s ease-in-out all;
+            .icon * {
+                fill: app.$accent__color;
+                stroke: app.$accent__color;
+            }
+            .text__span {
+                transition: .3s ease-in-out;
+                color: app.$accent__color;
+            }
+            .expand__icon {
+                transition: .3s ease-in-out all;
+                fill: app.$accent__color;
+                transform: translateY(25%) rotate(-180deg);
+            }
+        }
+        .itemsInner {
+            transition: .3s ease-in-out all;
+        }
+    }
+    &.burgerIsActive {
+        width: 50px;
+        .preview {
+            .expand__icon {
+                display: none;
+            }
+        }
+    }
+}
