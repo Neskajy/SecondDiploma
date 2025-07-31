@@ -39,12 +39,6 @@ export const Items = [
             },
             {
                 id: 2,
-                icon: calendar,
-                text: "Календарь",
-                page: "calendar"
-            },
-            {
-                id: 3,
                 icon: teacher,
                 text: "Учителю",
                 isAccordion: true,
@@ -55,16 +49,10 @@ export const Items = [
                         text: "Группы",
                         page: "groups",
                     },
-                    {
-                        id: 2,
-                        icon: lessons,
-                        text: "Занятия",
-                        page: "lessons",
-                    },
                 ]
             },
             {
-                id: 4,
+                id: 3,
                 icon: admin,
                 text: "Админу",
                 isAccordion: true,
@@ -79,19 +67,19 @@ export const Items = [
                         id: 2,
                         icon: group__control,
                         text: "Группы",
-                        page: "lolcreallyadmin",
+                        page: "reallyadmin/groupsControl",
                     },
                     {
                         id: 3,
                         icon: appeals__control,
                         text: "Заявки",
-                        page: "nereallyadmin",
+                        page: "reallyadmin/appealsControl",
                     },
                     {
                         id: 4,
                         icon: schedule,
                         text: "Расписание",
-                        page: "nereallyadmin",
+                        page: "reallyadmin/calendar",
                     }
                 ]
             },

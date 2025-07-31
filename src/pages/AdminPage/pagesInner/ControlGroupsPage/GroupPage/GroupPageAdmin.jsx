@@ -1,16 +1,16 @@
-import AdminHeader from "../../../../components/AdminHeader/AdminHeader.jsx";
-import SideBar from "../../../../components/SideBar/SideBar.jsx";
-import s from "./GroupPage.module.scss";
-import Plus from "../../../../../../assets/imgs/vector/plus.svg?react";
+import AdminHeader from "../../../components/AdminHeader/AdminHeader.jsx";
+import SideBar from "../../../components/SideBar/SideBar.jsx";
+import s from "./GroupPageAdmin.module.scss";
+import Plus from "../../../../../assets/imgs/vector/plus.svg?react";
 
-import UniversalModal from "../../../../../../components/UniversalModal/UniversalModal.jsx";
-import modal_s from "../../../../../../components/UniversalModal/UniversalModal.module.scss";
+import UniversalModal from "../../../../../components/UniversalModal/UniversalModal.jsx";
+import modal_s from "../../../../../components/UniversalModal/UniversalModal.module.scss";
 
-import FollowButton from "../../../../../../components/FollowButton/FollowButton.jsx";
+import FollowButton from "../../../../../components/FollowButton/FollowButton.jsx";
 
 import { useState } from "react";
 
-export default function GroupPage() {
+export default function GroupPageAdmin() {
 
     const [isActiveAddColumnModalContext, setIsActiveAddColumnModalContext] = useState(false);
     const [isOpenedGradeModal, setIsOpenedGradeModal] = useState(false);

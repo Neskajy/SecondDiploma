@@ -1,8 +1,12 @@
 import AdminHeader from "../../components/AdminHeader/AdminHeader.jsx";
 import SideBar from "../../components/SideBar/SideBar.jsx";
-import s from "./GroupsPage.module.scss";
+import s from "./ControlGroupsPage.module.scss";
+
+import modal_s from "../../../../components/UniversalModal/UniversalModal.module.scss";
 
 import { useState } from "react";
+
+import UniversalModal from "../../../../components/UniversalModal/UniversalModal.jsx";
 
 import { useForm } from "react-hook-form";
 
@@ -51,6 +55,42 @@ export default function GroupsPage() {
                 <main className={s.main}>
                     <div className={s.container}>
                         <h5>Группы</h5>
+                        <button className={s.add__group} onClick={() => { setIsAddGroupModalActive(true) }}>
+                            Добавить группу
+                        </button>
+                        <UniversalModal
+                            isOpen={isAddGroupModalActive}
+                            onClose={() => setIsAddGroupModalActive(false)}
+                            title={"Добавить группу"}
+                            content={
+                                <section className={modal_s.common}>
+                                    <div className={modal_s.items}>
+                                        <div className={modal_s.item}>
+                                            <p>Номер группы</p>
+                                            <input
+                                                type="text"
+                                                {...register("number", {
+                                                    required: "Поле обязательно к заполнению"
+                                                })}
+                                            />
+                                            <div className={modal_s.message}>{errors?.number && <div className={s.message}><img src={warning} /><p>{errors?.number.message || "Error!"}</p></div>}</div>
+                                        </div>
+                                        <div className={modal_s.item}>
+                                            <p>Год поступления группы</p>
+                                            <input
+                                                type="text"
+                                                {...register("data__receipt", {
+                                                    required: "Поле обязательно к заполнению"
+                                                })}
+                                            />
+                                            <div className={modal_s.message}>{errors?.data__receipt && <div className={s.message}><img src={warning} /><p>{errors?.data__receipt.message || "Error!"}</p></div>}</div>
+                                        </div>
+                                    </div>
+                                </section>
+                            }
+                            applyText="Сохранить"
+                            closeText="Закрыть"
+                        />
                         <div className={s.group__list}>
                             <div className={s.subgroup__list}>
                                 <h6>1 курсы</h6>

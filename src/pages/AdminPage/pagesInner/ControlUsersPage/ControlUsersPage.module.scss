@@ -1,0 +1,77 @@
+@use "../../../../App.scss" as app;
+
+.ProfilePage {
+    .HeaderAndContent {
+        .main {
+            display: flex;
+            width: 100%;
+            justify-content: center;
+
+            .container {
+                width: 90%;
+
+                h5 {
+                    @include app.h5;
+                }
+
+                .add {
+                    margin-top: 40px;
+                    @include app.button1(app.$accent__color);
+                    padding: 15px 30px;
+                }
+
+                .table__abertka {
+                    table {
+                        min-width: 100%;
+                        margin-top: 20px;
+                        border-spacing: 0;
+    
+                        thead {
+                            tr {
+                                th {
+                                    font-size: 18px;
+                                    font-weight: 500;
+                                    padding: 30px;
+                                    border: 1px solid app.$gray__smooth;
+                                    background: rgba(250, 250, 250);
+                                    color: #A7A7A7;
+                                }
+                            }
+                        }
+    
+                        tbody {
+                            tr {
+                                transition: .3s ease-in-out all;
+                                td {
+                                    cursor: pointer;
+                                    border: 1px solid app.$gray__smooth;
+                                    padding: 30px;
+                                    text-align: center;
+                                }
+                                &:hover {
+                                    transition: .3s ease-in-out all;
+                                    background: rgb(252, 248, 255);
+                                }
+                            }
+                        }
+                    }
+                    .edit {
+                        cursor: pointer;
+                        padding: 15px;
+                        width: 50px;
+                        height: 50px;
+                        border-radius: 50%;
+                        display: flex;
+                        background: white;
+                        justify-content: center;
+                        border: 1px solid app.$gray__smooth;
+                        box-shadow: app.$gray__smooth__shadow;
+                        .icon {
+                            fill: app.$accent__color;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

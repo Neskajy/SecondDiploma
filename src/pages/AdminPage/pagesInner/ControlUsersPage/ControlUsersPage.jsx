@@ -187,10 +187,6 @@ export default function ControlUsersPage() {
                                             <select name="roles" id="" 
                                                 {...register("group", {
                                                     required: "Поле обязательно к заполнению",
-                                                    pattern: {
-                                                        value: /^[\w.][\w]+@[\w]+\.[a-zA-Z]{2,}$/,
-                                                        message: "Не правильный формат почты"
-                                                    }
                                                 })}>
                                                 <option value="">--Выберите группу--</option>
                                                 {
@@ -208,10 +204,6 @@ export default function ControlUsersPage() {
                                             <select name="roles" id="" 
                                                 {...register("role", {
                                                     required: "Поле обязательно к заполнению",
-                                                    pattern: {
-                                                        value: /^[\w.][\w]+@[\w]+\.[a-zA-Z]{2,}$/,
-                                                        message: "Не правильный формат почты"
-                                                    }
                                                 })}>
                                                 <option value="">--Выберите роль--</option>
                                                 {
@@ -353,10 +345,6 @@ export default function ControlUsersPage() {
                                                     <select name="roles" id="" 
                                                         {...register("role", {
                                                             required: "Поле обязательно к заполнению",
-                                                            pattern: {
-                                                                value: /^[\w.][\w]+@[\w]+\.[a-zA-Z]{2,}$/,
-                                                                message: "Не правильный формат почты"
-                                                            }
                                                         })}>
                                                         <option value="">--Выберите роль--</option>
                                                         {

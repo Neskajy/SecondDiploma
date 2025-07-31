@@ -67,7 +67,7 @@ export default function CalendarPage() {
     };
 
 
-    const formatDate = formatDateForCalendar();
+    const formatDate = response.day ? formatDateForCalendar() : "";
 
 
     const [isActivePlanEventModal, setIsActivePlanEventModal] = useState(false);
@@ -87,6 +87,16 @@ export default function CalendarPage() {
         12: "Декабрь"
     };
 
+    const NumberToWeekDay = {
+        0: "Понедельнике",
+        1: "Вторнике",
+        2: "Среде",
+        3: "Четверге",
+        4: "Пятнице",
+        5: "Субботе",
+        6: "Воскресенье"
+    };
+
 
     const {
         register,
@@ -98,12 +108,18 @@ export default function CalendarPage() {
     } = useForm({
         mode: "onBlur",
     });
-    
+
     const mySubmit = (data) => {
         alert(JSON.stringify(data));
         reset();
     };
-    
+
+    function closeThisModal() {
+        const { day, day__index, week__index, ...newObject } = response;
+        setResponse(newObject);
+        setIsActivePlanEventModal(false);
+    }
+
 
 
     return (
@@ -113,7 +129,7 @@ export default function CalendarPage() {
                 <AdminHeader />
                 <main className={s.main}>
                     <div className={s.container}>
-                        <h5>Календарь</h5>
+                        <h5>Добавить расписание</h5>
                         <div className={s.calendar}>
                             <header className={s.calendar__header}>
                                 <div className={s.left}>
@@ -126,64 +142,97 @@ export default function CalendarPage() {
                                         </div>
                                     </div>
                                     <button className={s.addEvent} onClick={() => setIsActivePlanEventModal(true)}>
-                                        Добавить событие
+                                        Добавить пару
                                     </button>
                                     <UniversalModal
-                                        onClose={() => setIsActivePlanEventModal(false)}
+                                        onClose={closeThisModal}
                                         isOpen={isActivePlanEventModal}
-                                        title="Событие"
+                                        title="Редактировать день"
                                         content={
                                             <section className={modal_s.common}>
                                                 <div className={modal_s.items}>
                                                     <div className={modal_s.item}>
                                                         <p>Кабинет</p>
-                                                        <input 
+                                                        <input
                                                             type="text"
-                                                            placeholder="response"
                                                             {...register("cabinet", {
                                                                 required: "Поле обязательно к заполнению"
                                                             })}
                                                         />
-                                                        <div className={modal_s.message}>{errors?.cabinet && <div className={s.message}><img src={warning}/><p>{errors?.cabinet.message || "Error!"}</p></div>}</div>
+                                                        <div className={modal_s.message}>{errors?.cabinet && <div className={s.message}><img src={warning} /><p>{errors?.cabinet.message || "Error!"}</p></div>}</div>
                                                     </div>
                                                     <div className={modal_s.item}>
                                                         <p>Группа</p>
-                                                        <input 
+                                                        <input
                                                             type="text"
-                                                            placeholder="response"
                                                             {...register("group", {
                                                                 required: "Поле обязательно к заполнению"
                                                             })}
                                                         />
-                                                        <div className={modal_s.message}>{errors?.group && <div className={s.message}><img src={warning}/><p>{errors?.group.message || "Error!"}</p></div>}</div>
+                                                        <div className={modal_s.message}>{errors?.group && <div className={s.message}><img src={warning} /><p>{errors?.group.message || "Error!"}</p></div>}</div>
                                                     </div>
+                                                    {response.day__index !== undefined && (
+                                                        <div className={modal_s.item}>
+                                                            <p>
+                                                                Выделить все недели в {NumberToWeekDay[response.day__index].toLowerCase()}?
+                                                                Это позволит добавить пару или редактировать существующие занятия в этот день на всех неделях.
+                                                                Время будет взято из формы.
+                                                            </p>
+                                                            <select
+                                                                name="loop"
+                                                                id=""
+                                                                {...register("loop", {
+                                                                    required: "Поле обязательно к заполнению",
+                                                                })}
+                                                            >
+                                                                <option value="false">Нет</option>
+                                                                <option value="true">Да</option>
+                                                            </select>
+                                                            <div className={modal_s.message}>
+                                                                {errors?.loop && (
+                                                                    <div className={s.message}>
+                                                                        <img src={warning} alt="warning" />
+                                                                        <p>{errors.loop.message || "Ошибка!"}</p>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    )}
                                                     <div className={modal_s.item}>
                                                         <p>Цвет события</p>
                                                         <input type="color" className={modal_s.color__input} defaultValue={color} />
                                                     </div>
                                                     <div className={modal_s.item}>
-                                                        <p>Начало события</p>
-                                                        <input 
+                                                        <p>Дата события</p>
+                                                        <input
                                                             type="date"
                                                             placeholder="response"
-                                                            {...register("date__start", {
+                                                            {...register("date", {
                                                                 required: "Поле обязательно к заполнению"
                                                             })}
                                                             defaultValue={formatDate}
                                                         />
-                                                        <div className={modal_s.message}>{errors?.date__start && <div className={s.message}><img src={warning}/><p>{errors?.date__start.message || "Error!"}</p></div>}</div>
+                                                        <div className={modal_s.message}>{errors?.date && <div className={s.message}><img src={warning} /><p>{errors?.date.message || "Error!"}</p></div>}</div>
                                                     </div>
                                                     <div className={modal_s.item}>
-                                                        <p>Начало события</p>
-                                                        <input 
-                                                            type="date"
-                                                            placeholder="response"
-                                                            {...register("date__end", {
+                                                        <p>Время начала пары</p>
+                                                        <input
+                                                            type="time"
+                                                            {...register("time__start", {
                                                                 required: "Поле обязательно к заполнению"
                                                             })}
-                                                            defaultValue={formatDate}
                                                         />
-                                                        <div className={modal_s.message}>{errors?.date__end && <div className={s.message}><img src={warning}/><p>{errors?.date__end.message || "Error!"}</p></div>}</div>
+                                                        <div className={modal_s.message}>{errors?.time__start && <div className={s.message}><img src={warning} /><p>{errors?.time__start.message || "Error!"}</p></div>}</div>
+                                                    </div>
+                                                    <div className={modal_s.item}>
+                                                        <p>Время окончания пары</p>
+                                                        <input
+                                                            type="time"
+                                                            {...register("time__end", {
+                                                                required: "Поле обязательно к заполнению"
+                                                            })}
+                                                        />
+                                                        <div className={modal_s.message}>{errors?.time__end && <div className={s.message}><img src={warning} /><p>{errors?.time__end.message || "Error!"}</p></div>}</div>
                                                     </div>
                                                 </div>
                                             </section>
@@ -201,7 +250,7 @@ export default function CalendarPage() {
                                     </ul>
                                 </div>
                             </header>
-                            <FollowButton onClick={() => alert('Кнопка нажата!')}>
+                            <FollowButton>
 
                                 <table className={s.calendar__main}
                                 >
@@ -228,12 +277,14 @@ export default function CalendarPage() {
                                                                 const isLastMonth = (week__index === 0 && int_day > 7 ? s.lastMonth : "");
                                                                 const isNextMonth = week__index === response.weeks.length - 1 && int_day < 10;
 
+
                                                                 return (
                                                                     <td
                                                                         key={day__index}
                                                                         className={`${isLastMonth ? s.lastMonth : ''} ${isNextMonth ? s.nextMonth : ''}`}
                                                                         onClick={() => {
-                                                                            setResponse({...response, "day": int_day, "week__index": week__index});
+                                                                            setResponse({ ...response, "day": int_day, "week__index": week__index, "day__index": day__index });
+                                                                            console.log(day__index)
                                                                             setIsActivePlanEventModal(true);
                                                                         }}
                                                                     >
