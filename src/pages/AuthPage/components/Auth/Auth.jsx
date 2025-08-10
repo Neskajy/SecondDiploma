@@ -1,7 +1,7 @@
 import warning from "../../../../assets/imgs/vector/warning.svg";
 import s from "../Auth/Auth.module.scss";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useForm } from "react-hook-form";
 
@@ -12,6 +12,7 @@ export default function Auth() {
         setIsChecked(!isChecked);
     }
 
+    const api_url = import.meta.env.VITE_BACKEND_URL;
 
     const {
         register,
@@ -24,24 +25,50 @@ export default function Auth() {
         mode: "onBlur",
     });
 
-    const mySubmit = (data) => {
-        alert(JSON.stringify(data));
-        reset();
-    };
-    
+    async function AuthenticateAndAuthorize(data) {
+        const csrfResponse = await fetch(api_url + '/sanctum/csrf-cookie', {
+            method: "Get",
+            credentials: "include"
+        });
 
-    // console.log(register());
+        if (!csrfResponse.ok) {
+            console.error('CSRF не получен');
+            return;
+        }
+
+        const xsrfToken = document.cookie.split("; ").find(row => row.startsWith("XSRF-TOKEN"))?.split("=")[1];
+        
+        if (!xsrfToken) {
+            alert("токен не найден на стороне клиента");
+        }
+
+        const response = await fetch(api_url + '/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                "X-XSRF-TOKEN": decodeURIComponent(xsrfToken)
+            },
+            body: JSON.stringify(data),
+            credentials: 'include'
+        });
+
+        if (response.ok) {
+            alert('Успешно');
+        } else {
+            console.error('Ошибка:', await response.json());
+        }
+    }
 
     return (
         <>
-            <form className={s.Auth} onSubmit={handleSubmit(mySubmit)}>
+            <form className={s.Auth} onSubmit={handleSubmit(AuthenticateAndAuthorize)}>
                 <div className={s.heading}>
                     <h3>Войти</h3>
                     <p>C возвращением!</p>
                 </div>
                 <div className={s.input__blocks}>
                     <div className={s.input__block}>
-                        {/* <img src={warning} className={`${s.warning__img} ${s.active}`} alt="" /> */}
                         <input 
                             type="text"
                             placeholder="Введите вашу почту"

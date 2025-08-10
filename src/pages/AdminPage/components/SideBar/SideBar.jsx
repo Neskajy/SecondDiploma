@@ -93,13 +93,13 @@ export const Items = [
                         id: 1,
                         icon: articles,
                         text: "Статьи",
-                        page: "wtfreallyadmin",
+                        page: "articles",
                     },
                     {
                         id: 2,
                         icon: plan,
                         text: "Учебный план",
-                        page: "lolcreallyadmin",
+                        page: "curriculum",
                     },
                     {
                         id: 3,
