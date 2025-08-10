@@ -37,14 +37,18 @@ export default function ArticlesPage() {
     trigger: triggerAdd,
     reset: resetAdd,
     formState: { errors: errorsAdd },
-  } = useForm();
+  } = useForm({
+    mode: "onBlur"
+  });
 
   const {
     register: registerEdit,
     trigger: triggerEdit,
     reset: resetEdit,
     formState: { errors: errorsEdit },
-  } = useForm();
+  } = useForm({
+    mode: "onBlur"
+  });
 
   return (
     <div className={s.ArticlesPage} style={{ display: "flex" }}>
@@ -63,7 +67,6 @@ export default function ArticlesPage() {
                   <p className={s.empty}>Статьи не найдены</p>
                 ) : (
                   articles.map((article) => (
-                    
                     <div key={article.id} className={s.articleCard}>
                       <div className={s.imageWrapper}>
                         <img src={article.image} alt={article.title} />
@@ -134,7 +137,7 @@ export default function ArticlesPage() {
                   {...registerAdd("title", { required: "Обязательное поле" })}
                 />
                 {errorsAdd.title && (
-                  <div className={s.inlineError}>
+                  <div className={s.message}>
                     <img src={warning} alt="Ошибка" />
                     <p>{errorsAdd.title.message}</p>
                   </div>
@@ -148,7 +151,7 @@ export default function ArticlesPage() {
                   {...registerAdd("description", { required: "Обязательное поле" })}
                 />
                 {errorsAdd.description && (
-                  <div className={s.inlineError}>
+                  <div className={s.message}>
                     <img src={warning} alt="Ошибка" />
                     <p>{errorsAdd.description.message}</p>
                   </div>
@@ -162,7 +165,7 @@ export default function ArticlesPage() {
                   {...registerAdd("image", { required: "Обязательное поле" })}
                 />
                 {errorsAdd.image && (
-                  <div className={s.inlineError}>
+                  <div className={modal_s.message}>
                     <img src={warning} alt="Ошибка" />
                     <p>{errorsAdd.image.message}</p>
                   </div>
@@ -224,9 +227,11 @@ export default function ArticlesPage() {
                   {...registerEdit("title", { required: "Обязательное поле" })}
                 />
                 {errorsEdit.title && (
-                  <div className={s.inlineError}>
-                    <img src={warning} alt="Ошибка" />
-                    <p>{errorsEdit.title.message}</p>
+                  <div className={modal_s.message}>
+                    <div>
+                      <img src={warning} alt="Ошибка" />
+                      <p>{errorsEdit.title.message}</p>
+                    </div>
                   </div>
                 )}
               </div>
@@ -238,9 +243,11 @@ export default function ArticlesPage() {
                   {...registerEdit("description", { required: "Обязательное поле" })}
                 />
                 {errorsEdit.description && (
-                  <div className={s.inlineError}>
-                    <img src={warning} alt="Ошибка" />
-                    <p>{errorsEdit.description.message}</p>
+                  <div className={modal_s.message}>
+                    <div>
+                      <img src={warning} alt="Ошибка" />
+                      <p>{errorsEdit.description.message}</p>
+                    </div>
                   </div>
                 )}
               </div>
@@ -252,9 +259,11 @@ export default function ArticlesPage() {
                   {...registerEdit("image", { required: "Обязательное поле" })}
                 />
                 {errorsEdit.image && (
-                  <div className={s.inlineError}>
-                    <img src={warning} alt="Ошибка" />
-                    <p>{errorsEdit.image.message}</p>
+                  <div className={modal_s.message}>
+                    <div>
+                      <img src={warning} alt="Ошибка" />
+                      <p>{errorsEdit.image.message}</p>
+                    </div>
                   </div>
                 )}
               </div>
@@ -266,9 +275,11 @@ export default function ArticlesPage() {
                   {...registerEdit("author", { required: "Обязательное поле" })}
                 />
                 {errorsEdit.author && (
-                  <div className={s.inlineError}>
-                    <img src={warning} alt="Ошибка" />
-                    <p>{errorsEdit.author.message}</p>
+                  <div className={modal_s.message}>
+                    <div>
+                      <img src={warning} alt="Ошибка" />
+                      <p>{errorsEdit.author.message}</p>
+                    </div>
                   </div>
                 )}
               </div>
@@ -280,9 +291,11 @@ export default function ArticlesPage() {
                   <option value="черновик">Черновик</option>
                 </select>
                 {errorsEdit.status && (
-                  <div className={s.inlineError}>
-                    <img src={warning} alt="Ошибка" />
-                    <p>{errorsEdit.status.message}</p>
+                  <div className={modal_s.message}>
+                    <div>
+                      <img src={warning} alt="Ошибка" />
+                      <p>{errorsEdit.status.message}</p>
+                    </div>
                   </div>
                 )}
               </div>

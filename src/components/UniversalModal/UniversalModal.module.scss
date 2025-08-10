@@ -41,7 +41,7 @@
             flex-direction: column;
             gap: 30px;
             &::-webkit-scrollbar {
-                width: 8px;
+                display: none;
                 // background: app.$gray__smooth;
             }
     
@@ -66,11 +66,11 @@
                             font-size: 16px;
                             font-weight: 500;
                         }
-                        .note {
-                            font-size: 14px;
-                            color: app.$footer;
-                        }
-                        input[type="text"], input[type="date"], input[type="time"] {
+                        // .note {
+                        //     font-size: 14px;
+                        //     color: app.$footer;
+                        // }
+                        input[type="text"], input[type="date"], input[type="time"], input[type="number"] {
                             margin-top: 10px;
                             width: 100%;
                             border: 1px solid app.$gray__smooth;

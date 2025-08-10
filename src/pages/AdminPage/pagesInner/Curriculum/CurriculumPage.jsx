@@ -49,42 +49,54 @@ export default function CurriculumPage() {
     trigger: triggerAddCurriculum,
     reset: resetAddCurriculum,
     formState: { errors: errorsAddCurriculum },
-  } = useForm();
+  } = useForm({
+    mode: "onBlur"
+  });
 
   const {
     register: registerEditCurriculum,
     trigger: triggerEditCurriculum,
     reset: resetEditCurriculum,
     formState: { errors: errorsEditCurriculum },
-  } = useForm();
+  } = useForm({
+    mode: "onBlur"
+  });
 
   const {
     register: registerAddCourse,
     trigger: triggerAddCourse,
     reset: resetAddCourse,
     formState: { errors: errorsAddCourse },
-  } = useForm();
+  } = useForm({
+    mode: "onBlur"
+  });
 
   const {
     register: registerEditCourse,
     trigger: triggerEditCourse,
     reset: resetEditCourse,
     formState: { errors: errorsEditCourse },
-  } = useForm();
+  } = useForm({
+    mode: "onBlur"
+  });
 
   const {
     register: registerAddTheme,
     trigger: triggerAddTheme,
     reset: resetAddTheme,
     formState: { errors: errorsAddTheme },
-  } = useForm();
+  } = useForm({
+    mode: "onBlur"
+  });
 
   const {
     register: registerEditTheme,
     trigger: triggerEditTheme,
     reset: resetEditTheme,
     formState: { errors: errorsEditTheme },
-  } = useForm();
+  } = useForm({
+    mode: "onBlur"
+  });
 
   return (
     <div className={s.CurriculumPage}>
@@ -96,7 +108,6 @@ export default function CurriculumPage() {
           <button className={s.addButton} onClick={() => setIsAddCurriculumOpen(true)}>
             Добавить учебный план
           </button>
-
           <div className={s.curriculumsList}>
             {curriculums.length === 0 ? (
               <p className={s.empty}>Учебные планы не найдены</p>
@@ -236,9 +247,11 @@ export default function CurriculumPage() {
                   {...registerAddCurriculum("start_year", { required: "Обязательное поле" })}
                 />
                 {errorsAddCurriculum.start_year && (
-                  <div className={s.inlineError}>
-                    <img src={warning} alt="Ошибка" />
-                    <p>{errorsAddCurriculum.start_year.message}</p>
+                  <div className={modal_s.message}>
+                    <div>
+                      <img src={warning} alt="Ошибка" />
+                      <p>{errorsAddCurriculum.start_year.message}</p>
+                    </div>
                   </div>
                 )}
               </div>
@@ -250,9 +263,11 @@ export default function CurriculumPage() {
                   {...registerAddCurriculum("stop_year", { required: "Обязательное поле" })}
                 />
                 {errorsAddCurriculum.stop_year && (
-                  <div className={s.inlineError}>
-                    <img src={warning} alt="Ошибка" />
-                    <p>{errorsAddCurriculum.stop_year.message}</p>
+                  <div className={modal_s.message}>
+                    <div>
+                      <img src={warning} alt="Ошибка" />
+                      <p>{errorsAddCurriculum.stop_year.message}</p>
+                    </div>
                   </div>
                 )}
               </div>
@@ -284,9 +299,11 @@ export default function CurriculumPage() {
                   {...registerEditCurriculum("start_year", { required: "Обязательное поле" })}
                 />
                 {errorsEditCurriculum.start_year && (
-                  <div className={s.inlineError}>
-                    <img src={warning} alt="Ошибка" />
-                    <p>{errorsEditCurriculum.start_year.message}</p>
+                  <div className={modal_s.message}>
+                    <div>
+                      <img src={warning} alt="Ошибка" />
+                      <p>{errorsEditCurriculum.start_year.message}</p>
+                    </div>
                   </div>
                 )}
               </div>
@@ -298,9 +315,11 @@ export default function CurriculumPage() {
                   {...registerEditCurriculum("stop_year", { required: "Обязательное поле" })}
                 />
                 {errorsEditCurriculum.stop_year && (
-                  <div className={s.inlineError}>
-                    <img src={warning} alt="Ошибка" />
-                    <p>{errorsEditCurriculum.stop_year.message}</p>
+                  <div className={modal_s.message}>
+                    <div>
+                      <img src={warning} alt="Ошибка" />
+                      <p>{errorsEditCurriculum.stop_year.message}</p>
+                    </div>
                   </div>
                 )}
               </div>
@@ -358,9 +377,11 @@ export default function CurriculumPage() {
                   {...registerAddCourse("name", { required: "Обязательное поле" })}
                 />
                 {errorsAddCourse.name && (
-                  <div className={s.inlineError}>
-                    <img src={warning} alt="Ошибка" />
-                    <p>{errorsAddCourse.name.message}</p>
+                  <div className={modal_s.message}>
+                    <div>
+                      <img src={warning} alt="Ошибка" />
+                      <p>{errorsAddCourse.name.message}</p>
+                    </div>
                   </div>
                 )}
               </div>
@@ -372,9 +393,11 @@ export default function CurriculumPage() {
                   {...registerAddCourse("year", { required: "Обязательное поле" })}
                 />
                 {errorsAddCourse.year && (
-                  <div className={s.inlineError}>
-                    <img src={warning} alt="Ошибка" />
-                    <p>{errorsAddCourse.year.message}</p>
+                  <div className={modal_s.message}>
+                    <div>
+                      <img src={warning} alt="Ошибка" />
+                      <p>{errorsAddCourse.year.message}</p>
+                    </div>
                   </div>
                 )}
               </div>
@@ -386,9 +409,11 @@ export default function CurriculumPage() {
                   <option value="2">2 семестр</option>
                 </select>
                 {errorsAddCourse.semester && (
-                  <div className={s.inlineError}>
-                    <img src={warning} alt="Ошибка" />
-                    <p>{errorsAddCourse.semester.message}</p>
+                  <div className={modal_s.message}>
+                    <div>
+                      <img src={warning} alt="Ошибка" />
+                      <p>{errorsAddCourse.semester.message}</p>
+                    </div>
                   </div>
                 )}
               </div>
@@ -400,9 +425,11 @@ export default function CurriculumPage() {
                   {...registerAddCourse("hours", { required: "Обязательное поле" })}
                 />
                 {errorsAddCourse.hours && (
-                  <div className={s.inlineError}>
-                    <img src={warning} alt="Ошибка" />
-                    <p>{errorsAddCourse.hours.message}</p>
+                  <div className={modal_s.message}>
+                    <div>
+                      <img src={warning} alt="Ошибка" />
+                      <p>{errorsAddCourse.hours.message}</p>
+                    </div>
                   </div>
                 )}
               </div>
@@ -434,9 +461,11 @@ export default function CurriculumPage() {
                   {...registerEditCourse("name", { required: "Обязательное поле" })}
                 />
                 {errorsEditCourse.name && (
-                  <div className={s.inlineError}>
-                    <img src={warning} alt="Ошибка" />
-                    <p>{errorsEditCourse.name.message}</p>
+                  <div className={modal_s.message}>
+                    <div>
+                      <img src={warning} alt="Ошибка" />
+                      <p>{errorsEditCourse.name.message}</p>
+                    </div>
                   </div>
                 )}
               </div>
@@ -448,9 +477,11 @@ export default function CurriculumPage() {
                   {...registerEditCourse("year", { required: "Обязательное поле" })}
                 />
                 {errorsEditCourse.year && (
-                  <div className={s.inlineError}>
-                    <img src={warning} alt="Ошибка" />
-                    <p>{errorsEditCourse.year.message}</p>
+                  <div className={modal_s.message}>
+                    <div>
+                      <img src={warning} alt="Ошибка" />
+                      <p>{errorsEditCourse.year.message}</p>
+                    </div>
                   </div>
                 )}
               </div>
@@ -464,9 +495,11 @@ export default function CurriculumPage() {
                   <option value="2">2 семестр</option>
                 </select>
                 {errorsEditCourse.semester && (
-                  <div className={s.inlineError}>
-                    <img src={warning} alt="Ошибка" />
-                    <p>{errorsEditCourse.semester.message}</p>
+                  <div className={modal_s.message}>
+                    <div>
+                      <img src={warning} alt="Ошибка" />
+                      <p>{errorsEditCourse.semester.message}</p>
+                    </div>
                   </div>
                 )}
               </div>
@@ -478,9 +511,11 @@ export default function CurriculumPage() {
                   {...registerEditCourse("hours", { required: "Обязательное поле" })}
                 />
                 {errorsEditCourse.hours && (
-                  <div className={s.inlineError}>
-                    <img src={warning} alt="Ошибка" />
-                    <p>{errorsEditCourse.hours.message}</p>
+                  <div className={modal_s.message}>
+                    <div>
+                      <img src={warning} alt="Ошибка" />
+                      <p>{errorsEditCourse.hours.message}</p>
+                    </div>
                   </div>
                 )}
               </div>
@@ -535,9 +570,11 @@ export default function CurriculumPage() {
                   {...registerAddTheme("title", { required: "Обязательное поле" })}
                 />
                 {errorsAddTheme.title && (
-                  <div className={s.inlineError}>
-                    <img src={warning} alt="Ошибка" />
-                    <p>{errorsAddTheme.title.message}</p>
+                  <div className={modal_s.message}>
+                    <div>
+                      <img src={warning} alt="Ошибка" />
+                      <p>{errorsAddTheme.title.message}</p>
+                    </div>
                   </div>
                 )}
               </div>
@@ -552,9 +589,11 @@ export default function CurriculumPage() {
                   })}
                 />
                 {errorsAddTheme.number && (
-                  <div className={s.inlineError}>
-                    <img src={warning} alt="Ошибка" />
-                    <p>{errorsAddTheme.number.message}</p>
+                  <div className={modal_s.message}>
+                    <div>
+                      <img src={warning} alt="Ошибка" />
+                      <p>{errorsAddTheme.number.message}</p>
+                    </div>
                   </div>
                 )}
               </div>
@@ -586,9 +625,11 @@ export default function CurriculumPage() {
                   {...registerEditTheme("title", { required: "Обязательное поле" })}
                 />
                 {errorsEditTheme.title && (
-                  <div className={s.inlineError}>
-                    <img src={warning} alt="Ошибка" />
-                    <p>{errorsEditTheme.title.message}</p>
+                  <div className={modal_s.message}>
+                    <div>
+                      <img src={warning} alt="Ошибка" />
+                      <p>{errorsEditTheme.title.message}</p>
+                    </div>
                   </div>
                 )}
               </div>
@@ -603,9 +644,11 @@ export default function CurriculumPage() {
                   })}
                 />
                 {errorsEditTheme.number && (
-                  <div className={s.inlineError}>
-                    <img src={warning} alt="Ошибка" />
-                    <p>{errorsEditTheme.number.message}</p>
+                  <div className={modal_s.message}>
+                    <div>
+                      <img src={warning} alt="Ошибка" />
+                      <p>{errorsEditTheme.number.message}</p>
+                    </div>
                   </div>
                 )}
               </div>
