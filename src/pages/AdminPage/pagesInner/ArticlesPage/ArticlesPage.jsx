@@ -137,9 +137,11 @@ export default function ArticlesPage() {
                   {...registerAdd("title", { required: "Обязательное поле" })}
                 />
                 {errorsAdd.title && (
-                  <div className={s.message}>
-                    <img src={warning} alt="Ошибка" />
-                    <p>{errorsAdd.title.message}</p>
+                  <div className={modal_s.message}>
+                    <div>
+                      <img src={warning} alt="Ошибка" />
+                      <p>{errorsAdd.title.message}</p>
+                    </div>
                   </div>
                 )}
               </div>
@@ -148,12 +150,14 @@ export default function ArticlesPage() {
                 <textarea
                   className={s.modal__textarea}
                   placeholder="Введите описание"
-                  {...registerAdd("description", { required: "Обязательное поле" })}
+                  {...registerAdd("description")}
                 />
                 {errorsAdd.description && (
-                  <div className={s.message}>
-                    <img src={warning} alt="Ошибка" />
-                    <p>{errorsAdd.description.message}</p>
+                  <div className={modal_s.message}>
+                    <div>
+                      <img src={warning} alt="Ошибка" />
+                      <p>{errorsAdd.description.message}</p>
+                    </div>
                   </div>
                 )}
               </div>
@@ -166,8 +170,10 @@ export default function ArticlesPage() {
                 />
                 {errorsAdd.image && (
                   <div className={modal_s.message}>
-                    <img src={warning} alt="Ошибка" />
-                    <p>{errorsAdd.image.message}</p>
+                    <div>
+                      <img src={warning} alt="Ошибка" />
+                      <p>{errorsAdd.image.message}</p>
+                    </div>
                   </div>
                 )}
               </div>
@@ -179,9 +185,11 @@ export default function ArticlesPage() {
                   {...registerAdd("author", { required: "Обязательное поле" })}
                 />
                 {errorsAdd.author && (
-                  <div className={s.inlineError}>
-                    <img src={warning} alt="Ошибка" />
-                    <p>{errorsAdd.author.message}</p>
+                  <div className={modal_s.message}>
+                    <div>
+                      <img src={warning} alt="Ошибка" />
+                      <p>{errorsAdd.author.message}</p>
+                    </div>
                   </div>
                 )}
               </div>
@@ -193,9 +201,11 @@ export default function ArticlesPage() {
                   <option value="черновик">Черновик</option>
                 </select>
                 {errorsAdd.status && (
-                  <div className={s.inlineError}>
-                    <img src={warning} alt="Ошибка" />
-                    <p>{errorsAdd.status.message}</p>
+                  <div className={modal_s.message}>
+                    <div>
+                      <img src={warning} alt="Ошибка" />
+                      <p>{errorsAdd.status.message}</p>
+                    </div>
                   </div>
                 )}
               </div>

@@ -6,7 +6,6 @@ import { useEffect } from "react";
 export default function UniversalModal({
     isOpen,
     onClose,
-    onApply,
     content,
     title,
     applyText = "Сохранить",
@@ -48,15 +47,6 @@ export default function UniversalModal({
 
                 <div className={s.inner}>
                     {content}
-
-                    <div className={s.buttons}>
-                        <button className={s.close} onClick={onClose}>
-                            {closeText}
-                        </button>
-                        <button className={s.apply} onClick={onApply}>
-                            {applyText}
-                        </button>
-                    </div>
                     <div className={s.close__cross} onClick={onClose}>
                         <Close />
                     </div>

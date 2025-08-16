@@ -1,11 +1,14 @@
 import warning from "../../../../assets/imgs/vector/warning.svg";
 import s from "../Auth/Auth.module.scss";
-import { Link } from "react-router-dom";
+import { Link, redirect, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import { useForm } from "react-hook-form";
 
 export default function Auth() {
+
+    const Navigate = useNavigate();
+
     const [isChecked, setIsChecked] = useState(false);
 
     const handleChange = () => {
@@ -27,7 +30,6 @@ export default function Auth() {
 
     async function AuthenticateAndAuthorize(data) {
         const csrfResponse = await fetch(api_url + '/sanctum/csrf-cookie', {
-            method: "Get",
             credentials: "include"
         });
 
@@ -52,9 +54,9 @@ export default function Auth() {
             body: JSON.stringify(data),
             credentials: 'include'
         });
-
         if (response.ok) {
             alert('Успешно');
+            Navigate("/diploma/profile");
         } else {
             console.error('Ошибка:', await response.json());
         }

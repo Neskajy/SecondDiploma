@@ -4,6 +4,7 @@ import s from "./AppealsPage.module.scss";
 
 
 export default function AppealsPage() {
+
     return (
         <div className={s.AppealsPage} style={{display: "flex"}}>
             <SideBar />

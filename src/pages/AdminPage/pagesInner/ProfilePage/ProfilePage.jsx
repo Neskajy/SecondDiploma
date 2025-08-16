@@ -8,7 +8,7 @@ import Edit from "../../../../assets/imgs/vector/actions/edit.svg?react";
 
 import Tg from "../../../../assets/imgs/vector/social/tg.svg?react";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import warning from "../../../../assets/imgs/vector/warning.svg";
 
@@ -22,9 +22,51 @@ export default function ProfilePage() {
     const [isModalDataOpen, setIsModalDataOpen] = useState(false);
     const [isModalDangerOpen, setIsModalDangerOpen] = useState(false);
 
-    function handleSave() {
-        console.log("Сохранено");
-        setIsModalDataOpen(false)
+    const [response, setResponse] = useState("");
+
+    const api_url = import.meta.env.VITE_BACKEND_URL;
+
+    async function getUserData() {
+
+        const xsrfToken = document.cookie.split("; ").find(row => row.startsWith("XSRF-TOKEN"))?.split("=")[1];
+
+        const response_ = await fetch(api_url + "/api/users/getUser", {
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "X-XSRF-TOKEN": decodeURIComponent(xsrfToken)
+            },
+            credentials: "include"
+        });
+
+        const data = await response_.json();
+        setResponse(data);
+    }
+
+    useEffect(() => {
+        getUserData();
+    }, []);
+
+    async function handleSave(data) {
+
+        const xsrfToken = document.cookie.split("; ").find(row => row.startsWith("XSRF-TOKEN"))?.split("=")[1];
+        const userId = response["id"];
+
+        const request = await fetch(api_url + `/api/users/update/${userId}`, {
+            method: "PATCH",
+            "credentials": "include",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "X-XSRF-TOKEN": decodeURIComponent(xsrfToken)
+            },
+            body: JSON.stringify(data)
+        });
+        const response_ = await request.json();
+        setResponse(response_.data);
+        alert("Успешно");
+        setIsModalDataOpen(false);
+        setIsModalDangerOpen(false);
     }
 
     const {
@@ -34,6 +76,17 @@ export default function ProfilePage() {
         },
         handleSubmit,
         reset
+    } = useForm({
+        mode: "onBlur",
+    });
+
+    const {
+        register: registerPassword,
+        formState: {
+            errors: errorsPassword,
+        },
+        handleSubmit: handleSubmitPassword,
+        reset: resetPassword
     } = useForm({
         mode: "onBlur",
     });
@@ -58,8 +111,8 @@ export default function ProfilePage() {
                                         <img src={user404} alt="Аватар" />
                                     </div>
                                     <div className={s.text}>
-                                        <p className={s.name}>Имя</p>
-                                        <p className={s.bio}>Методист</p>
+                                        <p className={s.name}>{response["name"]}</p>
+                                        <p className={s.bio}>{response["role"]}</p>
                                     </div>
                                 </div>
                                 <div className={s.right}>
@@ -76,9 +129,8 @@ export default function ProfilePage() {
                                     <UniversalModal
                                         isOpen={isModalDataOpen}
                                         onClose={() => setIsModalDataOpen(false)}
-                                        onApply={handleSave}
                                         content={
-                                            <section className={modal_s.common}>
+                                            <form className={modal_s.common} onSubmit={handleSubmit(handleSave)}>
                                                 <h5>Добавить пользователя</h5>
                                                 <div className={modal_s.items}>
                                                     <div className={modal_s.item}>
@@ -88,6 +140,7 @@ export default function ProfilePage() {
                                                             {...register("name", {
                                                                 required: "Поле обязательно к заполнению"
                                                             })}
+                                                            defaultValue={response.name}
                                                         />
                                                         <div className={modal_s.message}>{errors?.name && <div className={s.message}><img src={warning} /><p>{errors?.name.message || "Error!"}</p></div>}</div>
                                                     </div>
@@ -98,6 +151,7 @@ export default function ProfilePage() {
                                                             {...register("surname", {
                                                                 required: "Поле обязательно к заполнению"
                                                             })}
+                                                            defaultValue={response.surname}
                                                         />
                                                         <div className={modal_s.message}>{errors?.surname && <div className={s.message}><img src={warning} /><p>{errors?.surname.message || "Error!"}</p></div>}</div>
                                                     </div>
@@ -108,11 +162,10 @@ export default function ProfilePage() {
                                                             {...register("patronymic", {
                                                                 required: "Поле обязательно к заполнению"
                                                             })}
+                                                            defaultValue={response.patronymic}
                                                         />
                                                         <div className={modal_s.message}>{errors?.patronymic && <div className={s.message}><img src={warning} /><p>{errors?.patronymic.message || "Error!"}</p></div>}</div>
                                                     </div>
-
-
                                                     <div className={modal_s.item}>
                                                         <p>Почта</p>
                                                         <input
@@ -124,6 +177,7 @@ export default function ProfilePage() {
                                                                     message: "Не правильный формат почты"
                                                                 }
                                                             })}
+                                                            defaultValue={response.email}
                                                         />
                                                         <div className={modal_s.message}>{errors?.email && <div className={s.message}><img src={warning} /><p>{errors?.email.message || "Error!"}</p></div>}</div>
                                                     </div>
@@ -138,11 +192,20 @@ export default function ProfilePage() {
                                                                     message: "Не правильный формат номера телефона"
                                                                 }
                                                             })}
+                                                            defaultValue={response.phone}
                                                         />
                                                         <div className={modal_s.message}>{errors?.phone && <div className={s.message}><img src={warning} /><p>{errors?.phone.message || "Error!"}</p></div>}</div>
                                                     </div>
                                                 </div>
-                                            </section>
+                                                <div className={modal_s.buttons}>
+                                                    <button className={modal_s.close} onClick={() => setIsModalDataOpen(false)}>
+                                                        Закрыть
+                                                    </button>
+                                                    <button className={modal_s.apply} type="submit">
+                                                        Сохранить
+                                                    </button>
+                                                </div>
+                                            </form>
                                         }
                                     />
 
@@ -152,36 +215,36 @@ export default function ProfilePage() {
 
                         <section className={s.section__personal__information}>
                             <h5>Персональная информация</h5>
-                            <div className={s.info}>
+                            <section className={s.info}>
                                 <div className={s.info__block}>
                                     <p className={s.whatisit}>Имя</p>
-                                    <p className={s.response}>Имя</p>
+                                    <p className={s.response}>{response["name"]}</p>
                                 </div>
                                 <div className={s.info__block}>
                                     <p className={s.whatisit}>Фамилия</p>
-                                    <p className={s.response}>Фамилия</p>
+                                    <p className={s.response}>{response["surname"]}</p>
                                 </div>
                                 <div className={s.info__block}>
                                     <p className={s.whatisit}>Отчество</p>
-                                    <p className={s.response}>Отчество</p>
+                                    <p className={s.response}>{response["patronymic"]}</p>
                                 </div>
                                 <div className={s.info__block}>
                                     <p className={s.whatisit}>Обо мне</p>
-                                    <p className={s.response}>Методист</p>
+                                    <p className={s.response}>{response["role"]}</p>
                                 </div>
                                 <div className={s.info__block}>
                                     <p className={s.whatisit}>Почта</p>
-                                    <p className={s.response}>example@mail.ru</p>
+                                    <p className={s.response}>{response["email"]}</p>
                                 </div>
                                 <div className={s.info__block}>
                                     <p className={s.whatisit}>Телефон</p>
-                                    <p className={s.response}>+8 800 555 35 35</p>
+                                    <p className={s.response}>{response["phone"]}</p>
                                 </div>
                                 <button className={s.edit} onClick={() => setIsModalDataOpen(true)}>
                                     <Edit alt="" className={s.edit__icon} />
                                     Изменить
                                 </button>
-                            </div>
+                            </section>
                         </section>
 
 
@@ -200,17 +263,35 @@ export default function ProfilePage() {
                                     <UniversalModal
                                         isOpen={isModalDangerOpen}
                                         onClose={() => setIsModalDangerOpen(false)}
-                                        onApply={handleSave}
                                         content={
-                                            <section className={modal_s.common}>
+                                            <form className={modal_s.common} onSubmit={handleSubmitPassword(handleSave)}>
                                                 <h6>Опасная зона</h6>
                                                 <div className={modal_s.items}>
                                                     <div className={modal_s.item}>
                                                         <p>Пароль</p>
-                                                        <input type="text" placeholder="response" />
+                                                        <input 
+                                                            type="text"
+                                                            placeholder="Новый пароль"
+                                                            {...registerPassword("password", {
+                                                                required: "Поле обязательно к заполнению",
+                                                                pattern: {
+                                                                    value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]){8,255}/,
+                                                                    message: "Используйте не менее 8 символов, включая заглавную и строчную букву, а также цифру."
+                                                                }
+                                                            })}
+                                                        />
+                                                        <div className={modal_s.message}>{errorsPassword?.password && <div className={s.message}><img src={warning} /><p>{errorsPassword?.password.message || "Error!"}</p></div>}</div>
                                                     </div>
                                                 </div>
-                                            </section>
+                                                <div className={modal_s.buttons}>
+                                                    <button className={modal_s.close} onClick={() => setIsModalDangerOpen(false)}>
+                                                        Закрыть
+                                                    </button>
+                                                    <button className={modal_s.apply} type="submit">
+                                                        Сохранить
+                                                    </button>
+                                                </div>
+                                            </form>
                                         }
                                     />
                                 </div>

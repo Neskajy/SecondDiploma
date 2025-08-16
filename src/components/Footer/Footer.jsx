@@ -9,7 +9,7 @@ import { useLocation } from "react-router-dom";
 export default function Footer() {
     const path = useLocation().pathname;
 
-    const lowSpaceAblePaths = ["/reg", "/auth", "/forgetPassword", "/bid"];
+    const lowSpaceAblePaths = ["/reg", "/auth", "/forgetPassword", "/appeal"];
     return (
         <footer className={`${s.Footer} ${lowSpaceAblePaths.includes(path) ? s.low__space : ""}`}>
             <div className={s.container}>

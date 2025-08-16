@@ -41,10 +41,10 @@ function App() {
               <Route path="/" element={<LandingPage />}/>
               <Route path="/auth" element={<AuthPage />}></Route>
               <Route path="/forgetPassword" element={<ForgetPassword />}></Route>
-              <Route path="/bid" element={<BidPage />}></Route>
+              <Route path="/appeal" element={<BidPage />}></Route>
               <Route path="/diploma">
                 <Route path="/diploma/profile" element={<ProfilePage />}></Route>
-                <Route path="/diploma/groups" element={<GroupsPage />}></Route>
+                <Route path="/diploma/groups" element={<ControlGroupsPage />}></Route>
                 <Route path="/diploma/groups/group" element={<GroupPage />}></Route>
                 {/* <Route path="/diploma/lessons" element={<LessonsPage />}></Route> */}
                 <Route path="/diploma/articles" element={<ArticlesPage />}></Route>
@@ -52,9 +52,7 @@ function App() {
                 <Route path="/diploma/appeals" element={<AppealsPage />}></Route>
                 <Route path="/diploma/reallyadmin">
                   <Route path="/diploma/reallyadmin/usersControl" element={<ControlUsersPage />}></Route>
-                  <Route path="/diploma/reallyadmin/groupsControl" element={<ControlGroupsPage />}></Route>
                   <Route path="/diploma/reallyadmin/calendar" element={<CalendarPage />}></Route>
-                  <Route path="/diploma/reallyadmin/groupsControl/group" element={<GroupPageAdmin />}></Route>
                   <Route path="/diploma/reallyadmin/appealsControl" element={<ControlAppealsPage />}></Route>
                 </Route>
               </Route>

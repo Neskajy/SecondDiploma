@@ -127,9 +127,68 @@ $gray: #A7A7A7;
     justify-content: center;
     align-items: center;
     cursor: pointer;
+    user-select: none;
     transition: .3s ease-in-out all;
     &:hover {
         transition: .3s ease-in-out all;
         background: $accent__color__dark;
+    }
+}
+
+@mixin table__abertka() {
+    table {
+        min-width: 100%;
+        margin-top: 50px;
+        border-spacing: 0;
+        border: 2px solid $accent__color;
+        border-radius: 8px;
+
+        thead {
+            tr {
+                th {
+                    font-size: 18px;
+                    padding: 30px;
+                    background: rgba(250, 250, 250);
+                    background: $accent__color;
+                    color: white;
+                    font-weight: 700;
+                }
+            }
+        }
+
+        tbody {
+            tr {
+                transition: .3s ease-in-out all;
+                outline: 1px solid transparent;
+                td {
+                    cursor: pointer;
+                    padding: 30px;
+                    text-align: center;
+                    
+                }
+                &:nth-child(even) {
+                    background: rgb(247, 246, 253);
+                }
+                &:hover {
+                    outline: 1px solid $accent__color;
+                    transition: .3s ease-in-out all;
+                }
+            }
+        }
+    }
+    .edit {
+        cursor: pointer;
+        padding: 15px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        background: white;
+        justify-content: center;
+        border: 1px solid $gray__smooth;
+        box-shadow: $gray__smooth__shadow;
+        .icon {
+            fill: $accent__color;
+        }
     }
 }

@@ -160,9 +160,8 @@ export default function GroupPage() {
                                             {
                                                 response.map((item) => {
                                                     return (
-                                                        <tr key={item.id}>
+                                                        <tr>
                                                             {Object.entries(item).map(([key, value]) => {
-                                                                // Определяем, является ли это ячейка оценкой
                                                                 const isGrade = /^\d{1,2}\.\d{2}$/.test(key) &&
                                                                     key !== 'ср.балл' &&
                                                                     !key.startsWith('ср.балл');
@@ -172,7 +171,7 @@ export default function GroupPage() {
                                                                         onClick={() => {
                                                                             clickOnGrade(isGrade)
                                                                         }}
-                                                                        style={isGrade ? {cursor: "pointer"} : null}
+                                                                        className={`${isGrade ? s.cursor_pointer : ""}`}
                                                                     >
                                                                         {value}
                                                                     </td>

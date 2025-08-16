@@ -67,7 +67,7 @@ export const Items = [
                         id: 2,
                         icon: group__control,
                         text: "Группы",
-                        page: "reallyadmin/groupsControl",
+                        page: "groups",
                     },
                     {
                         id: 3,
@@ -127,56 +127,54 @@ export default function SideBar () {
     }
     
     return (
-        <>
-            <aside className={`${s.SideBar} ${isActiveBurger ? s.active : ""}`} onMouseEnter={handleOnMouseEnter}>
-                <div className={s.logo}>
-                    <img src={logo} alt="" />
-                    <p>Диплом</p>
+        <aside className={`${s.SideBar} ${isActiveBurger ? s.active : ""}`} onMouseEnter={handleOnMouseEnter} >
+            <div className={s.logo}>
+                <img src={logo} alt="" />
+                <p>Диплом</p>
+            </div>
+            <menu className={s.menu}>
+                {
+                    Items.map((category) => (
+                        <div key={category.id} className={s.menu__category}>
+                            <span className={s.category}>{isActiveBurger ? "..." : category.category}</span>
+                            <ul>
+                                {
+                                    category.menu__items.map((item) => {
+                                        const isActive = path.includes(`/${item.page}`);
+                                        const Icon = item.icon;
+                                        return (
+                                            <li key={item.id} className={isActive ? s.active : ""}>
+                                                {
+                                                    function returnItem() {
+                                                        if (!item.isAccordion) {
+                                                            return (
+                                                                <Link to={`/diploma/${item.page}`} className={s.Link}>
+                                                                    <Icon alt={item.text} className={s.icon}/>
+                                                                    <span>{item.text}</span>
+                                                                </Link>
+                                                            )
+                                                        } else {
+                                                            return (
+                                                                <Accordion item={item} isActive={isActive}/>
+                                                            )
+                                                        }
+                                                    }()
+                                                }
+                                            </li>
+                                        );
+                                    })
+                                }
+                            </ul>
+                        </div>
+                    ))
+                }
+                <div className={s.exit}>
+                    <Link to={`${path}/exit`} className={s.Link}>
+                        <Exit className={s.icon}/>
+                        <span>Выйти</span>
+                    </Link>
                 </div>
-                <menu className={s.menu}>
-                    {
-                        Items.map((category) => (
-                            <div key={category.id} className={s.menu__category}>
-                                <span className={s.category}>{isActiveBurger ? "..." : category.category}</span>
-                                <ul>
-                                    {
-                                        category.menu__items.map((item) => {
-                                            const isActive = path.includes(`/${item.page}`);
-                                            const Icon = item.icon;
-                                            return (
-                                                <li key={item.id} className={isActive ? s.active : ""}>
-                                                    {
-                                                        function returnItem() {
-                                                            if (!item.isAccordion) {
-                                                                return (
-                                                                    <Link to={`/diploma/${item.page}`} className={s.Link}>
-                                                                        <Icon alt={item.text} className={s.icon}/>
-                                                                        <span>{item.text}</span>
-                                                                    </Link>
-                                                                )
-                                                            } else {
-                                                                return (
-                                                                    <Accordion item={item} isActive={isActive}/>
-                                                                )
-                                                            }
-                                                        }()
-                                                    }
-                                                </li>
-                                            );
-                                        })
-                                    }
-                                </ul>
-                            </div>
-                        ))
-                    }
-                    <div className={s.exit}>
-                        <Link to={`${path}/exit`} className={s.Link}>
-                            <Exit className={s.icon}/>
-                            <span>Выйти</span>
-                        </Link>
-                    </div>
-                </menu>
-            </aside>
-        </>
+            </menu>
+        </aside>
     )
 }

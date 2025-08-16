@@ -6,13 +6,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 export default function Auth() {
-    const [isChecked, setIsChecked] = useState(false);
-
-    const handleChange = () => {
-        setIsChecked(!isChecked);
-    }
-
-
     const {
         register,
         formState: {
@@ -24,14 +17,51 @@ export default function Auth() {
         mode: "onBlur",
     });
 
-    const mySubmit = (data) => {
-        alert(JSON.stringify(data));
-        reset();
-    };
+    const api_url = import.meta.env.VITE_BACKEND_URL;
+
+
+
+    async function createAppeal(data) {
+
+        const xsrfToken = document.cookie.split("; ").find(row => row.startsWith("XSRF-TOKEN"))?.split("=")[1];
+
+        if (!xsrfToken) {
+            const getToken = await fetch(api_url + "/sanctum/csrf-cookie", {
+                credentials: "include"
+            });
+            if (!getToken.ok) {
+                alert("CSRF не получен");
+            }
+            xsrfToken = document.cookie.split("; ").find(row => row.startsWith("XSRF-TOKEN"))?.split("=")[1];
+        }
+
+        try {
+
+            const request = await fetch(api_url + `/api/appeals/create`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                    "X-XSRF-TOKEN": decodeURIComponent(xsrfToken)
+                },
+                body: JSON.stringify(data)
+            });
+
+            const response = await request.json();
+
+            reset();
+            alert("Успешно");
+
+        } catch (error) {
+            console.error("Ошибка: ", error);
+        }
+    }
+
     
     return (
         <>
-            <form className={s.Bid} onSubmit={handleSubmit(mySubmit)}>
+            <form className={s.Bid} onSubmit={handleSubmit(createAppeal)}>
                 <div className={s.heading}>
                     <h3>Подать заявку</h3>
                 </div>
@@ -64,38 +94,17 @@ export default function Auth() {
                     </div>
                     <div className={s.input__block}>
                         {/* <img src={warning} className={`${s.warning__img} ${s.active}`} alt="" /> */}
-                        <input 
-                            type="text"
-                            placeholder="Введите ваш телефон"
-                            {...register("phone", {
-                                required: "Поле обязательно к заполнению",
-                                pattern: {
-                                    value: /^(\s*)?(\+)?([- _():=+]?\d[- _():=+]?){10,14}(\s*)?$/,
-                                    message: "Не правильный формат телефона"
-                                },
+                        <textarea
+                            placeholder="Ваше сообщение"
+                            {...register("message", {
                             })}
                         />
-                        <div className={s.message}>{errors?.phone && <div className={s.message}><img src={warning}/><p>{errors?.phone.message || "Error!"}</p></div>}</div>
+                        <div className={s.message}>{errors?.message && <div className={s.message}><img src={warning}/><p>{errors?.message.message || "Error!"}</p></div>}</div>
                     </div>
-                </div>
-                <div className={s.useful__actions}>
-                    <div className={s.remember__me} onClick={handleChange}>
-                        <input 
-                            type="checkbox"
-                            checked={isChecked}
-                            onChange={handleChange}
-                        />
-                        <p>Запомнить меня</p>
-                    </div>
-                    <Link to="/forgetPassword">
-                        <p className={s.forget__password}>
-                            Забыли пароль?
-                        </p>
-                    </Link>
                 </div>
                 <div className={s.do__authentication}>
                     <button className={s.login}>
-                        Войти
+                        Подать
                     </button>
                 </div>
             </form>
