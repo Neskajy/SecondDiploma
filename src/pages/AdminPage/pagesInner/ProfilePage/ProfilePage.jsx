@@ -40,6 +40,7 @@ export default function ProfilePage() {
         });
 
         const data = await response_.json();
+        console.log(data); //
         setResponse(data);
     }
 

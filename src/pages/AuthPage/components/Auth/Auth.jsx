@@ -23,10 +23,11 @@ export default function Auth() {
             errors,
         },
         handleSubmit,
-        reset
+        reset,
     } = useForm({
         mode: "onBlur",
     });
+
 
     async function AuthenticateAndAuthorize(data) {
         const csrfResponse = await fetch(api_url + '/sanctum/csrf-cookie', {

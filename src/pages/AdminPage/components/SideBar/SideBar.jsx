@@ -78,8 +78,14 @@ export const Items = [
                     {
                         id: 4,
                         icon: schedule,
-                        text: "Расписание",
+                        text: "Календарь",
                         page: "reallyadmin/calendar",
+                    },
+                    {
+                        id: 5,
+                        icon: plan,
+                        text: "Расписания",
+                        page: "reallyadmin/timetables",
                     }
                 ]
             },

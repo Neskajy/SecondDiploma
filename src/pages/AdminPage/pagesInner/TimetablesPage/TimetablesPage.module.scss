@@ -1,0 +1,29 @@
+@use "../../../../App.scss" as app;
+
+.ProfilePage {
+    .HeaderAndContent {
+        .main {
+            display: flex;
+            width: 100%;
+            justify-content: center;
+
+            .container {
+                width: 90%;
+                h5 {
+                    @include app.h5;
+                }
+
+                .add {
+                    margin-top: 40px;
+                    @include app.button1(app.$accent__color);
+                    padding: 15px 30px;
+                }
+
+                .table__abertka {
+                    max-width: 100%;
+                    @include app.table__abertka;
+                }
+            }
+        }
+    }
+}

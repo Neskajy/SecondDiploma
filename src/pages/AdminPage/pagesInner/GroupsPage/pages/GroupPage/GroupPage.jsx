@@ -8,116 +8,47 @@ import modal_s from "../../../../../../components/UniversalModal/UniversalModal.
 
 import FollowButton from "../../../../../../components/FollowButton/FollowButton.jsx";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 export default function GroupPage() {
 
     const [isActiveAddColumnModalContext, setIsActiveAddColumnModalContext] = useState(false);
     const [isOpenedGradeModal, setIsOpenedGradeModal] = useState(false);
 
-    const response = [
-        {
-            "id": 1,
-            "ФИО": "hz hz hz",
-            "10.09": "5",
-            "17.09": "5",
-            "24.09": "5",
-            "30.09": "5",
-            "ср.балл сентябрь": "5.00",
-            "06.10": "5",
-            "13.10": "5",
-            "20.10": "5",
-            "27.10": "5",
-            "ср.балл октябрь": "5.00",
-            "04.11": "5",
-            "ср.балл ноябрь": "5.00"
-        },
-        {
-            "id": 1,
-            "ФИО": "hz hz hz",
-            "10.09": "5",
-            "17.09": "5",
-            "24.09": "5",
-            "30.09": "5",
-            "ср.балл сентябрь": "5.00",
-            "06.10": "5",
-            "13.10": "5",
-            "20.10": "5",
-            "27.10": "5",
-            "ср.балл октябрь": "5.00",
-            "04.11": "5",
-            "ср.балл ноябрь": "5.00"
-        },
-        {
-            "id": 1,
-            "ФИО": "hz hz hz",
-            "10.09": "5",
-            "17.09": "5",
-            "24.09": "5",
-            "30.09": "5",
-            "ср.балл сентябрь": "5.00",
-            "06.10": "5",
-            "13.10": "5",
-            "20.10": "5",
-            "27.10": "5",
-            "ср.балл октябрь": "5.00",
-            "04.11": "5",
-            "ср.балл ноябрь": "5.00"
-        },
-        {
-            "id": 1,
-            "ФИО": "hz hz hz",
-            "10.09": "5",
-            "17.09": "5",
-            "24.09": "5",
-            "30.09": "5",
-            "ср.балл сентябрь": "5.00",
-            "06.10": "5",
-            "13.10": "5",
-            "20.10": "5",
-            "27.10": "5",
-            "ср.балл октябрь": "5.00",
-            "04.11": "5",
-            "ср.балл ноябрь": "5.00"
-        },
-        {
-            "id": 1,
-            "ФИО": "hz hz hz",
-            "10.09": "5",
-            "17.09": "5",
-            "24.09": "5",
-            "30.09": "5",
-            "ср.балл сентябрь": "5.00",
-            "06.10": "5",
-            "13.10": "5",
-            "20.10": "5",
-            "27.10": "5",
-            "ср.балл октябрь": "5.00",
-            "04.11": "5",
-            "ср.балл ноябрь": "5.00"
-        },
-        {
-            "id": 1,
-            "ФИО": "hz hz hz",
-            "10.09": "5",
-            "17.09": "5",
-            "24.09": "5",
-            "30.09": "5",
-            "ср.балл сентябрь": "5.00",
-            "06.10": "5",
-            "13.10": "5",
-            "20.10": "5",
-            "27.10": "5",
-            "ср.балл октябрь": "5.00",
-            "04.11": "5",
-            "ср.балл ноябрь": "5.00"
-        },
-    ];
+    const location = useLocation().pathname;
+    const groupId = parseInt(location.split("/").slice(-1)[0]);
+    const api_url = import.meta.env.VITE_BACKEND_URL;
 
-    function clickOnGrade(isGrade) {
-        if (isGrade) {
-            setIsOpenedGradeModal(true);
-        }
+    function getXsrfToken() {
+        const token = document.cookie.split(";").find(row => row.startsWith("XSRF-TOKEN"))?.split("=")[1];
+        return token;
+    }
+
+    const [fullGroupInfo, setFullGroupInfo] = useState(null);
+
+    async function getFullGroupInfo() {
+        const request = await fetch(api_url + "/api/groups/fullGroupInfo/" + groupId, {
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "X-XSRF-TOKEN": decodeURIComponent(getXsrfToken())
+            },
+            "credentials": "include",
+        });
+
+        const response = await request.json();
+        setFullGroupInfo(response);
+    }
+
+    useEffect(() => {
+        getFullGroupInfo();
+    }, []);
+
+
+
+    function clickOnGrade() {
+        setIsOpenedGradeModal(true);
     }
 
     function openModal() {
@@ -142,93 +73,86 @@ export default function GroupPage() {
                             <div className={s.table__header}>
                                 <p>Группа <span>12/23</span> (Модуль 1 2025)</p>
                             </div>
+
                             <FollowButton>
 
                                 <div className={s.table__abertka}>
-                                    <table className={s.group__table}>
-                                        <thead>
-                                            <tr>
-                                                {
-                                                    Object.entries(response.at(0)).map(([key, value]) => {
-                                                        return <th key={key}>{key}</th>;
-                                                    })
-                                                }
-                                            </tr>
-                                        </thead>
+                                    {
+                                        fullGroupInfo !== null && Object.keys(fullGroupInfo).length > 0 ? (
+                                            <table className={s.group__table}>
+                                                <thead>
+                                                    <tr>
+                                                        <th>id</th>
+                                                        <th>ФИО</th>
+                                                        {
+                                                            Object.entries(fullGroupInfo.group_lessons).map(([k, v]) => {
+                                                                return <th>{v.date}</th>
+                                                            })
+                                                        }
+                                                    </tr>
+                                                </thead>
 
-                                        <tbody>
-                                            {
-                                                response.map((item) => {
-                                                    return (
-                                                        <tr>
-                                                            {Object.entries(item).map(([key, value]) => {
-                                                                const isGrade = /^\d{1,2}\.\d{2}$/.test(key) &&
-                                                                    key !== 'ср.балл' &&
-                                                                    !key.startsWith('ср.балл');
+                                                <tbody>
+                                                    {fullGroupInfo.students.map((student) => (
+                                                        <tr key={student.id}>
+                                                            <td>{student.id}</td>
+                                                            <td>{student.full_name}</td>
+                                                            {fullGroupInfo.group_lessons.map((lesson) => {
+                                                                const grade = lesson.grades.find(g => g.student_id === student.id);
+                                                                const attendance = lesson.attendances.find(a => a.student_id === student.id);
                                                                 return (
-                                                                    <td
-                                                                        key={key}
-                                                                        onClick={() => {
-                                                                            clickOnGrade(isGrade)
-                                                                        }}
-                                                                        className={`${isGrade ? s.cursor_pointer : ""}`}
-                                                                    >
-                                                                        {value}
+                                                                    <td key={lesson.id} className={s.grade} onClick={clickOnGrade}>
+                                                                        {grade?.value || "-"} / {attendance?.status || "—"}
                                                                     </td>
                                                                 );
                                                             })}
                                                         </tr>
-                                                    );
-                                                })
-                                            }
+                                                    ))}
+                                                </tbody>
 
-                                        </tbody>
-                                        <UniversalModal
-                                            isOpen={isOpenedGradeModal}
-                                            onClose={() => setIsOpenedGradeModal(false)}
-                                            onApply={handleSave}
-                                            title={"Изменить / поставить оценку"}
-                                            content={
-                                                <section className={modal_s.common}>
-                                                    <div className={modal_s.items}>
-                                                        <div className={modal_s.item}>
-                                                            <p>Заслужил</p>
-                                                            <div className={modal_s.checkboxes}>
-                                                                {['пусто', 'н', '2', '3', '4', '5'].map((value) => (
-                                                                    <div className={modal_s.checkbox} key={value}>
-                                                                        <p>{value}</p>
-                                                                        <input type="radio" name="grade" value={value} />
-                                                                    </div>
-                                                                ))}
+                                                <UniversalModal
+                                                    isOpen={isOpenedGradeModal}
+                                                    onClose={() => setIsOpenedGradeModal(false)}
+                                                    onApply={handleSave}
+                                                    title={"Оценка / пропуск"}
+                                                    content={
+                                                        <form className={modal_s.common}>
+                                                            <div className={modal_s.items}>
+                                                                <div className={modal_s.item}>
+                                                                    <p>Оценка за занятие</p>
+                                                                    <select>
+                                                                        {
+                                                                            ["-", "2", "3", "4", "5"].map((grade) => {
+                                                                                return <option value={grade}>{grade}</option>
+                                                                            })
+                                                                        }
+                                                                    </select>
+                                                                </div>
+                                                                <div className={modal_s.item}>
+                                                                    <p>Пропуск</p>
+                                                                    <select>
+                                                                        {
+                                                                            ["—", "нб", "о", "н", "ув"].map((grade) => {
+                                                                                return <option value={grade}>{grade}</option>
+                                                                            })
+                                                                        }
+                                                                    </select>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    </div>
-                                                </section>
-                                            }
-                                        />
-                                    </table>
-                                    <div className={s.add__button} onClick={openModal}>
-                                        <Plus className={s.icon} />
-                                    </div>
-                                    <UniversalModal
-                                        isOpen={isActiveAddColumnModalContext}
-                                        onClose={() => setIsActiveAddColumnModalContext(false)}
-                                        onApply={handleSave}
-                                        title={"Добавить колонку"}
-                                        content={
-                                            <section className={modal_s.common}>
-                                                <div className={modal_s.items}>
-                                                    <div className={modal_s.item}>
-                                                        <p>Дата</p>
-                                                        <span className={modal_s.note}>Примечание: колонка добавится до итоговой оценки месяца</span>
-                                                        <input
-                                                            type="date"
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </section>
-                                        }
-                                    />
+                                                            <div className={modal_s.buttons}>
+                                                                <button className={modal_s.close}>
+                                                                    Закрыть
+                                                                </button>
+                                                                <button className={modal_s.apply} type="submit">
+                                                                    Сохранить
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    }
+                                                />
+                                            </table>
+                                        ) : ""
+                                    }
                                 </div>
                             </FollowButton>
                         </div>

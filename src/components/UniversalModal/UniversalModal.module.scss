@@ -71,13 +71,22 @@
                         //     font-size: 14px;
                         //     color: app.$footer;
                         // }
-                        input[type="text"], input[type="date"], input[type="time"], input[type="number"] {
+                        input[type="text"], input[type="date"], input[type="time"], input[type="number"], textarea {
                             margin-top: 10px;
                             width: 100%;
                             border: 1px solid app.$gray__smooth;
                             padding: 10px 20px;
                             border-radius: 8px;
                             box-shadow: app.$gray__smooth__shadow;
+                        }
+
+                        input[type="checkbox"] {
+                            margin-top: 10px;
+                            accent-color: app.$accent__color;
+                        }
+
+                        .item {
+                            margin-top: 40px;
                         }
 
                         select {

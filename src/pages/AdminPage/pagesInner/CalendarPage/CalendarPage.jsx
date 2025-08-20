@@ -27,7 +27,6 @@ export default function CalendarPage() {
     const [isActiveAddTimetableModal, setIsActiveAddTimetableModal] = useState(false);
 
 
-
     function getCalendarPage({ isNext, timeType, calendarInfo }) {
         if (!calendarInfo) console.log("Нет calendarInfo");
         const { year, month, weekdays, today, today__week__index } = calendarInfo;
@@ -145,17 +144,29 @@ export default function CalendarPage() {
         });
     }, []);
 
-    function getRandomSymbol() {
-        const lets = "0123456789ABCDEF";
-        const random = Math.floor(Math.random() * lets.length);
-        return lets[random];
-    }
-    function getRandomHex() {
-        return "#" + getRandomSymbol() + getRandomSymbol() + getRandomSymbol() + getRandomSymbol() + getRandomSymbol() + getRandomSymbol();
+    function getRandomBrightHSL() {
+        const hue = Math.floor(Math.random() * 360);
+        const saturation = 90 + Math.floor(Math.random() * 20);
+        const lightness = 49 + Math.floor(Math.random() * 15);
+        return { hue, saturation, lightness };
     }
 
+    function hslToHex(h, s, l) {
+        l /= 100;
+        const a = s * Math.min(l, 1 - l) / 100;
+        const f = n => {
+            const k = (n + h / 30) % 12;
+            const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+            return Math.round(255 * color).toString(16).padStart(2, '0');
+        };
+        return `#${f(0)}${f(8)}${f(4)}`;
+    }
 
-    const [color, setColor] = useState(getRandomHex());
+    // Безопасная деструктуризация
+    const { hue, saturation, lightness } = getRandomBrightHSL();
+    const initialColor = hslToHex(hue, saturation, lightness);
+
+    const [color, setColor] = useState(initialColor);
 
     async function getLessons() {
 
@@ -180,13 +191,12 @@ export default function CalendarPage() {
         getLessons();
         getGroups();
         getTimetables();
-    }, [])
+        getTeachers();
+    }, []);
 
     async function createLesson(data) {
 
         const xsrfToken = document.cookie.split("; ").find(row => row.startsWith("XSRF-TOKEN"))?.split("=")[1];
-
-        console.log(JSON.stringify(data));
 
         const request = await fetch(api_url + "/api/lessons/create", {
             headers: {
@@ -201,7 +211,50 @@ export default function CalendarPage() {
 
         const response = await request.json();
 
-        console.log(response);
+        getLessons();
+        setIsActiveAddEventModal(false);
+    }
+
+    async function updateLesson(data) {
+
+        const xsrfToken = document.cookie.split("; ").find(row => row.startsWith("XSRF-TOKEN"))?.split("=")[1];
+        const lesson_id = data.id;
+
+        const {id, ...newData} = data;
+
+        const request = await fetch(api_url + "/api/lessons/update/" + lesson_id, {
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "X-XSRF-TOKEN": decodeURIComponent(xsrfToken)
+            },
+            method: "PATCH",
+            credentials: "include",
+            body: JSON.stringify(newData)
+        });
+
+        const response = await request.json();        
+        getLessons();
+        setIsActiveEditEventModal(false);
+    }
+
+    async function deleteLesson(id) {
+
+        const xsrfToken = document.cookie.split("; ").find(row => row.startsWith("XSRF-TOKEN"))?.split("=")[1];
+
+        const request = await fetch(api_url + "/api/lessons/delete/" + id, {
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "X-XSRF-TOKEN": decodeURIComponent(xsrfToken)
+            },
+            method: "DELETE",
+            credentials: "include"
+        });
+
+        const response = await request.json();        
+        getLessons();
+        setIsActiveEditEventModal(false);
     }
 
 
@@ -242,10 +295,13 @@ export default function CalendarPage() {
         },
         handleSubmit,
         reset,
-        setValue
+        setValue,
+        watch
     } = useForm({
         mode: "onBlur",
     });
+    const lessonId = watch("id");
+    const isCancelled = watch("is_cancelled");
 
     const {
         register: registerPrepare,
@@ -253,10 +309,12 @@ export default function CalendarPage() {
             errors: errorsPrepare,
         },
         handleSubmit: handlePrepareSubmit,
-        reset: resetPrepare
+        reset: resetPrepare,
     } = useForm({
         mode: "onBlur",
     });
+
+    
 
     const {
         register: registerTimetable,
@@ -330,11 +388,55 @@ export default function CalendarPage() {
         });
 
         const response = await request.json();
-
         setTimetables(response);
     }
 
+    const withoutSeconds = (time) => {
+        const [hour, minutes, seconds] = time.split(":");
+        return `${hour}:${minutes}`;
+    }
 
+    const [teachers, setTeachers] = useState(null);
+
+    async function getTeachers() {
+
+        const xsrfToken = document.cookie.split("; ").find(row => row.startsWith("XSRF-TOKEN"))?.split("=")[1];
+
+        const request = await fetch(api_url + "/api/users/teachers", {
+            method: "GET",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "X-XSRF-TOKEN": decodeURIComponent(xsrfToken)
+            }
+        });
+        const response = await request.json();
+
+        setTeachers(response);
+    }
+
+    async function createTimetable(data) {
+
+        console.log(data);
+
+        const xsrfToken = document.cookie.split("; ").find(row => row.startsWith("XSRF-TOKEN"))?.split("=")[1];
+
+        const request = await fetch(api_url + "/api/timetable/create", {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "X-XSRF-TOKEN": decodeURIComponent(xsrfToken)
+            },
+            body: JSON.stringify(data)
+        });
+        const response = await request.json();
+
+        getLessons();
+        setIsActiveAddTimetableModal(false);
+    }
 
 
     return (
@@ -366,10 +468,10 @@ export default function CalendarPage() {
                                                 isOpen={isActiveAddTimetableModal}
                                                 title="Добавить расписание"
                                                 content={
-                                                    <form className={modal_s.common} onSubmit={handlePrepareSubmit(createLesson)}>
+                                                    <form className={modal_s.common} onSubmit={handleTimetableSubmit(createTimetable)}>
                                                         <div className={modal_s.items}>
                                                             <div className={modal_s.item}>
-                                                                <p>Название расписания (без повторений)</p>
+                                                                <p>Название расписания (новое)</p>
                                                                 <input
                                                                     type="text"
                                                                     {...registerTimetable("name", {
@@ -379,7 +481,7 @@ export default function CalendarPage() {
                                                                 <div className={modal_s.message}>{errorsTimetable?.name && <div className={s.message}><img src={warning} /><p>{errorsTimetable?.name.message || "Error!"}</p></div>}</div>
                                                             </div>
                                                             <div className={modal_s.item}>
-                                                                <p>Автоматиски создать пары в расписании? Если да, то пары автоматически создадутся в каждой неделе в определенный день недели, начиная от даты старта расписания, заканчивая датой окончания расписания. Чтобы создать пары надо создать в любом случае расписание</p>
+                                                                <span>Автоматиски создать пары в расписании? Если да, то пары автоматически создадутся в каждой неделе в определенный день недели, начиная от даты старта расписания, заканчивая датой окончания расписания. Чтобы создать пары, надо создать в любом случае расписание</span>
                                                                 <div className={modal_s.checkboxes}>
                                                                     {['Нет', 'Да'].map((value) => (
                                                                         <div className={modal_s.checkbox} key={value}>
@@ -387,7 +489,7 @@ export default function CalendarPage() {
                                                                             <input type="radio"
                                                                                 name="isLoop"
                                                                                 value={value}
-                                                                                {...registerPrepare("choice")}
+                                                                                {...registerTimetable("createLessons")}
                                                                             />
                                                                         </div>
                                                                     ))}
@@ -410,7 +512,7 @@ export default function CalendarPage() {
                                                                     {...registerTimetable("group")}
                                                                 >
                                                                     <option value="">--Выберите группу--</option>
-                                                                    {groupsBackend ? (
+                                                                    {Array.isArray(groupsBackend) && groupsBackend.length > 0 ? (
                                                                             groupsBackend.map((item) => (
                                                                                 <option value={item.name} key={item.id}>
                                                                                     {item.name}
@@ -424,13 +526,13 @@ export default function CalendarPage() {
                                                             <div className={modal_s.item}>
                                                                 <p>Учитель</p>
                                                                 <select
-                                                                    {...registerTimetable("group")}
+                                                                    {...registerTimetable("teacher_id")}
                                                                 >
                                                                     <option value="">--Выберите учителя--</option>
-                                                                    {groupsBackend ? (
-                                                                            groupsBackend.map((item) => (
-                                                                                <option value={item.name} key={item.id}>
-                                                                                    {item.name}
+                                                                    {teachers ? (
+                                                                            teachers.map((item) => (
+                                                                                <option value={item.id} key={item.id}>
+                                                                                    {item.full_name}
                                                                                 </option>
                                                                             ))
                                                                         ) : ""
@@ -440,7 +542,13 @@ export default function CalendarPage() {
                                                             </div>
                                                             <div className={modal_s.item}>
                                                                 <p>Цвет события</p>
-                                                                <input type="color" className={modal_s.color__input} defaultValue={color} />
+                                                                <input type="color"
+                                                                    className={modal_s.color__input} 
+                                                                    defaultValue={color}
+                                                                    {...registerTimetable("color", {
+                                                                        "required": "Поле обязательно к заполнению"
+                                                                    })}
+                                                                />
                                                             </div>
                                                             <div className={modal_s.item}>
                                                                 <p>Старт</p>
@@ -449,7 +557,7 @@ export default function CalendarPage() {
                                                                     {...registerTimetable("start_date", {
                                                                         required: "Поле обязательно к заполнению"
                                                                     })}
-                                                                    value={calendarInfo?.selectedDay?.date ? calendarInfo.selectedDay.date : ""}
+                                                                    defaultValue={calendarInfo?.selectedDay?.date ? calendarInfo.selectedDay.date : ""}
                                                                 />
                                                                 <div className={modal_s.message}>{errorsTimetable?.date && <div className={s.message}><img src={warning} /><p>{errorsTimetable?.date.message || "Error!"}</p></div>}</div>
                                                             </div>
@@ -457,10 +565,10 @@ export default function CalendarPage() {
                                                                 <p>Окончание</p>
                                                                 <input
                                                                     type="date"
-                                                                    {...registerTimetable("start_date", {
+                                                                    {...registerTimetable("end_date", {
                                                                         required: "Поле обязательно к заполнению"
                                                                     })}
-                                                                    value={calendarInfo?.selectedDay?.date ? calendarInfo.selectedDay.date : ""}
+                                                                    defaultValue={calendarInfo?.selectedDay?.date ? calendarInfo.selectedDay.date : ""}
                                                                 />
                                                                 <div className={modal_s.message}>{errorsTimetable?.date && <div className={s.message}><img src={warning} /><p>{errorsTimetable?.date.message || "Error!"}</p></div>}</div>
                                                             </div>
@@ -572,11 +680,8 @@ export default function CalendarPage() {
                                                                                                             }}
                                                                                                             onClick={
                                                                                                                 (e) => {
-                                                                                                                    const withoutSeconds = (time) => {
-                                                                                                                        const [hour, minutes, seconds] = time.split(":");
-                                                                                                                        return `${hour}:${minutes}`;
-                                                                                                                    }
-                                                                                                                    console.log(lesson.timetable_name);
+                                                                                                                    console.log(lesson);
+                                                                                                                    setValue("id", lesson.id);
                                                                                                                     setValue("cabinet", lesson.cabinet);
                                                                                                                     setValue("group", lesson.group);
                                                                                                                     setValue("timetable", lesson.timetable_name);
@@ -584,6 +689,8 @@ export default function CalendarPage() {
                                                                                                                     setValue("date", lesson.date);
                                                                                                                     setValue("lesson_start", withoutSeconds(lesson.lesson_start));
                                                                                                                     setValue("lesson_end", withoutSeconds(lesson.lesson_end));
+                                                                                                                    setValue("is_cancelled", Boolean(lesson.is_cancelled));
+                                                                                                                    setValue("cancellation_reason", lesson.cancellation_reason);
                                                                                                                     setIsActiveEditEventModal(true);
                                                                                                                     e.stopPropagation();
                                                                                                                 }
@@ -591,7 +698,7 @@ export default function CalendarPage() {
                                                                                                             >
                                                                                                             
                                                                                                                 {
-                                                                                                                    lesson.lesson_start
+                                                                                                                    withoutSeconds(lesson.lesson_start)
                                                                                                                 }
                                                                                                                 <span style={{ background: lesson?.color ?  hexToRgba(lesson.color, 1) : "rgba(0, 128, 0, 1)" }}></span>
                                                                                                             </li>
@@ -650,10 +757,10 @@ export default function CalendarPage() {
                                                             <div className={modal_s.item}>
                                                                 <p>Расписание</p>
                                                                 <select
-                                                                    {...registerPrepare("timetable")}
+                                                                    {...registerPrepare("timetable_name")}
                                                                 >
                                                                     <option value="">--Выберите расписание--</option>
-                                                                    {timetables ? (
+                                                                    {Array.isArray(timetables) ? (
                                                                             timetables.map((item) => (
                                                                                 <option value={item.name} key={item.id}>
                                                                                     {item.name}
@@ -665,8 +772,21 @@ export default function CalendarPage() {
                                                                 <div className={modal_s.message}>{errorsPrepare?.group && <div className={s.message}><img src={warning} /><p>{errorsPrepare?.group.message || "Error!"}</p></div>}</div>
                                                             </div>
                                                             <div className={modal_s.item}>
-                                                                <p>Цвет события</p>
-                                                                <input type="color" className={modal_s.color__input} defaultValue={color} />
+                                                                <p>Учитель</p>
+                                                                <select
+                                                                    {...registerPrepare("teacher_id")}
+                                                                >
+                                                                    <option value="">--Выберите учителя--</option>
+                                                                    {teachers ? (
+                                                                            teachers.map((item) => (
+                                                                                <option value={item.id} key={item.id}>
+                                                                                    {item.full_name}
+                                                                                </option>
+                                                                            ))
+                                                                        ) : ""
+                                                                    }
+                                                                </select>
+                                                                <div className={modal_s.message}>{errorsPrepare?.group && <div className={s.message}><img src={warning} /><p>{errorsPrepare?.group.message || "Error!"}</p></div>}</div>
                                                             </div>
                                                             <div className={modal_s.item}>
                                                                 <p>Дата события</p>
@@ -675,7 +795,7 @@ export default function CalendarPage() {
                                                                     {...registerPrepare("date", {
                                                                         required: "Поле обязательно к заполнению"
                                                                     })}
-                                                                    value={calendarInfo?.selectedDay?.date ? calendarInfo.selectedDay.date : ""}
+                                                                    defaultValue={calendarInfo?.selectedDay?.date ? calendarInfo.selectedDay.date : ""}
                                                                 />
                                                                 <div className={modal_s.message}>{errorsPrepare?.date && <div className={s.message}><img src={warning} /><p>{errorsPrepare?.date.message || "Error!"}</p></div>}</div>
                                                             </div>
@@ -717,8 +837,16 @@ export default function CalendarPage() {
                                                 isOpen={isActiveEditEventModal}
                                                 title="Изменить пару"
                                                 content={
-                                                    <section className={modal_s.common}>
+                                                    <form className={modal_s.common} onSubmit={handleSubmit(updateLesson)}>
                                                         <div className={modal_s.items}>
+                                                            <div className={modal_s.item}>
+                                                                <p>id</p>
+                                                                <input
+                                                                    type="text"
+                                                                    {...register("id")}
+                                                                    readOnly
+                                                                />
+                                                            </div>
                                                             <div className={modal_s.item}>
                                                                 <p>Кабинет</p>
                                                                 <input
@@ -744,32 +872,23 @@ export default function CalendarPage() {
                                                                         ) : ""
                                                                     }
                                                                 </select>
-                                                                <div className={modal_s.message}>{errorsPrepare?.group && <div className={s.message}><img src={warning} /><p>{errors?.group.message || "Error!"}</p></div>}</div>
+                                                                <div className={modal_s.message}>{errors?.group && <div className={s.message}><img src={warning} /><p>{errors?.group.message || "Error!"}</p></div>}</div>
                                                             </div>
                                                             <div className={modal_s.item}>
-                                                                <p>Расписание</p>
+                                                                <p>Учитель</p>
                                                                 <select
-                                                                    {...register("timetable")}
+                                                                    {...register("teacher_id")}
                                                                 >
-                                                                    <option value="">--Выберите расписание--</option>
-                                                                    {timetables ? (
-                                                                            timetables.map((item) => (
-                                                                                <option value={item.name} key={item.id}>
-                                                                                    {item.name}
+                                                                    {teachers ? (
+                                                                            teachers.map((item) => (
+                                                                                <option value={item.id} key={item.id}>
+                                                                                    {item.full_name}
                                                                                 </option>
                                                                             ))
                                                                         ) : ""
                                                                     }
                                                                 </select>
-                                                                <div className={modal_s.message}>{errorsPrepare?.timetable && <div className={s.message}><img src={warning} /><p>{errors?.timetable.message || "Error!"}</p></div>}</div>
-                                                            </div>
-                                                            <div className={modal_s.item}>
-                                                                <p>Цвет события</p>
-                                                                <input 
-                                                                    type="color"
-                                                                    className={modal_s.color__input}
-                                                                    {...register("color")}
-                                                                />
+                                                                <div className={modal_s.message}>{errors?.teachers && <div className={s.message}><img src={warning} /><p>{errors?.teachers.message || "Error!"}</p></div>}</div>
                                                             </div>
                                                             <div className={modal_s.item}>
                                                                 <p>Дата события</p>
@@ -801,16 +920,40 @@ export default function CalendarPage() {
                                                                 />
                                                                 <div className={modal_s.message}>{errors?.lesson_end && <div className={s.message}><img src={warning} /><p>{errors?.lesson_end.message || "Error!"}</p></div>}</div>
                                                             </div>
+                                                            <div className={modal_s.item}>
+                                                                <p>Отменить пару</p>
+                                                                <input
+                                                                    type="checkbox"
+                                                                    {...register("is_cancelled")}
+                                                                />
+                                                                {
+                                                                    isCancelled && (
+                                                                        <div className={modal_s.item}>
+                                                                            <p>Причина отмены</p>
+                                                                            <textarea
+                                                                                {...register("cancellation_reason", {
+                                                                                    required: "Поле обязательно к заполнению"
+                                                                                })}
+                                                                            />
+                                                                        </div>
+                                                                    )
+                                                                }
+                                                                {
+                                                                    isCancelled && (
+                                                                        <div className={modal_s.message}>{errors?.cancellation_reason && <div className={s.message}><img src={warning} /><p>{errors?.cancellation_reason.message || "Error!"}</p></div>}</div>
+                                                                    )
+                                                                }
+                                                            </div>
                                                         </div>
                                                         <div className={modal_s.buttons}>
-                                                            <button className={modal_s.close} onClick={() => setIsModalDataOpen(false)}>
-                                                                Закрыть
-                                                            </button>
                                                             <button className={modal_s.apply} type="submit">
                                                                 Сохранить
                                                             </button>
+                                                            <button className={modal_s.close} onClick={() => deleteLesson(lessonId)}>
+                                                                Удалить
+                                                            </button>
                                                         </div>
-                                                    </section>
+                                                    </form>
                                                 }
                                             />
 

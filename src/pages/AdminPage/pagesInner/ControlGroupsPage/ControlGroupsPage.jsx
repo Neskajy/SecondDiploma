@@ -172,7 +172,7 @@ export default function GroupsPage() {
                                                     v.map((group) => {
                                                         return (
                                                             <li className={s.group} key={group.name}>
-                                                                <Link to={`${path}/group`}>
+                                                                <Link to={`${path}/${group.id}`}>
                                                                     <span className={s.absolute__top}>{group.status === "active" ? "Идет занятие" : ""}</span>
                                                                     <p className={s.name}>{group.name}</p>
                                                                     <div className={s.bottom}>

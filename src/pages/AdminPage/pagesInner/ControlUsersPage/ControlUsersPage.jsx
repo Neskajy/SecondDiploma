@@ -137,6 +137,9 @@ export default function ControlUsersPage() {
             },
             body: JSON.stringify(fetchData)
         });
+        
+        const response = await request.json();
+        console.log(response)
 
         alert("Успешно");
         setIsEditUserModalOpen(false);
@@ -214,6 +217,7 @@ export default function ControlUsersPage() {
         });
 
         const response_ = await request.json();
+        console.log(response)
         setRoles(response_);
     }
 
@@ -229,132 +233,136 @@ export default function ControlUsersPage() {
                         <button className={s.add} onClick={() => openAddableModal()}>
                             Добавить пользователя
                         </button>
-                        <UniversalModal
-                            isOpen={isAddUserModalOpen}
-                            onClose={() => setIsAddUserModalOpen(false)}
-                            content={
-                                <form className={modal_s.common} onSubmit={handleSubmit(addUsers)}>
-                                    <div className={s.inner}>
-                                        <h5>Создать пользователя</h5>
-                                        <div className={modal_s.items}>
-                                            <div className={modal_s.item}>
-                                                <p>Имя</p>
-                                                <input
-                                                    type="text"
-                                                    {...register("name", {
-                                                        required: "Поле обязательно к заполнению"
-                                                    })}
-                                                />
-                                                <div className={modal_s.message}>{errors?.name && <div className={s.message}><img src={warning} /><p>{errors?.name.message || "Error!"}</p></div>}</div>
+                        {
+                            Array.isArray(rolesBackend) ? (
+                                <UniversalModal
+                                    isOpen={isAddUserModalOpen}
+                                    onClose={() => setIsAddUserModalOpen(false)}
+                                    content={
+                                        <form className={modal_s.common} onSubmit={handleSubmit(addUsers)}>
+                                            <div className={s.inner}>
+                                                <h5>Создать пользователя</h5>
+                                                <div className={modal_s.items}>
+                                                    <div className={modal_s.item}>
+                                                        <p>Имя</p>
+                                                        <input
+                                                            type="text"
+                                                            {...register("name", {
+                                                                required: "Поле обязательно к заполнению"
+                                                            })}
+                                                        />
+                                                        <div className={modal_s.message}>{errors?.name && <div className={s.message}><img src={warning} /><p>{errors?.name.message || "Error!"}</p></div>}</div>
+                                                    </div>
+                                                    <div className={modal_s.item}>
+                                                        <p>Фамилия</p>
+                                                        <input
+                                                            type="text"
+                                                            {...register("surname", {
+                                                                required: "Поле обязательно к заполнению"
+                                                            })}
+                                                        />
+                                                        <div className={modal_s.message}>{errors?.surname && <div className={s.message}><img src={warning} /><p>{errors?.surname.message || "Error!"}</p></div>}</div>
+                                                    </div>
+                                                    <div className={modal_s.item}>
+                                                        <p>Отчество</p>
+                                                        <input
+                                                            type="text"
+                                                            {...register("patronymic", {
+                                                                required: "Поле обязательно к заполнению"
+                                                            })}
+                                                        />
+                                                        <div className={modal_s.message}>{errors?.patronymic && <div className={s.message}><img src={warning} /><p>{errors?.patronymic.message || "Error!"}</p></div>}</div>
+                                                    </div>
+                                                    <div className={modal_s.item}>
+                                                        <p>Группа</p>
+                                                        <select
+                                                            {...register("group", {
+                                                                required: "Поле обязательно к заполнению"
+                                                            })}
+                                                        >
+                                                            <option value="">--Выберите группу--</option>
+                                                            {groupsBackend ? (
+                                                                    groupsBackend.map((item) => (
+                                                                        <option value={item.name} key={item.id}>
+                                                                            {item.name}
+                                                                        </option>
+                                                                    ))
+                                                                ) : ""
+                                                            }
+                                                        </select>
+                                                        <div className={modal_s.message}>{errors?.group && <div className={s.message}><img src={warning} /><p>{errors?.group.message || "Error!"}</p></div>}</div>
+                                                    </div>
+                                                    <div className={modal_s.item}>
+                                                        <p>Роль</p>
+                                                        <select
+                                                            {...register("role", {
+                                                                required: "Поле обязательно к заполнению"
+                                                            })}
+                                                        >
+                                                            <option value="">--Выберите роль--</option>
+                                                            {
+                                                                rolesBackend.map((item) => {
+                                                                    return <option value={item} key={item}>
+                                                                        {item}
+                                                                    </option>
+                                                                })
+                                                            }
+                                                        </select>
+                                                        <div className={modal_s.message}>{errors?.role && <div className={s.message}><img src={warning} /><p>{errors?.role.message || "Error!"}</p></div>}</div>
+                                                    </div>
+                                                    <div className={modal_s.item}>
+                                                        <p>Почта</p>
+                                                        <input
+                                                            type="text"
+                                                            {...register("email", {
+                                                                pattern: {
+                                                                    value: /^[\w.][\w]+@[\w]+\.[a-zA-Z]{2,}$/,
+                                                                    message: "Не правильный формат почты"
+                                                                },
+                                                                required: "Поле обязательно к заполнению"
+                                                            })}
+                                                        />
+                                                        <div className={modal_s.message}>{errors?.email && <div className={s.message}><img src={warning} /><p>{errors?.email.message || "Error!"}</p></div>}</div>
+                                                    </div>
+                                                    <div className={modal_s.item}>
+                                                        <p>Телефон</p>
+                                                        <input
+                                                            type="text"
+                                                            {...register("phone", {
+                                                                pattern: {
+                                                                    value: /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/,
+                                                                    message: "Не правильный формат номера телефона"
+                                                                },
+                                                                required: "Поле обязательно к заполнению"
+                                                            })}
+                                                        />
+                                                        <div className={modal_s.message}>{errors?.phone && <div className={s.message}><img src={warning} /><p>{errors?.phone.message || "Error!"}</p></div>}</div>
+                                                    </div>
+                                                    <div className={modal_s.item}>
+                                                        <p>Группа основной специальности</p>
+                                                        <input
+                                                            type="text"
+                                                            {...register("basic_group", {
+                                                                required: "Поле обязательно к заполнению"
+                                                            })}
+                                                        />
+                                                        <div className={modal_s.message}>{errors?.basic_group && <div className={s.message}><img src={warning} /><p>{errors?.basic_group.message || "Error!"}</p></div>}</div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div className={modal_s.item}>
-                                                <p>Фамилия</p>
-                                                <input
-                                                    type="text"
-                                                    {...register("surname", {
-                                                        required: "Поле обязательно к заполнению"
-                                                    })}
-                                                />
-                                                <div className={modal_s.message}>{errors?.surname && <div className={s.message}><img src={warning} /><p>{errors?.surname.message || "Error!"}</p></div>}</div>
+                                            <div className={modal_s.buttons}>
+                                                <button className={modal_s.close} onClick={() => setIsEditUserModalOpen(false)}>
+                                                    Закрыть
+                                                </button>
+                                                <button className={modal_s.apply} type="submit">
+                                                    Сохранить
+                                                </button>
                                             </div>
-                                            <div className={modal_s.item}>
-                                                <p>Отчество</p>
-                                                <input
-                                                    type="text"
-                                                    {...register("patronymic", {
-                                                        required: "Поле обязательно к заполнению"
-                                                    })}
-                                                />
-                                                <div className={modal_s.message}>{errors?.patronymic && <div className={s.message}><img src={warning} /><p>{errors?.patronymic.message || "Error!"}</p></div>}</div>
-                                            </div>
-                                            <div className={modal_s.item}>
-                                                <p>Группа</p>
-                                                <select
-                                                    {...register("group", {
-                                                        required: "Поле обязательно к заполнению"
-                                                    })}
-                                                >
-                                                    <option value="">--Выберите группу--</option>
-                                                    {groupsBackend ? (
-                                                            groupsBackend.map((item) => (
-                                                                <option value={item.name} key={item.id}>
-                                                                    {item.name}
-                                                                </option>
-                                                            ))
-                                                        ) : ""
-                                                    }
-                                                </select>
-                                                <div className={modal_s.message}>{errors?.group && <div className={s.message}><img src={warning} /><p>{errors?.group.message || "Error!"}</p></div>}</div>
-                                            </div>
-                                            <div className={modal_s.item}>
-                                                <p>Роль</p>
-                                                <select
-                                                    {...register("role", {
-                                                        required: "Поле обязательно к заполнению"
-                                                    })}
-                                                >
-                                                    <option value="">--Выберите роль--</option>
-                                                    {
-                                                        rolesBackend.map((item) => {
-                                                            return <option value={item} key={item}>
-                                                                {item}
-                                                            </option>
-                                                        })
-                                                    }
-                                                </select>
-                                                <div className={modal_s.message}>{errors?.role && <div className={s.message}><img src={warning} /><p>{errors?.role.message || "Error!"}</p></div>}</div>
-                                            </div>
-                                            <div className={modal_s.item}>
-                                                <p>Почта</p>
-                                                <input
-                                                    type="text"
-                                                    {...register("email", {
-                                                        pattern: {
-                                                            value: /^[\w.][\w]+@[\w]+\.[a-zA-Z]{2,}$/,
-                                                            message: "Не правильный формат почты"
-                                                        },
-                                                        required: "Поле обязательно к заполнению"
-                                                    })}
-                                                />
-                                                <div className={modal_s.message}>{errors?.email && <div className={s.message}><img src={warning} /><p>{errors?.email.message || "Error!"}</p></div>}</div>
-                                            </div>
-                                            <div className={modal_s.item}>
-                                                <p>Телефон</p>
-                                                <input
-                                                    type="text"
-                                                    {...register("phone", {
-                                                        pattern: {
-                                                            value: /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/,
-                                                            message: "Не правильный формат номера телефона"
-                                                        },
-                                                        required: "Поле обязательно к заполнению"
-                                                    })}
-                                                />
-                                                <div className={modal_s.message}>{errors?.phone && <div className={s.message}><img src={warning} /><p>{errors?.phone.message || "Error!"}</p></div>}</div>
-                                            </div>
-                                            <div className={modal_s.item}>
-                                                <p>Группа основной специальности</p>
-                                                <input
-                                                    type="text"
-                                                    {...register("basic_group", {
-                                                        required: "Поле обязательно к заполнению"
-                                                    })}
-                                                />
-                                                <div className={modal_s.message}>{errors?.basic_group && <div className={s.message}><img src={warning} /><p>{errors?.basic_group.message || "Error!"}</p></div>}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className={modal_s.buttons}>
-                                        <button className={modal_s.close} onClick={() => setIsEditUserModalOpen(false)}>
-                                            Закрыть
-                                        </button>
-                                        <button className={modal_s.apply} type="submit">
-                                            Сохранить
-                                        </button>
-                                    </div>
-                                </form>
-                            }
-                        />
+                                        </form>
+                                    }
+                                />
+                            ) : ""
+                        }
                         <FollowButton>
 
                             <div className={s.table__abertka}>
@@ -379,6 +387,10 @@ export default function ControlUsersPage() {
                                         ))}
                                     </tbody>
                                 </table>
+                            </div>
+                        </FollowButton>
+                        {
+                            Array.isArray(rolesBackend) ? (
                                 <UniversalModal
                                     isOpen={isEditUserModalOpen}
                                     onClose={() => setIsEditUserModalOpen(false)}
@@ -427,7 +439,6 @@ export default function ControlUsersPage() {
                                                     <select
                                                         {...registerEdit("group")}
                                                     >
-                                                        <option value="">--Выберите группу--</option>
                                                         {groupsBackend ? (
                                                                 groupsBackend.map((item) => (
                                                                     <option value={item.name} key={item.id}>
@@ -501,8 +512,8 @@ export default function ControlUsersPage() {
                                         </form>
                                     }
                                 />
-                            </div>
-                        </FollowButton>
+                            ) : ""
+                        }
                     </div>
                 </main>
             </div>
