@@ -19,6 +19,8 @@ import FollowButton from "../../../../components/FollowButton/FollowButton.jsx";
 
 import { useLocation } from "react-router-dom";
 
+import { makeRequest } from "../../../../api/apiClient.js";
+
 export default function ControlUsersPage() {
 
     const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
@@ -49,6 +51,7 @@ export default function ControlUsersPage() {
         setIsEditUserModalOpen(true);
     }
 
+
     function openAddableModal() {
         setIsAddUserModalOpen(true);
     }
@@ -71,53 +74,35 @@ export default function ControlUsersPage() {
         },
         handleSubmit: handleSubmitEdit,
         setValue: setValueEdit,
+        watch: watchEdit,
         reset: resetEdit
     } = useForm({
         mode: "onBlur",
     });
 
+    const watchEditId = watchEdit("id");
+
     const api_url = import.meta.env.VITE_BACKEND_URL;
 
     async function getUsers() {
-        const xsrfToken = document.cookie.split("; ").find(row => row.startsWith("XSRF-TOKEN"))?.split("=")[1];
-
-        const request = await fetch(api_url + "/api/users/", {
+        makeRequest({
             method: "GET",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-                "X-XSRF-TOKEN": decodeURIComponent(xsrfToken)
-            }
-        });
-
-        const response_ = await request.json();
-
-        setResponse(response_);
+            route: api_url + "/api/users/",
+            setFunction: setResponse,
+        })
     }
 
     async function getGroups() {
 
-        const xsrfToken = document.cookie.split("; ").find(row => row.startsWith("XSRF-TOKEN"))?.split("=")[1];
-
-        const request = await fetch(api_url + "/api/groups/justGroups", {
+        makeRequest({
             method: "GET",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-                "X-XSRF-TOKEN": decodeURIComponent(xsrfToken)
-            }
-        });
-
-        const response_ = await request.json();
-        setGroups(response_);
+            route: api_url + "/api/groups/justGroups",
+            setFunction: setGroups
+        })
     }
-
     
 
     async function editUsers(data) {
-        const xsrfToken = document.cookie.split("; ").find(row => row.startsWith("XSRF-TOKEN"))?.split("=")[1];
         const userId = data.id;
         const { id, ...newData } = data;
 
@@ -127,28 +112,17 @@ export default function ControlUsersPage() {
             Object.assign(fetchData, { [k]: String(v) });
         });
 
-        const request = await fetch(api_url + `/api/users/update/${userId}`, {
+        makeRequest({
             method: "PATCH",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-                "X-XSRF-TOKEN": decodeURIComponent(xsrfToken)
-            },
-            body: JSON.stringify(fetchData)
-        });
-        
-        const response = await request.json();
-        console.log(response)
+            route: api_url + `/api/users/update/${userId}`,
+            body: fetchData,
+        })
 
-        alert("Успешно");
         setIsEditUserModalOpen(false);
-
         getUsers();
     }
 
     async function addUsers(data) {
-        const xsrfToken = document.cookie.split("; ").find(row => row.startsWith("XSRF-TOKEN"))?.split("=")[1];
         const { id, ...newData } = data;
 
         const fetchData = {};
@@ -157,26 +131,11 @@ export default function ControlUsersPage() {
             Object.assign(fetchData, { [k]: String(v) });
         });
 
-        const request = await fetch(api_url + `/api/users/create`, {
+        makeRequest({
             method: "POST",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-                "X-XSRF-TOKEN": decodeURIComponent(xsrfToken)
-            },
-            body: JSON.stringify(fetchData)
-        });
-
-        const response = await request.json();
-        console.log(response)
-
-        if (response.message === "ok") {
-            alert("Успешно");
-            reset();
-        } else {
-            alert("Ошибка: ", response);
-        }
+            route: api_url + `/api/users/create`,
+            body: fetchData
+        })
         setIsAddUserModalOpen(false);
 
         getUsers();
@@ -203,22 +162,21 @@ export default function ControlUsersPage() {
         }
     }, [refresh, user_id, response]);
 
+
     async function getRoles() {
-        const xsrfToken = document.cookie.split("; ").find(row => row.startsWith("XSRF-TOKEN"))?.split("=")[1];
-
-        const request = await fetch(api_url + "/api/users/existingRoles", {
+        makeRequest({
             method: "GET",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-                "X-XSRF-TOKEN": decodeURIComponent(xsrfToken)
-            }
-        });
+            route: api_url + "/api/users/existingRoles",
+            setFunction: setRoles
+        })
+    }
 
-        const response_ = await request.json();
-        console.log(response)
-        setRoles(response_);
+    async function deleteUser(id) {
+        makeRequest({
+            method: "DELETE",
+            route: api_url + "/api/users/delete/" + id
+        })
+        getUsers();
     }
 
 
@@ -502,11 +460,11 @@ export default function ControlUsersPage() {
                                                 </div>
                                             </div>
                                             <div className={modal_s.buttons}>
-                                                <button className={modal_s.close} onClick={() => setIsEditUserModalOpen(false)}>
-                                                    Закрыть
-                                                </button>
                                                 <button className={modal_s.apply} type="submit">
                                                     Сохранить
+                                                </button>
+                                                <button className={modal_s.close} onClick={() => deleteUser(watchEditId)}>
+                                                    Удалить пользователя
                                                 </button>
                                             </div>
                                         </form>

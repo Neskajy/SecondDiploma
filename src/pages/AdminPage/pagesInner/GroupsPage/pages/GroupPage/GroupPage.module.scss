@@ -11,8 +11,13 @@
                 h5 {
                     @include app.h5;
                 }
+                .get {
+                    margin-top: 30px;
+                    @include app.button1(app.$accent__color);
+                    padding: 15px 30px;
+                }
                 .table__outer {
-                    margin-top: 40px;
+                    margin-top: 50px;
                     .table__header {
                         p {
                             @include app.p;
@@ -28,6 +33,7 @@
                         min-width: max-content;
                         @include app.table__abertka;
                         table {
+                            margin-top: 20px;
                             tbody {
                                 tr {
                                     outline: none;

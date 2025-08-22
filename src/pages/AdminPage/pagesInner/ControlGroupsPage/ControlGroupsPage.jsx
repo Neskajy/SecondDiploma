@@ -20,88 +20,103 @@ export default function GroupsPage() {
 
     const [groups, setGroups] = useState(null);
     const [user, setUser] = useState(null);
+    const api_url = import.meta.env.VITE_BACKEND_URL;
 
+    // Получение XSRF-TOKEN из cookies
+    function getXsrfToken() {
+        return document.cookie
+            .split(";")
+            .find((row) => row.trim().startsWith("XSRF-TOKEN"))
+            ?.split("=")[1];
+    }
+
+    // Унифицированная функция для всех запросов
+    async function makeRequest({ method, route, body, setFunction }) {
+        const token = getXsrfToken();
+        if (!token) {
+            console.error("XSRF-TOKEN not found in cookies");
+            return null;
+        }
+
+        const config = {
+            method,
+            credentials: "include",
+            headers: {
+                Accept: "application/json",
+                "X-XSRF-TOKEN": decodeURIComponent(token),
+                ...(body && { "Content-Type": "application/json" }),
+            },
+            ...(body && { body: JSON.stringify(body) }),
+        };
+
+        try {
+            const request = await fetch(route, config);
+            const response = await request.json();
+
+            if (setFunction) {
+                setFunction(response);
+            }
+
+            return response;
+        } catch (error) {
+            console.error("Fetch error:", error);
+            return null;
+        }
+    }
 
     const path = useLocation().pathname;
-
     const [isAddGroupModalActive, setIsAddGroupModalActive] = useState(false);
 
     const {
         register,
-        formState: {
-            errors,
-        },
+        formState: { errors },
         handleSubmit,
-        reset
+        reset,
     } = useForm({
         mode: "onBlur",
     });
 
+    // --- Запросы через makeRequest ---
+
+    // Добавление группы
     async function addGroup(data) {
         console.log(data);
-        const xsrfToken = document.cookie.split("; ").find(row => row.startsWith("XSRF-TOKEN"))?.split("=")[1];
-
-        const request = await fetch(api_url + `/api/groups/create`, {
+        await makeRequest({
             method: "POST",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-                "X-XSRF-TOKEN": decodeURIComponent(xsrfToken)
-            },
-            body: JSON.stringify(data)
+            route: `${api_url}/api/groups/create`,
+            body: data,
         });
-
-        const response = await request.json();
-        setGroups(getGroups());
+        getGroups();
+        setIsAddGroupModalActive(false);
     }
 
-    const api_url = import.meta.env.VITE_BACKEND_URL;
-
+    // Получение данных пользователя
     async function getUserData() {
-
-        const xsrfToken = document.cookie.split("; ").find(row => row.startsWith("XSRF-TOKEN"))?.split("=")[1];
-
-        const response_ = await fetch(api_url + "/api/users/getUser", {
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-                "X-XSRF-TOKEN": decodeURIComponent(xsrfToken)
-            },
-            credentials: "include"
-        });
-
-        const data = await response_.json();
-        console.log(data);
-        setUser(data);
-    }
-
-    async function getGroups() {
-
-        const xsrfToken = document.cookie.split("; ").find(row => row.startsWith("XSRF-TOKEN"))?.split("=")[1];
-
-        const request = await fetch(api_url + "/api/groups/", {
+        await makeRequest({
             method: "GET",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-                "X-XSRF-TOKEN": decodeURIComponent(xsrfToken)
-            }
+            route: `${api_url}/api/users/getUser`,
+            setFunction: setUser,
         });
-
-        const response = await request.json();
-        setGroups(response);
     }
 
+    // Получение всех групп
+    async function getGroups() {
+        await makeRequest({
+            method: "GET",
+            route: `${api_url}/api/groups/`,
+            setFunction: setGroups,
+        });
+    }
+
+    // --- Загрузка данных ---
     useEffect(() => {
         getUserData();
         getGroups();
-    },[]);
+    }, []);
 
+    // --- Обработчик формы ---
     const mySubmit = (data) => {
-        alert(JSON.stringify(data));
-        reset();
+        addGroup(data);
     };
 
     return (

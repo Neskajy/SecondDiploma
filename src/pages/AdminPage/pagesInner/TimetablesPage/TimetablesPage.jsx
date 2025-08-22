@@ -18,6 +18,7 @@ import { useForm } from "react-hook-form";
 import FollowButton from "../../../../components/FollowButton/FollowButton.jsx";
 
 import { useLocation } from "react-router-dom";
+import { makeRequest } from "../../../../api/apiClient.js";
 
 export default function timetablesPage() {
 
@@ -53,90 +54,67 @@ export default function timetablesPage() {
     const api_url = import.meta.env.VITE_BACKEND_URL;
 
     async function getTimetables() {
-        const xsrfToken = document.cookie.split("; ").find(row => row.startsWith("XSRF-TOKEN"))?.split("=")[1];
-
-        const request = await fetch(api_url + "/api/timetable/", {
+        makeRequest({
             method: "GET",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-                "X-XSRF-TOKEN": decodeURIComponent(xsrfToken)
-            }
-        });
-
-        const response = await request.json();
-
-        setResponse(response);
+            route: api_url + "/api/timetable/",
+            setFunction: setResponse
+        })
     }
 
     async function getGroups() {
-
-        const xsrfToken = document.cookie.split("; ").find(row => row.startsWith("XSRF-TOKEN"))?.split("=")[1];
-
-        const request = await fetch(api_url + "/api/groups/justGroups", {
+        makeRequest({
             method: "GET",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-                "X-XSRF-TOKEN": decodeURIComponent(xsrfToken)
-            }
-        });
-
-        const response_ = await request.json();
-        setGroups(response_);
+            route: api_url + "/api/groups/justGroups",
+            setFunction: setGroups
+        })
     }
 
-
     useEffect(() => {
-        getGroups();
-        getRoles();
-        getTeachers();
         getTimetables();
+        getGroups();
+        getTeachers();
+        getRoles();
     }, []);
 
     async function getRoles() {
-        const xsrfToken = document.cookie.split("; ").find(row => row.startsWith("XSRF-TOKEN"))?.split("=")[1];
-
-        const request = await fetch(api_url + "/api/users/existingRoles", {
+        makeRequest({
             method: "GET",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-                "X-XSRF-TOKEN": decodeURIComponent(xsrfToken)
-            }
-        });
-
-        const response_ = await request.json();
-        setRoles(response_);
-    }
-
-    async function createTimetable(data) {
-
-        console.log(data);
-
-        const xsrfToken = document.cookie.split("; ").find(row => row.startsWith("XSRF-TOKEN"))?.split("=")[1];
-
-        const request = await fetch(api_url + "/api/timetable/create", {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-                "X-XSRF-TOKEN": decodeURIComponent(xsrfToken)
-            },
-            body: JSON.stringify(data)
-        });
-        const response = await request.json();
-        getTimetables();
-        getTimetables();
-        setIsAddTimetableModalOpen(false);
-        console.log(response);
+            route: api_url + "/api/users/existingRoles",
+            setRoles: setResponse
+        })
     }
 
     const [teachers, setTeachers] = useState(null);
+
+    async function getTeachers() {
+        makeRequest({
+            method: "GET",
+            route: api_url + "/api/users/teachers",
+            setFunction: setTeachers
+        })
+        setTeachers(response);
+    }
+
+    async function createTimetable(data) {
+        makeRequest({
+            method: "POST",
+            route: api_url + "/api/timetable/create",
+            body: data
+        })
+        getTimetables();
+        setIsAddTimetableModalOpen(false);
+    }
+
+    async function deleteTimetable(id) {
+        makeRequest({
+            method: "DELETE",
+            route: api_url + "/api/timetable/delete/" + id,
+            setFunction: setResponse
+        })
+        getTimetables();
+        setIsEditTimetableModalOpen();
+    }
+
 
     function getRandomBrightHSL() {
         const hue = Math.floor(Math.random() * 360);
@@ -161,43 +139,6 @@ export default function timetablesPage() {
     const initialColor = hslToHex(hue, saturation, lightness);
 
     const [color, setColor] = useState(initialColor);
-
-    async function getTeachers() {
-
-        const xsrfToken = document.cookie.split("; ").find(row => row.startsWith("XSRF-TOKEN"))?.split("=")[1];
-
-        const request = await fetch(api_url + "/api/users/teachers", {
-            method: "GET",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-                "X-XSRF-TOKEN": decodeURIComponent(xsrfToken)
-            }
-        });
-        const response = await request.json();
-
-        setTeachers(response);
-    }
-
-    async function deleteTimetable(id) {
-
-        const xsrfToken = document.cookie.split("; ").find(row => row.startsWith("XSRF-TOKEN"))?.split("=")[1];
-
-        const request = await fetch(api_url + "/api/timetable/delete/" + id, {
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-                "X-XSRF-TOKEN": decodeURIComponent(xsrfToken)
-            },
-            method: "DELETE",
-            credentials: "include"
-        });
-
-        const response = await request.json();
-        getTimetables();
-        setIsEditTimetableModalOpen();
-    }
 
     return (
         <div className={s.ProfilePage} style={{ display: "flex" }}>

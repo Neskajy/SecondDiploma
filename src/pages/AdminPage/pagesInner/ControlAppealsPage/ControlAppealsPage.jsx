@@ -16,6 +16,8 @@ import { useNavigate } from "react-router-dom";
 import FollowButton from "../../../../components/FollowButton/FollowButton.jsx";
 import { Exception } from "sass";
 
+import { makeRequest } from "../../../../api/apiClient.js";
+
 export default function ControlAppealsPage() {
 
     const Navigate = useNavigate();
@@ -32,65 +34,33 @@ export default function ControlAppealsPage() {
     const api_url = import.meta.env.VITE_BACKEND_URL;
 
     async function getAppeals() {
-        const xsrfToken = document.cookie.split("; ").find(row => row.startsWith("XSRF-TOKEN"))?.split("=")[1];
-
-        const request = await fetch(api_url + "/api/appeals/", {
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-                "X-XSRF-TOKEN": decodeURIComponent(xsrfToken)
-            },
-            credentials: "include"
-        });
-
-        const response = await request.json();
-        setAppeals(response);
-    }
-
-    async function editAppeal(statusObj) {
-
-        if (statusObj.new_status === currentAppeal.status) {
-            alert("Вы не можете указать текущий статус");
-            return;
-        }
-
-        const xsrfToken = document.cookie.split("; ").find(row => row.startsWith("XSRF-TOKEN"))?.split("=")[1];
-        try {
-            const request = await fetch(api_url + `/api/appeals/update/${currentAppeal.id}`, {
-                method: "PATCH",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json",
-                    "X-XSRF-TOKEN": decodeURIComponent(xsrfToken)
-                },
-                body: JSON.stringify(statusObj)
-            });
-
-            
-            if (!request.ok) {
-                console.log(request);
-                throw new Error("Ошибка при обновлении обращения");
-            }
-
-            const response = await request.json();
-
-            getAppeals();
-            if (response.user_id) {
-                Navigate("/diploma/reallyadmin/usersControl", {
-                    state: { refresh: true, user_id: response.user_id}
-                });
-            }
-            setIsEditUserModalOpen(false);
-        } catch (error) {
-            console.error("Ошибка:", error);
-            alert("Не удалось обновить обращение");
-        }
+        makeRequest({
+            method: "GET",
+            route: api_url + "/api/appeals/",
+            setFunction: setAppeals
+        })
     }
 
     useEffect(() => {
         getAppeals();
     }, []);
+
+    async function editAppeal(statusObj) {
+        const result = await makeRequest({
+            method: "PATCH",
+            route: api_url + `/api/appeals/update/${currentAppeal.id}`,
+            body: statusObj,
+        })
+
+        getAppeals();
+
+        if (result && result.user_id) {
+            setIsEditUserModalOpen(false);
+            Navigate("/diploma/reallyadmin/usersControl", {
+                state: { refresh: true, user_id: result.user_id}
+            });
+        }
+    }
 
     return (
         <div className={s.ProfilePage} style={{ display: "flex" }}>

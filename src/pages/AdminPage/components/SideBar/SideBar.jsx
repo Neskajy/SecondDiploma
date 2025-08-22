@@ -175,7 +175,7 @@ export default function SideBar () {
                     ))
                 }
                 <div className={s.exit}>
-                    <Link to={`${path}/exit`} className={s.Link}>
+                    <Link to="/logout" className={s.Link}>
                         <Exit className={s.icon}/>
                         <span>Выйти</span>
                     </Link>

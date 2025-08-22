@@ -78,18 +78,24 @@
                             padding: 10px 20px;
                             border-radius: 8px;
                             box-shadow: app.$gray__smooth__shadow;
+                            min-width: 100px;
                         }
-
+                        
+                        .id {
+                            max-width: 100px;
+                        }
+                        
                         input[type="checkbox"] {
                             margin-top: 10px;
                             accent-color: app.$accent__color;
                         }
-
+                        
                         .item {
                             margin-top: 40px;
                         }
-
+                        
                         select {
+                            min-width: 100px;
                             margin-top: 10px;
                             border: 1px solid app.$gray__smooth;
                             padding: 10px 20px;

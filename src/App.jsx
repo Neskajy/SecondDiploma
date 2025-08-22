@@ -1,27 +1,25 @@
 import './App.scss';
-import { useState, useEffect } from 'react'
+import { useState, lazy, Suspense } from 'react'
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
 
-import LandingPage from './pages/LandingPage/LandingPage.jsx';
-import ForgetPassword from './pages/ForgetPasswordPage/ForgetPasswordPage.jsx';
-import AuthPage from './pages/AuthPage/AuthPage.jsx';
-import AdminPage from './pages/AdminPage/AdminPage.jsx';
+const LandingPage = lazy(() => import('./pages/LandingPage/LandingPage.jsx'));
+const ForgetPassword = lazy(() => import('./pages/ForgetPasswordPage/ForgetPasswordPage.jsx'));
+const AuthPage = lazy(() => import('./pages/AuthPage/AuthPage.jsx'));
+const BidPage = lazy(() => import("./pages/BidPage/BidPage.jsx"));
+const LogoutPage = lazy(() => import('./pages/LogoutPage/LogoutPage.jsx'));
 
-import AppealsPage from './pages/AdminPage/pagesInner/AppealsPage/AppealsPage.jsx';
-import ArticlesPage from './pages/AdminPage/pagesInner/ArticlesPage/ArticlesPage.jsx';
-import CalendarPage from './pages/AdminPage/pagesInner/CalendarPage/CalendarPage.jsx';
-import TimetablesPage from './pages/AdminPage/pagesInner/TimetablesPage/TimetablesPage.jsx';
-import GroupsPage from './pages/AdminPage/pagesInner/GroupsPage/GroupsPage.jsx';
-import GroupPage from './pages/AdminPage/pagesInner/GroupsPage/pages/GroupPage/GroupPage.jsx';
-import LessonsPage from './pages/AdminPage/pagesInner/LessonsPage/LessonsPage.jsx';
+const ProfilePage = lazy(() => import('./pages/AdminPage/pagesInner/ProfilePage/ProfilePage.jsx'));
+const ControlGroupsPage = lazy(() => import('./pages/AdminPage/pagesInner/ControlGroupsPage/ControlGroupsPage.jsx'));
+const GroupPage = lazy(() => import('./pages/AdminPage/pagesInner/GroupsPage/pages/GroupPage/GroupPage.jsx'));
+const ArticlesPage = lazy(() => import('./pages/AdminPage/pagesInner/ArticlesPage/ArticlesPage.jsx'));
+const CurriculumPage = lazy(() => import('./pages/AdminPage/pagesInner/Curriculum/CurriculumPage'));
+const AppealsPage = lazy(() => import('./pages/AdminPage/pagesInner/AppealsPage/AppealsPage.jsx'));
 
-import CurriculumPage from './pages/AdminPage/pagesInner/Curriculum/CurriculumPage'; 
-import ProfilePage from './pages/AdminPage/pagesInner/ProfilePage/ProfilePage.jsx';
-import ControlUsersPage from './pages/AdminPage/pagesInner/ControlUsersPage/ControlUsersPage.jsx';
-import ControlGroupsPage from "./pages/AdminPage/pagesInner/ControlGroupsPage/ControlGroupsPage.jsx";
-import ControlAppealsPage from "./pages/AdminPage/pagesInner/ControlAppealsPage/ControlAppealsPage.jsx"
+const ControlUsersPage = lazy(() => import('./pages/AdminPage/pagesInner/ControlUsersPage/ControlUsersPage.jsx'));
+const CalendarPage = lazy(() => import('./pages/AdminPage/pagesInner/CalendarPage/CalendarPage.jsx'));
+const TimetablesPage = lazy(() => import('./pages/AdminPage/pagesInner/TimetablesPage/TimetablesPage.jsx'));
+const ControlAppealsPage = lazy(() => import('./pages/AdminPage/pagesInner/ControlAppealsPage/ControlAppealsPage.jsx'));
 
-import BidPage from "./pages/BidPage/BidPage.jsx"
 
 
 
@@ -40,13 +38,13 @@ function App() {
             <Routes>
               <Route path="/" element={<LandingPage />}/>
               <Route path="/auth" element={<AuthPage />}></Route>
+              <Route path="/logout" element={<LogoutPage />}></Route>
               <Route path="/forgetPassword" element={<ForgetPassword />}></Route>
               <Route path="/appeal" element={<BidPage />}></Route>
               <Route path="/diploma">
                 <Route path="/diploma/profile" element={<ProfilePage />}></Route>
                 <Route path="/diploma/groups" element={<ControlGroupsPage />}></Route>
                 <Route path="/diploma/groups/:id" element={<GroupPage />}></Route>
-                {/* <Route path="/diploma/lessons" element={<LessonsPage />}></Route> */}
                 <Route path="/diploma/articles" element={<ArticlesPage />}></Route>
                 <Route path="/diploma/curriculum" element={<CurriculumPage />}></Route>
                 <Route path="/diploma/appeals" element={<AppealsPage />}></Route>

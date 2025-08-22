@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 
 import { useForm } from "react-hook-form";
+import { makeRequest } from "../../../../api/apiClient";
 
 export default function Auth() {
     const {
@@ -19,46 +20,15 @@ export default function Auth() {
 
     const api_url = import.meta.env.VITE_BACKEND_URL;
 
-
-
     async function createAppeal(data) {
-
-        const xsrfToken = document.cookie.split("; ").find(row => row.startsWith("XSRF-TOKEN"))?.split("=")[1];
-
-        if (!xsrfToken) {
-            const getToken = await fetch(api_url + "/sanctum/csrf-cookie", {
-                credentials: "include"
-            });
-            if (!getToken.ok) {
-                alert("CSRF не получен");
-            }
-            xsrfToken = document.cookie.split("; ").find(row => row.startsWith("XSRF-TOKEN"))?.split("=")[1];
-        }
-
-        try {
-
-            const request = await fetch(api_url + `/api/appeals/create`, {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json",
-                    "X-XSRF-TOKEN": decodeURIComponent(xsrfToken)
-                },
-                body: JSON.stringify(data)
-            });
-
-            const response = await request.json();
-
-            reset();
-            alert("Успешно");
-
-        } catch (error) {
-            console.error("Ошибка: ", error);
-        }
+        makeRequest({
+            method: "POST",
+            route: api_url + "/api/appeals/create",
+            body: data,
+        })
+        reset();
     }
 
-    
     return (
         <>
             <form className={s.Bid} onSubmit={handleSubmit(createAppeal)}>
