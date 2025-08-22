@@ -1,6 +1,6 @@
 import './App.scss';
 import { useState, lazy, Suspense } from 'react'
-import { Routes, Route, BrowserRouter } from 'react-router-dom';
+import { Routes, Route, BrowserRouter, Outlet } from 'react-router-dom';
 
 const LandingPage = lazy(() => import('./pages/LandingPage/LandingPage.jsx'));
 const ForgetPassword = lazy(() => import('./pages/ForgetPasswordPage/ForgetPasswordPage.jsx'));
@@ -20,11 +20,17 @@ const CalendarPage = lazy(() => import('./pages/AdminPage/pagesInner/CalendarPag
 const TimetablesPage = lazy(() => import('./pages/AdminPage/pagesInner/TimetablesPage/TimetablesPage.jsx'));
 const ControlAppealsPage = lazy(() => import('./pages/AdminPage/pagesInner/ControlAppealsPage/ControlAppealsPage.jsx'));
 
-
-
-
 import { BurgerContext } from "./Contexts.jsx";
 import { uriHistoryContext } from './Contexts.jsx';
+
+import loading from "./assets/imgs/vector/loading.svg";
+
+const LoadingFallBack = () => (
+  <div className="loading">
+    <img src={loading} alt="" />
+    Загрузка
+  </div>
+);
 
 function App() {
   const [isActiveBurger, setIsActiveBurger] = useState(false);
@@ -35,6 +41,7 @@ function App() {
       <uriHistoryContext.Provider value={{uriHistory, setUriHistory}}>
         <BurgerContext.Provider value={{isActiveBurger, setIsActiveBurger}}>
           <BrowserRouter>
+          <Suspense fallback={<LoadingFallBack />}>
             <Routes>
               <Route path="/" element={<LandingPage />}/>
               <Route path="/auth" element={<AuthPage />}></Route>
@@ -56,6 +63,7 @@ function App() {
                 </Route>
               </Route>
             </Routes>
+          </Suspense>
           </BrowserRouter>
         </BurgerContext.Provider>
       </uriHistoryContext.Provider>
