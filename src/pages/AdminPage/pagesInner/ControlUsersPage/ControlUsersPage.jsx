@@ -19,7 +19,9 @@ import FollowButton from "../../../../components/FollowButton/FollowButton.jsx";
 
 import { useLocation } from "react-router-dom";
 
-import { makeRequest } from "../../../../api/apiClient.js";
+import { useApi } from "../../../../hooks/useApi.js";
+
+import LoadingFallBackFullScreen from "../../../../components/LoadingFallBack/LoadingFallBackFullScreen.jsx";
 
 export default function ControlUsersPage() {
 
@@ -28,10 +30,12 @@ export default function ControlUsersPage() {
     const location = useLocation();
     const { refresh, user_id } = location.state || {};
 
-    const [response, setResponse] = useState([""]);
+    const [response, setResponse] = useState(null);
     const [groupsBackend, setGroups] = useState(null);
-    const [rolesBackend, setRoles] = useState([]);
+    const [rolesBackend, setRoles] = useState(null);
     const [currentUser, setCurrentUser] = useState(null);
+
+    const {makeRequest} = useApi();
 
     function openEditableModal(userData) {
         resetEdit();
@@ -152,13 +156,16 @@ export default function ControlUsersPage() {
     fetchData();
     }, [refresh, user_id]);
 
+    const [isFirst, setIsFirst] = useState(true);
+
     useEffect(() => {
-        if (refresh && user_id && response.length > 0) {
+        if (refresh && user_id && response && response.length > 0 && isFirst) {
             console.log("response обновлён:", response);
             const user_data = response.find(obj => obj.id === user_id);
             if (user_data) {
-            openEditableModal(user_data);
+                openEditableModal(user_data);
             }
+            setIsFirst(false);
         }
     }, [refresh, user_id, response]);
 
@@ -309,11 +316,11 @@ export default function ControlUsersPage() {
                                                 </div>
                                             </div>
                                             <div className={modal_s.buttons}>
-                                                <button className={modal_s.close} onClick={() => setIsEditUserModalOpen(false)}>
-                                                    Закрыть
-                                                </button>
                                                 <button className={modal_s.apply} type="submit">
                                                     Сохранить
+                                                </button>
+                                                <button className={modal_s.close} onClick={() => setIsEditUserModalOpen(false)}>
+                                                    Закрыть
                                                 </button>
                                             </div>
                                         </form>
@@ -321,32 +328,36 @@ export default function ControlUsersPage() {
                                 />
                             ) : ""
                         }
-                        <FollowButton>
+                            {
+                                Array.isArray(response) ? (
+                                    <FollowButton>
+                                        <div className={s.table__abertka}>
+                                            <table
+                                            >
+                                                <thead>
+                                                    <tr>
+                                                        {
+                                                            Object.keys(response.at(0)).map((key) => {
+                                                                return <th key={key}>{key}</th>;
+                                                            })
+                                                        }
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {response.map((item) => (
+                                                        <tr onClick={() => openEditableModal(item)} key={item.id}>
+                                                            {Object.entries(item).map(([key, value]) => (
+                                                                <td key={`${item.id}-${key}`}>{value}</td>
+                                                            ))}
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </FollowButton>
 
-                            <div className={s.table__abertka}>
-                                <table
-                                >
-                                    <thead>
-                                        <tr>
-                                            {
-                                                Object.keys(response.at(0)).map((key) => {
-                                                    return <th key={key}>{key}</th>;
-                                                })
-                                            }
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {response.map((item) => (
-                                            <tr onClick={() => openEditableModal(item)} key={item.id}>
-                                                {Object.entries(item).map(([key, value]) => (
-                                                    <td key={`${item.id}-${key}`}>{value}</td>
-                                                ))}
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </FollowButton>
+                                ) : <LoadingFallBackFullScreen />
+                            }
                         {
                             Array.isArray(rolesBackend) ? (
                                 <UniversalModal

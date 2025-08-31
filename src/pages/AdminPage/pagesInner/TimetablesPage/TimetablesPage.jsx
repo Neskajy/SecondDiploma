@@ -8,7 +8,7 @@ import Edit from "../../../../assets/imgs/vector/actions/edit.svg?react";
 
 import React, { useEffect } from "react";
 
-import { useState, timetableef } from "react";
+import { useState } from "react";
 
 import UniversalModal from "../../../../components/UniversalModal/UniversalModal.jsx";
 import modal_s from "../../../../components/UniversalModal/UniversalModal.module.scss";
@@ -18,9 +18,14 @@ import { useForm } from "react-hook-form";
 import FollowButton from "../../../../components/FollowButton/FollowButton.jsx";
 
 import { useLocation } from "react-router-dom";
-import { makeRequest } from "../../../../api/apiClient.js";
+
+import { useApi } from "../../../../hooks/useApi.js";
+
+import LoadingFallBackFullScreen from "../../../../components/LoadingFallBack/LoadingFallBackFullScreen.jsx";
 
 export default function timetablesPage() {
+
+    const {makeRequest} = useApi();
 
     const [isAddTimetableModalOpen, setIsAddTimetableModalOpen] = useState(false);
     const [isEditTimetableModalOpen, setIsEditTimetableModalOpen] = useState(false);
@@ -280,18 +285,18 @@ export default function timetablesPage() {
                                         </div>
                                     </div>
                                     <div className={modal_s.buttons}>
-                                        <button className={modal_s.close} onClick={() => setIsModalDataOpen(false)}>
-                                            Закрыть
-                                        </button>
                                         <button className={modal_s.apply} type="submit">
                                             Сохранить
+                                        </button>
+                                        <button className={modal_s.close} onClick={() => setIsModalDataOpen(false)}>
+                                            Закрыть
                                         </button>
                                     </div>
                                 </form>
                             }
                         />
                         {
-                            Array.isArray(response) && (
+                            Array.isArray(response) ? (
                                 <FollowButton>
                                     <div className={s.table__abertka}>
                                         <table
@@ -339,7 +344,7 @@ export default function timetablesPage() {
                                         </table>
                                     </div>
                                 </FollowButton>
-                            )
+                            ) : <LoadingFallBackFullScreen />
                         }
                     </div>
                 </main>

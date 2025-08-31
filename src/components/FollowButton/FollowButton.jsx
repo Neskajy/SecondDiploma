@@ -66,7 +66,6 @@ function FollowButton({ children, onClick, offset = { x: 12, y: -25 } }) {
                         zIndex: 1000,
                         background: "#8D79F3",
                         color: 'white',
-                        border: 'none',
                         width: '40px',
                         height: '40px',
                         borderRadius: '50%',

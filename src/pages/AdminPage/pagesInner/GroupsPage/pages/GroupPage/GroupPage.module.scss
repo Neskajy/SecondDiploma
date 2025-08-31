@@ -11,10 +11,14 @@
                 h5 {
                     @include app.h5;
                 }
-                .get {
-                    margin-top: 30px;
-                    @include app.button1(app.$accent__color);
-                    padding: 15px 30px;
+                .buttons {
+                    display: flex;
+                    gap: 10px;
+                    button {
+                        margin-top: 30px;
+                        @include app.button1(app.$accent__color);
+                        padding: 15px 30px;
+                    }
                 }
                 .table__outer {
                     margin-top: 50px;
@@ -73,6 +77,70 @@
                                 width: 15px;
                                 height: 15px;
                                 fill: app.$accent__color;
+                            }
+                        }
+                    }
+                }
+                .lessons {
+                    margin-top: 100px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 40px;
+                    margin-bottom: 20px;
+                    .category {
+                        h6 {
+                            margin-bottom: 20px;
+                            @include app.h6;
+                            font-size: 24px;
+                            color: app.$accent__color;
+                        }
+                        .lessons_container {
+                            display: flex;
+                            flex-direction: column;
+                            gap: 20px;
+                            .lesson {
+                                width: 100%;
+                                border: 1px solid app.$gray__smooth;
+                                box-shadow: app.$gray__smooth__shadow;
+                                border-radius: 12px;
+                                padding: 20px;
+                                position: relative;
+                                display: flex;
+                                flex-direction: column;
+                                .absolute__top {
+                                    position: absolute;
+                                    top: -20px;
+                                    font-size: 14px;
+                                    color: app.$accent__color;
+                                    font-weight: 700;
+                                    left: 0;
+                                }
+                                .name {
+                                    font-weight: 700;
+                                    @include app.p;
+                                }
+                                .bottom {
+                                    margin-top: 10px;
+                                    display: flex;
+                                    flex-direction: column;
+                                    p {
+                                        font-size: 14px;
+                                        color: gray;
+                                        span {
+                                            color: app.$accent__color;
+                                            font-weight: 700;
+                                        }
+                                    }
+                                }
+                                .more {
+                                    @include app.button1(app.$accent__color);
+                                    position: absolute;
+                                    right: 30px;
+                                    padding: 15px 30px;
+                                    top: 50%;
+                                    transform: translateY(-50%);
+                                    border-radius: 12px;
+                                }
                             }
                         }
                     }

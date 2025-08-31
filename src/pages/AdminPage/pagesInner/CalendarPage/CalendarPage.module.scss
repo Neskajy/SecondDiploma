@@ -17,6 +17,7 @@
                     align-items: center;
                     justify-content: space-between;
                     position: relative;
+                    user-select: none;
                     .left {
                         display: flex;
                         align-items: center;
@@ -65,11 +66,20 @@
                     .right {
                         .time {
                             display: flex;
-                            gap: 10px;
+                            gap: 5px;
                             li {
                                 cursor: pointer;
                                 font-size: 18px;
                                 font-weight: 500;
+                                padding: 10px 25px;
+                                border-radius: 8px;
+                                background: rgb(249, 249, 249);
+                                white-space: nowrap;
+                                transition: .3s ease-in-out all;
+                                &:hover {
+                                    background: rgb(240, 240, 240);
+                                    transition: .3s ease-in-out all;
+                                }
                             }
                         }
                     }

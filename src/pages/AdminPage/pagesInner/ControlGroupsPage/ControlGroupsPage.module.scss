@@ -30,51 +30,48 @@
                         flex-direction: column;
                         gap: 30px;
                         .group {
-                            a {
-
-                                cursor: pointer;
-                                width: 100%;
-                                border: 1px solid app.$gray__smooth;
-                                box-shadow: app.$gray__smooth__shadow;
-                                border-radius: 12px;
-                                padding: 20px;
-                                position: relative;
+                            cursor: pointer;
+                            width: 100%;
+                            border: 1px solid app.$gray__smooth;
+                            box-shadow: app.$gray__smooth__shadow;
+                            border-radius: 12px;
+                            padding: 20px;
+                            position: relative;
+                            display: flex;
+                            flex-direction: column;
+                            .absolute__top {
+                                position: absolute;
+                                top: -20px;
+                                font-size: 14px;
+                                color: app.$accent__color;
+                                font-weight: 700;
+                                left: 0;
+                            }
+                            .name {
+                                font-weight: 700;
+                                @include app.p;
+                            }
+                            .bottom {
+                                margin-top: 10px;
                                 display: flex;
                                 flex-direction: column;
-                                .absolute__top {
-                                    position: absolute;
-                                    top: -20px;
+                                p {
                                     font-size: 14px;
-                                    color: app.$accent__color;
-                                    font-weight: 700;
-                                    left: 0;
-                                }
-                                .name {
-                                    font-weight: 700;
-                                    @include app.p;
-                                }
-                                .bottom {
-                                    margin-top: 10px;
-                                    display: flex;
-                                    flex-direction: column;
-                                    p {
-                                        font-size: 14px;
-                                        color: gray;
-                                        span {
-                                            color: app.$accent__color;
-                                            font-weight: 700;
-                                        }
+                                    color: gray;
+                                    span {
+                                        color: app.$accent__color;
+                                        font-weight: 700;
                                     }
                                 }
-                                .more {
-                                    @include app.button1(app.$accent__color);
-                                    position: absolute;
-                                    right: 30px;
-                                    padding: 15px 30px;
-                                    top: 50%;
-                                    transform: translateY(-50%);
-                                    border-radius: 12px;
-                                }
+                            }
+                            .more {
+                                @include app.button1(app.$accent__color);
+                                position: absolute;
+                                right: 30px;
+                                padding: 15px 30px;
+                                top: 50%;
+                                transform: translateY(-50%);
+                                border-radius: 12px;
                             }
                         }
                     }

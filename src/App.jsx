@@ -1,5 +1,5 @@
 import './App.scss';
-import { useState, lazy, Suspense } from 'react'
+import { useState, lazy, Suspense, useEffect } from 'react'
 import { Routes, Route, BrowserRouter, Outlet } from 'react-router-dom';
 
 const LandingPage = lazy(() => import('./pages/LandingPage/LandingPage.jsx'));
@@ -20,51 +20,49 @@ const CalendarPage = lazy(() => import('./pages/AdminPage/pagesInner/CalendarPag
 const TimetablesPage = lazy(() => import('./pages/AdminPage/pagesInner/TimetablesPage/TimetablesPage.jsx'));
 const ControlAppealsPage = lazy(() => import('./pages/AdminPage/pagesInner/ControlAppealsPage/ControlAppealsPage.jsx'));
 
+import Notification from './components/Notification/Notification.jsx';
+import LoadingFallBack from './components/LoadingFallBack/LoadingFallBackFullScreen.jsx';
+
 import { BurgerContext } from "./Contexts.jsx";
 import { uriHistoryContext } from './Contexts.jsx';
-
-import loading from "./assets/imgs/vector/loading.svg";
-
-const LoadingFallBack = () => (
-  <div className="loading">
-    <img src={loading} alt="" />
-    Загрузка
-  </div>
-);
 
 function App() {
   const [isActiveBurger, setIsActiveBurger] = useState(false);
   const [uriHistory, setUriHistory] = useState([]);
 
+
   return (
     <>
       <uriHistoryContext.Provider value={{uriHistory, setUriHistory}}>
         <BurgerContext.Provider value={{isActiveBurger, setIsActiveBurger}}>
-          <BrowserRouter>
-          <Suspense fallback={<LoadingFallBack />}>
-            <Routes>
-              <Route path="/" element={<LandingPage />}/>
-              <Route path="/auth" element={<AuthPage />}></Route>
-              <Route path="/logout" element={<LogoutPage />}></Route>
-              <Route path="/forgetPassword" element={<ForgetPassword />}></Route>
-              <Route path="/appeal" element={<BidPage />}></Route>
-              <Route path="/diploma">
-                <Route path="/diploma/profile" element={<ProfilePage />}></Route>
-                <Route path="/diploma/groups" element={<ControlGroupsPage />}></Route>
-                <Route path="/diploma/groups/:id" element={<GroupPage />}></Route>
-                <Route path="/diploma/articles" element={<ArticlesPage />}></Route>
-                <Route path="/diploma/curriculum" element={<CurriculumPage />}></Route>
-                <Route path="/diploma/appeals" element={<AppealsPage />}></Route>
-                <Route path="/diploma/reallyadmin">
-                  <Route path="/diploma/reallyadmin/usersControl" element={<ControlUsersPage />}></Route>
-                  <Route path="/diploma/reallyadmin/calendar" element={<CalendarPage />}></Route>
-                  <Route path="/diploma/reallyadmin/timetables" element={<TimetablesPage />}></Route>
-                  <Route path="/diploma/reallyadmin/appealsControl" element={<ControlAppealsPage />}></Route>
+          <Notification>
+            <BrowserRouter>
+            <Suspense fallback={<LoadingFallBack />}>
+              <Routes>
+                <Route path="/" element={<LandingPage />}/>
+                <Route path="/auth" element={<AuthPage />}></Route>
+                <Route path="/logout" element={<LogoutPage />}></Route>
+                <Route path="/forgetPassword" element={<ForgetPassword />}></Route>
+                <Route path="/appeal" element={<BidPage />}></Route>
+                <Route path="/diploma">
+                  <Route path="/diploma/profile" element={<ProfilePage />}></Route>
+                  <Route path="/diploma/groups" element={<ControlGroupsPage />}></Route>
+                  <Route path="/diploma/groups/:id" element={<GroupPage />}></Route>
+                  <Route path="/diploma/articles" element={<ArticlesPage />}></Route>
+                  <Route path="/diploma/curriculum" element={<CurriculumPage />}></Route>
+                  <Route path="/diploma/appeals" element={<AppealsPage />}></Route>
+                  <Route path="/diploma/reallyadmin">
+                    <Route path="/diploma/reallyadmin/usersControl" element={<ControlUsersPage />}></Route>
+                    <Route path="/diploma/reallyadmin/calendar" element={<CalendarPage />}></Route>
+                    <Route path="/diploma/reallyadmin/timetables" element={<TimetablesPage />}></Route>
+                    <Route path="/diploma/reallyadmin/appealsControl" element={<ControlAppealsPage />}></Route>
+                  </Route>
                 </Route>
-              </Route>
-            </Routes>
-          </Suspense>
-          </BrowserRouter>
+              </Routes>
+            </Suspense>
+            <Notification />
+            </BrowserRouter>
+          </Notification>
         </BurgerContext.Provider>
       </uriHistoryContext.Provider>
     </>

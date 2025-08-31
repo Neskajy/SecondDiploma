@@ -2,23 +2,22 @@ import AdminHeader from "../../components/AdminHeader/AdminHeader.jsx";
 import SideBar from "../../components/SideBar/SideBar.jsx";
 import s from "./ControlAppealsPage.module.scss";
 
-import warning from "../../../../assets/imgs/vector/warning.svg";
-
 import { useEffect, useState } from "react";
 
 import UniversalModal from "../../../../components/UniversalModal/UniversalModal.jsx";
 import modal_s from "../../../../components/UniversalModal/UniversalModal.module.scss";
 
-import { useForm } from "react-hook-form";
-
 import { useNavigate } from "react-router-dom";
 
 import FollowButton from "../../../../components/FollowButton/FollowButton.jsx";
-import { Exception } from "sass";
 
-import { makeRequest } from "../../../../api/apiClient.js";
+import { useApi } from "../../../../hooks/useApi.js";
+
+import LoadingFallBackFullScreen from "../../../../components/LoadingFallBack/LoadingFallBackFullScreen.jsx";
 
 export default function ControlAppealsPage() {
+
+    const {makeRequest} = useApi();
 
     const Navigate = useNavigate();
 
@@ -54,8 +53,9 @@ export default function ControlAppealsPage() {
 
         getAppeals();
 
+        setIsEditUserModalOpen(false);
+        
         if (result && result.user_id) {
-            setIsEditUserModalOpen(false);
             Navigate("/diploma/reallyadmin/usersControl", {
                 state: { refresh: true, user_id: result.user_id}
             });
@@ -69,12 +69,12 @@ export default function ControlAppealsPage() {
                 <AdminHeader />
                 <main className={s.main}>
                     <div className={s.container}>
+                        
                         <h5>Управление заявками</h5>
-                        <FollowButton>
-
-                            <div className={s.table__abertka}>
-                                {
-                                    appeals && Object.keys(appeals).length > 0 ? (
+                        {
+                            Array.isArray(appeals) && Object.keys(appeals).length > 0 ? (
+                                <FollowButton>
+                                    <div className={s.table__abertka}>
                                         <table
                                         >
                                             <thead>
@@ -100,36 +100,36 @@ export default function ControlAppealsPage() {
                                                 }
                                             </tbody>
                                         </table>
-                                    ) : <p>Заявок нет</p>
-                                }
-                                <UniversalModal
-                                    isOpen={isEditUserModalOpen}
-                                    onClose={() => setIsEditUserModalOpen(false)}
-                                    content={
-                                        <section className={modal_s.common}>
-                                            <h5>Принять заявку?</h5>
-                                            <div className={modal_s.buttons}>
-                                                <button className={modal_s.apply} onClick={() => editAppeal({
-                                                    "status": "accepted"
-                                                })}>
-                                                    Принять
-                                                </button>
-                                                <button className={modal_s.close} onClick={() => editAppeal({
-                                                    "status": "in_progress"
-                                                })}>
-                                                    Поставить на рассмотрение
-                                                </button>
-                                                <button className={modal_s.close} onClick={() => editAppeal({
-                                                    "status": "rejected"
-                                                })}>
-                                                    Отклонить
-                                                </button>
-                                            </div>
-                                        </section>
-                                    }
-                                />
-                            </div>
-                        </FollowButton>
+                                    </div>
+                                </FollowButton>
+                            ) : <LoadingFallBackFullScreen />
+                        }
+                        <UniversalModal
+                            isOpen={isEditUserModalOpen}
+                            onClose={() => setIsEditUserModalOpen(false)}
+                            content={
+                                <section className={modal_s.common}>
+                                    <h5>Принять заявку?</h5>
+                                    <div className={modal_s.buttons}>
+                                        <button className={modal_s.apply} onClick={() => editAppeal({
+                                            "status": "accepted"
+                                        })}>
+                                            Принять
+                                        </button>
+                                        <button className={modal_s.close} onClick={() => editAppeal({
+                                            "status": "in_progress"
+                                        })}>
+                                            Поставить на рассмотрение
+                                        </button>
+                                        <button className={modal_s.close} onClick={() => editAppeal({
+                                            "status": "rejected"
+                                        })}>
+                                            Отклонить
+                                        </button>
+                                    </div>
+                                </section>
+                            }
+                        />
                     </div>
                 </main>
             </div>

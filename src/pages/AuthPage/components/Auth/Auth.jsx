@@ -4,8 +4,11 @@ import { Link, redirect, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import { useForm } from "react-hook-form";
+import { useApi } from "../../../../hooks/useApi";
 
 export default function Auth() {
+
+    const {makeRequest} = useApi();
 
     const Navigate = useNavigate();
 
@@ -28,39 +31,34 @@ export default function Auth() {
         mode: "onBlur",
     });
 
-
     async function AuthenticateAndAuthorize(data) {
-        const csrfResponse = await fetch(api_url + '/sanctum/csrf-cookie', {
-            credentials: "include"
+
+        // logout
+        await makeRequest({
+            method: "GET",
+            route: api_url + "/api/authentication/logout"
         });
-
-        if (!csrfResponse.ok) {
-            console.error('CSRF не получен');
-            return;
+        function deleteCookie(name) {
+            document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; secure; samesite=lax`;
         }
+        deleteCookie("laravel_session");
+        deleteCookie("XSRF-TOKEN");
 
-        const xsrfToken = document.cookie.split("; ").find(row => row.startsWith("XSRF-TOKEN"))?.split("=")[1];
-        
-        if (!xsrfToken) {
-            alert("токен не найден на стороне клиента");
-        }
+        // authentication
 
-        const response = await fetch(api_url + '/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                "X-XSRF-TOKEN": decodeURIComponent(xsrfToken)
-            },
-            body: JSON.stringify(data),
-            credentials: 'include'
-        });
-        if (response.ok) {
-            alert('Успешно');
-            Navigate("/diploma/profile");
-        } else {
-            console.error('Ошибка:', await response.json());
-        }
+        await makeRequest({
+            method: "GET",
+            route: api_url + '/sanctum/csrf-cookie'
+        })
+
+        // authorization
+
+        await makeRequest({
+            method: "POST",
+            route: api_url + '/login',
+            body: data,
+        })
+        Navigate("/diploma/profile");
     }
 
     return (

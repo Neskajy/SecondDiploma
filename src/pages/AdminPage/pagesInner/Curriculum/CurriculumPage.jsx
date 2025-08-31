@@ -104,123 +104,125 @@ export default function CurriculumPage() {
       <div className={s.HeaderAndContent}>
         <AdminHeader />
         <main className={s.main}>
-          <h5>Управление учебным планом</h5>
-          <button className={s.addButton} onClick={() => setIsAddCurriculumOpen(true)}>
-            Добавить учебный план
-          </button>
-          <div className={s.curriculumsList}>
-            {curriculums.length === 0 ? (
-              <p className={s.empty}>Учебные планы не найдены</p>
-            ) : (
-              curriculums.map((curriculum) => (
-                <div key={curriculum.id} className={s.curriculumCard}>
-                  <h6>
-                    {curriculum.start_year} - {curriculum.stop_year}
-                  </h6>
-                  <p className={s.description}>
-                    Группы: {curriculum.groups.join(", ") || "Нет групп"}
-                  </p>
-                  <div className={s.actions}>
-                    <button
-                      className={s.btnEdit}
-                      onClick={() => setSelectedCurriculum(curriculum)}
-                    >
-                      Просмотреть дисциплины
-                    </button>
-                    <button
-                      className={s.btnEdit}
-                      onClick={() => setIsEditCurriculumOpen(true)}
-                    >
-                      Редактировать
-                    </button>
-                    <button
-                      className={s.btnDelete}
-                      onClick={() => setIsDeleteCurriculumOpen(true)}
-                    >
-                      Удалить
-                    </button>
+          <div className={s.container}>
+            <h5>Управление учебным планом</h5>
+            <button className={s.addButton} onClick={() => setIsAddCurriculumOpen(true)}>
+              Добавить учебный план
+            </button>
+            <div className={s.curriculumsList}>
+              {curriculums.length === 0 ? (
+                <p className={s.empty}>Учебные планы не найдены</p>
+              ) : (
+                curriculums.map((curriculum) => (
+                  <div key={curriculum.id} className={s.curriculumCard}>
+                    <h6>
+                      {curriculum.start_year} - {curriculum.stop_year}
+                    </h6>
+                    <p className={s.description}>
+                      Группы: {curriculum.groups.join(", ") || "Нет групп"}
+                    </p>
+                    <div className={s.actions}>
+                      <button
+                        className={s.btnEdit}
+                        onClick={() => setSelectedCurriculum(curriculum)}
+                      >
+                        Просмотреть дисциплины
+                      </button>
+                      <button
+                        className={s.btnEdit}
+                        onClick={() => setIsEditCurriculumOpen(true)}
+                      >
+                        Редактировать
+                      </button>
+                      <button
+                        className={s.btnDelete}
+                        onClick={() => setIsDeleteCurriculumOpen(true)}
+                      >
+                        Удалить
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))
+                ))
+              )}
+            </div>
+
+            {selectedCurriculum && (
+              <div className={s.courseList}>
+                <h6>
+                  Дисциплины учебного плана {selectedCurriculum.start_year}–{selectedCurriculum.stop_year}
+                </h6>
+                <button className={s.addButton} onClick={() => setIsAddCourseOpen(true)}>
+                  Добавить дисциплину
+                </button>
+                {selectedCurriculum.courses.length === 0 ? (
+                  <p className={s.empty}>Дисциплины не найдены</p>
+                ) : (
+                  selectedCurriculum.courses.map((course) => (
+                    <div key={course.id} className={s.courseCard}>
+                      <h6>{course.name}</h6>
+                      <p>
+                        Год: {course.year}, Семестр: {course.semester}, Часов: {course.hours}
+                      </p>
+                      <div className={s.actions}>
+                        <button
+                          className={s.btnEdit}
+                          onClick={() => setSelectedCourse(course)}
+                        >
+                          Просмотреть темы
+                        </button>
+                        <button
+                          className={s.btnEdit}
+                          onClick={() => setIsEditCourseOpen(true)}
+                        >
+                          Редактировать
+                        </button>
+                        <button
+                          className={s.btnDelete}
+                          onClick={() => setIsDeleteCourseOpen(true)}
+                        >
+                          Удалить
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+
+            {selectedCourse && (
+              <div className={s.themeList}>
+                <h6>Темы дисциплины {selectedCourse.name}</h6>
+                <button className={s.addButton} onClick={() => setIsAddThemeOpen(true)}>
+                  Добавить тему
+                </button>
+                {selectedCourse.themes.length === 0 ? (
+                  <p className={s.empty}>Темы не найдены</p>
+                ) : (
+                  selectedCourse.themes.map((theme) => (
+                    <div key={theme.id} className={s.themeCard}>
+                      <p>
+                        {theme.number}. {theme.title}
+                      </p>
+                      <div className={s.actions}>
+                        <button
+                          className={s.btnEdit}
+                          onClick={() => setIsEditThemeOpen(true)}
+                        >
+                          Редактировать
+                        </button>
+                        <button
+                          className={s.btnDelete}
+                          onClick={() => setIsDeleteThemeOpen(true)}
+                        >
+                          Удалить
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
             )}
           </div>
-
-          {selectedCurriculum && (
-            <div className={s.courseList}>
-              <h6>
-                Дисциплины учебного плана {selectedCurriculum.start_year}–{selectedCurriculum.stop_year}
-              </h6>
-              <button className={s.addButton} onClick={() => setIsAddCourseOpen(true)}>
-                Добавить дисциплину
-              </button>
-              {selectedCurriculum.courses.length === 0 ? (
-                <p className={s.empty}>Дисциплины не найдены</p>
-              ) : (
-                selectedCurriculum.courses.map((course) => (
-                  <div key={course.id} className={s.courseCard}>
-                    <h6>{course.name}</h6>
-                    <p>
-                      Год: {course.year}, Семестр: {course.semester}, Часов: {course.hours}
-                    </p>
-                    <div className={s.actions}>
-                      <button
-                        className={s.btnEdit}
-                        onClick={() => setSelectedCourse(course)}
-                      >
-                        Просмотреть темы
-                      </button>
-                      <button
-                        className={s.btnEdit}
-                        onClick={() => setIsEditCourseOpen(true)}
-                      >
-                        Редактировать
-                      </button>
-                      <button
-                        className={s.btnDelete}
-                        onClick={() => setIsDeleteCourseOpen(true)}
-                      >
-                        Удалить
-                      </button>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          )}
-
-          {selectedCourse && (
-            <div className={s.themeList}>
-              <h6>Темы дисциплины {selectedCourse.name}</h6>
-              <button className={s.addButton} onClick={() => setIsAddThemeOpen(true)}>
-                Добавить тему
-              </button>
-              {selectedCourse.themes.length === 0 ? (
-                <p className={s.empty}>Темы не найдены</p>
-              ) : (
-                selectedCourse.themes.map((theme) => (
-                  <div key={theme.id} className={s.themeCard}>
-                    <p>
-                      {theme.number}. {theme.title}
-                    </p>
-                    <div className={s.actions}>
-                      <button
-                        className={s.btnEdit}
-                        onClick={() => setIsEditThemeOpen(true)}
-                      >
-                        Редактировать
-                      </button>
-                      <button
-                        className={s.btnDelete}
-                        onClick={() => setIsDeleteThemeOpen(true)}
-                      >
-                        Удалить
-                      </button>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          )}
         </main>
       </div>
 

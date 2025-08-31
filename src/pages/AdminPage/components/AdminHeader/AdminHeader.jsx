@@ -4,10 +4,12 @@ import Search from "../Search/Search.jsx";
 import bell from "../../../../assets/imgs/vector/bell.svg";
 import user404 from "../../../../assets/imgs/vector/user.svg";
 import { Link } from "react-router-dom";
-import { makeRequest } from "../../../../api/apiClient.js";
+import { useApi } from "../../../../hooks/useApi.js";
 import { useEffect, useState } from "react";
 
 export default function AdminHeader() {
+
+    const { makeRequest } = useApi()
 
     const api_url = import.meta.env.VITE_BACKEND_URL;
 
@@ -17,7 +19,8 @@ export default function AdminHeader() {
         await makeRequest({
             method: "GET",
             route: api_url + "/api/users/getUser",
-            setFunction: setUserData
+            setFunction: setUserData,
+            isToast: false
         });
     }
 

@@ -4,9 +4,13 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 
 import { useForm } from "react-hook-form";
-import { makeRequest } from "../../../../api/apiClient";
+
+import { useApi } from "../../../../hooks/useApi";
 
 export default function Auth() {
+
+    const {makeRequest} = useApi();
+
     const {
         register,
         formState: {
@@ -21,6 +25,7 @@ export default function Auth() {
     const api_url = import.meta.env.VITE_BACKEND_URL;
 
     async function createAppeal(data) {
+        console.log(data)
         makeRequest({
             method: "POST",
             route: api_url + "/api/appeals/create",
@@ -37,7 +42,6 @@ export default function Auth() {
                 </div>
                 <div className={s.input__blocks}>
                     <div className={s.input__block}>
-                        {/* <img src={warning} className={`${s.warning__img} ${s.active}`} alt="" /> */}
                         <input 
                             type="text"
                             placeholder="Введите ваше имя"
@@ -48,7 +52,6 @@ export default function Auth() {
                         <div className={s.message}>{errors?.name && <div className={s.message}><img src={warning}/><p>{errors?.name.message || "Error!"}</p></div>}</div>
                     </div>
                     <div className={s.input__block}>
-                        {/* <img src={warning} className={`${s.warning__img} ${s.active}`} alt="" /> */}
                         <input 
                             type="text"
                             placeholder="Введите вашу почту"
@@ -63,7 +66,20 @@ export default function Auth() {
                         <div className={s.message}>{errors?.email && <div className={s.message}><img src={warning}/><p>{errors?.email.message || "Error!"}</p></div>}</div>
                     </div>
                     <div className={s.input__block}>
-                        {/* <img src={warning} className={`${s.warning__img} ${s.active}`} alt="" /> */}
+                        <input 
+                            type="text"
+                            placeholder="Введите ваш телефон"
+                            {...register("phone", {
+                                required: "Поле обязательно к заполнению",
+                                pattern: {
+                                    value: /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/,
+                                    message: "Не правильный формат номера телефона"
+                                }
+                            })}
+                        />
+                        <div className={s.message}>{errors?.phone && <div className={s.message}><img src={warning}/><p>{errors?.phone.message || "Error!"}</p></div>}</div>
+                    </div>
+                    <div className={s.input__block}>
                         <textarea
                             placeholder="Ваше сообщение"
                             {...register("message", {

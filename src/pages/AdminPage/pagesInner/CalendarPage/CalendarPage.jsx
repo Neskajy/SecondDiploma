@@ -16,11 +16,14 @@ import warning from "../../../../assets/imgs/vector/warning.svg";
 
 import { useForm } from "react-hook-form";
 
-import { useRef } from "react";
+import LoadingFallBackFullScreen from "../../../../components/LoadingFallBack/LoadingFallBackFullScreen.jsx";
+
+import { useApi } from "../../../../hooks/useApi.js";
 
 export default function CalendarPage() {
 
     const api_url = import.meta.env.VITE_BACKEND_URL;
+    const {makeRequest} = useApi();
 
     const [calendarInfo, setCalendarInfo] = useState(null);
     const [lessons, setLessons] = useState(null);
@@ -30,46 +33,6 @@ export default function CalendarPage() {
     const [groupsBackend, setGroups] = useState(null);
     const [timetables, setTimetables] = useState(null);
     const [teachers, setTeachers] = useState(null);
-
-    function getXsrfToken() {
-        return document.cookie
-            .split("; ")
-            .find((row) => row.startsWith("XSRF-TOKEN"))
-            ?.split("=")[1];
-    }
-
-    async function makeRequest({ method, route, body, setFunction }) {
-        const token = getXsrfToken();
-        if (!token) {
-            console.error("XSRF-TOKEN not found in cookies");
-            return null;
-        }
-
-        const config = {
-            method,
-            credentials: "include",
-            headers: {
-                Accept: "application/json",
-                "X-XSRF-TOKEN": decodeURIComponent(token),
-                ...(body && { "Content-Type": "application/json" }),
-            },
-            ...(body && { body: JSON.stringify(body) }),
-        };
-
-        try {
-            const request = await fetch(route, config);
-            const response = await request.json();
-
-            if (setFunction) {
-                setFunction(response);
-            }
-
-            return response;
-        } catch (error) {
-            console.error("Fetch error:", error);
-            return null;
-        }
-    }
 
     // --- Календарь ---
     function getDaysInMonth(year, month) {
@@ -356,6 +319,10 @@ export default function CalendarPage() {
         return `${hour}:${minutes}`;
     };
 
+    const watchLessonStatus = watch("status");
+
+    const [userChoice, setUserChoice] = useState("day"); 
+
 
     return (
         <div className={s.CalendarPage} style={{ display: "flex" }}>
@@ -365,521 +332,564 @@ export default function CalendarPage() {
                 <main className={s.main}>
                     <div className={s.container}>
                         <h5>Добавить расписание</h5>
+                        <UniversalModal
+                            onClose={() => setIsActiveAddTimetableModal(false)}
+                            isOpen={isActiveAddTimetableModal}
+                            title="Добавить расписание"
+                            content={
+                                <form className={modal_s.common} onSubmit={handleTimetableSubmit(createTimetable)}>
+                                    <div className={modal_s.items}>
+                                        <div className={modal_s.item}>
+                                            <p>Название расписания (новое)</p>
+                                            <input
+                                                type="text"
+                                                {...registerTimetable("name", {
+                                                    required: "Поле обязательно к заполнению"
+                                                })}
+                                            />
+                                            <div className={modal_s.message}>{errorsTimetable?.name && <div className={s.message}><img src={warning} /><p>{errorsTimetable?.name.message || "Error!"}</p></div>}</div>
+                                        </div>
+                                        <div className={modal_s.item}>
+                                            <span>Автоматиски создать пары в расписании? Если да, то пары автоматически создадутся в каждой неделе в определенный день недели, начиная от даты старта расписания, заканчивая датой окончания расписания. Чтобы создать пары, надо создать в любом случае расписание</span>
+                                            <div className={modal_s.checkboxes}>
+                                                {['Нет', 'Да'].map((value) => (
+                                                    <div className={modal_s.checkbox} key={value}>
+                                                        <p>{value}</p>
+                                                        <input type="radio"
+                                                            name="isLoop"
+                                                            value={value}
+                                                            {...registerTimetable("createLessons")}
+                                                        />
+                                                    </div>
+                                                ))}
+                                                <div className={modal_s.message}>{errorsTimetable?.choice && <div className={s.message}><img src={warning} /><p>{errorsTimetable?.choice.message || "Error!"}</p></div>}</div>
+                                            </div>
+                                        </div>
+                                        <div className={modal_s.item}>
+                                            <p>Кабинет</p>
+                                            <input
+                                                type="text"
+                                                {...registerTimetable("cabinet", {
+                                                    required: "Поле обязательно к заполнению"
+                                                })}
+                                            />
+                                            <div className={modal_s.message}>{errorsTimetable?.cabinet && <div className={s.message}><img src={warning} /><p>{errorsTimetable?.cabinet.message || "Error!"}</p></div>}</div>
+                                        </div>
+                                        <div className={modal_s.item}>
+                                            <p>Группа</p>
+                                            <select
+                                                {...registerTimetable("group")}
+                                            >
+                                                <option value="">--Выберите группу--</option>
+                                                {Array.isArray(groupsBackend) && groupsBackend.length > 0 ? (
+                                                    groupsBackend.map((item) => (
+                                                        <option value={item.name} key={item.id}>
+                                                            {item.name}
+                                                        </option>
+                                                    ))
+                                                ) : ""
+                                                }
+                                            </select>
+                                            <div className={modal_s.message}>{errorsTimetable?.group && <div className={s.message}><img src={warning} /><p>{errorsTimetable?.group.message || "Error!"}</p></div>}</div>
+                                        </div>
+                                        <div className={modal_s.item}>
+                                            <p>Учитель</p>
+                                            <select
+                                                {...registerTimetable("teacher_id")}
+                                            >
+                                                <option value="">--Выберите учителя--</option>
+                                                {teachers && Array.isArray(teachers) ? (
+                                                    teachers.map((item) => (
+                                                        <option value={item.id} key={item.id}>
+                                                            {item.full_name}
+                                                        </option>
+                                                    ))
+                                                ) : ""
+                                                }
+                                            </select>
+                                            <div className={modal_s.message}>{errorsTimetable?.group && <div className={s.message}><img src={warning} /><p>{errorsTimetable?.group.message || "Error!"}</p></div>}</div>
+                                        </div>
+                                        <div className={modal_s.item}>
+                                            <p>Цвет события</p>
+                                            <input type="color"
+                                                className={modal_s.color__input}
+                                                defaultValue={color}
+                                                {...registerTimetable("color", {
+                                                    "required": "Поле обязательно к заполнению"
+                                                })}
+                                            />
+                                        </div>
+                                        <div className={modal_s.item}>
+                                            <p>Старт</p>
+                                            <input
+                                                type="date"
+                                                {...registerTimetable("start_date", {
+                                                    required: "Поле обязательно к заполнению"
+                                                })}
+                                                defaultValue={calendarInfo?.selectedDay?.date ? calendarInfo.selectedDay.date : ""}
+                                            />
+                                            <div className={modal_s.message}>{errorsTimetable?.date && <div className={s.message}><img src={warning} /><p>{errorsTimetable?.date.message || "Error!"}</p></div>}</div>
+                                        </div>
+                                        <div className={modal_s.item}>
+                                            <p>Окончание</p>
+                                            <input
+                                                type="date"
+                                                {...registerTimetable("end_date", {
+                                                    required: "Поле обязательно к заполнению"
+                                                })}
+                                                defaultValue={calendarInfo?.selectedDay?.date ? calendarInfo.selectedDay.date : ""}
+                                            />
+                                            <div className={modal_s.message}>{errorsTimetable?.date && <div className={s.message}><img src={warning} /><p>{errorsTimetable?.date.message || "Error!"}</p></div>}</div>
+                                        </div>
+                                        <div className={modal_s.item}>
+                                            <p>Время начала пары</p>
+                                            <input
+                                                type="time"
+                                                {...registerTimetable("lesson_start", {
+                                                    required: "Поле обязательно к заполнению"
+                                                })}
+                                            />
+                                            <div className={modal_s.message}>{errorsTimetable?.lesson_start && <div className={s.message}><img src={warning} /><p>{errorsTimetable?.lesson_start.message || "Error!"}</p></div>}</div>
+                                        </div>
+                                        <div className={modal_s.item}>
+                                            <p>Время окончания пары</p>
+                                            <input
+                                                type="time"
+                                                {...registerTimetable("lesson_end", {
+                                                    required: "Поле обязательно к заполнению"
+                                                })}
+                                            />
+                                            <div className={modal_s.message}>{errorsTimetable?.time__end && <div className={s.message}><img src={warning} /><p>{errorsTimetable?.time__end.message || "Error!"}</p></div>}</div>
+                                        </div>
+                                    </div>
+                                    <div className={modal_s.buttons}>
+                                        <button className={modal_s.apply} type="submit">
+                                            Сохранить
+                                        </button>
+                                        <button className={modal_s.close} onClick={() => setIsModalDataOpen(false)}>
+                                            Закрыть
+                                        </button>
+                                    </div>
+                                </form>
+                            }
+                        />
                         {
                             calendarInfo && Object.entries(calendarInfo).length > 0 && lessons ? (
-                                <div className={s.calendar}>
-                                    <header className={s.calendar__header}>
-                                        <div className={s.left}>
-                                            <div className={s.time__remotes}>
-                                                <div className={s.decrement__button} onClick={() => getCalendarPage({ isNext: false, timeType: "month", calendarInfo })}>
-                                                    <Arrow__no__stick className={s.icon} />
-                                                </div>
-                                                <div className={s.increment__button} onClick={() => getCalendarPage({ isNext: true, timeType: "month", calendarInfo })}>
-                                                    <Arrow__no__stick className={s.icon} />
-                                                </div>
-                                            </div>
-                                            <button className={s.addEvent} onClick={() => setIsActiveAddTimetableModal(true)}>
-                                                Добавить Расписание
-                                            </button>
-                                            <UniversalModal
-                                                onClose={() => setIsActiveAddTimetableModal(false)}
-                                                isOpen={isActiveAddTimetableModal}
-                                                title="Добавить расписание"
-                                                content={
-                                                    <form className={modal_s.common} onSubmit={handleTimetableSubmit(createTimetable)}>
-                                                        <div className={modal_s.items}>
-                                                            <div className={modal_s.item}>
-                                                                <p>Название расписания (новое)</p>
-                                                                <input
-                                                                    type="text"
-                                                                    {...registerTimetable("name", {
-                                                                        required: "Поле обязательно к заполнению"
-                                                                    })}
-                                                                />
-                                                                <div className={modal_s.message}>{errorsTimetable?.name && <div className={s.message}><img src={warning} /><p>{errorsTimetable?.name.message || "Error!"}</p></div>}</div>
+                                <>
+                                    {
+                                        userChoice === "month" && (
+                                            <div className={s.calendar}>
+                                                <header className={s.calendar__header}>
+                                                    <div className={s.left}>
+                                                        <div className={s.time__remotes}>
+                                                            <div className={s.decrement__button} onClick={() => getCalendarPage({ isNext: false, timeType: "month", calendarInfo })}>
+                                                                <Arrow__no__stick className={s.icon} />
                                                             </div>
-                                                            <div className={modal_s.item}>
-                                                                <span>Автоматиски создать пары в расписании? Если да, то пары автоматически создадутся в каждой неделе в определенный день недели, начиная от даты старта расписания, заканчивая датой окончания расписания. Чтобы создать пары, надо создать в любом случае расписание</span>
-                                                                <div className={modal_s.checkboxes}>
-                                                                    {['Нет', 'Да'].map((value) => (
-                                                                        <div className={modal_s.checkbox} key={value}>
-                                                                            <p>{value}</p>
-                                                                            <input type="radio"
-                                                                                name="isLoop"
-                                                                                value={value}
-                                                                                {...registerTimetable("createLessons")}
-                                                                            />
-                                                                        </div>
-                                                                    ))}
-                                                                    <div className={modal_s.message}>{errorsTimetable?.choice && <div className={s.message}><img src={warning} /><p>{errorsTimetable?.choice.message || "Error!"}</p></div>}</div>
-                                                                </div>
-                                                            </div>
-                                                            <div className={modal_s.item}>
-                                                                <p>Кабинет</p>
-                                                                <input
-                                                                    type="text"
-                                                                    {...registerTimetable("cabinet", {
-                                                                        required: "Поле обязательно к заполнению"
-                                                                    })}
-                                                                />
-                                                                <div className={modal_s.message}>{errorsTimetable?.cabinet && <div className={s.message}><img src={warning} /><p>{errorsTimetable?.cabinet.message || "Error!"}</p></div>}</div>
-                                                            </div>
-                                                            <div className={modal_s.item}>
-                                                                <p>Группа</p>
-                                                                <select
-                                                                    {...registerTimetable("group")}
-                                                                >
-                                                                    <option value="">--Выберите группу--</option>
-                                                                    {Array.isArray(groupsBackend) && groupsBackend.length > 0 ? (
-                                                                            groupsBackend.map((item) => (
-                                                                                <option value={item.name} key={item.id}>
-                                                                                    {item.name}
-                                                                                </option>
-                                                                            ))
-                                                                        ) : ""
-                                                                    }
-                                                                </select>
-                                                                <div className={modal_s.message}>{errorsTimetable?.group && <div className={s.message}><img src={warning} /><p>{errorsTimetable?.group.message || "Error!"}</p></div>}</div>
-                                                            </div>
-                                                            <div className={modal_s.item}>
-                                                                <p>Учитель</p>
-                                                                <select
-                                                                    {...registerTimetable("teacher_id")}
-                                                                >
-                                                                    <option value="">--Выберите учителя--</option>
-                                                                    {teachers ? (
-                                                                            teachers.map((item) => (
-                                                                                <option value={item.id} key={item.id}>
-                                                                                    {item.full_name}
-                                                                                </option>
-                                                                            ))
-                                                                        ) : ""
-                                                                    }
-                                                                </select>
-                                                                <div className={modal_s.message}>{errorsTimetable?.group && <div className={s.message}><img src={warning} /><p>{errorsTimetable?.group.message || "Error!"}</p></div>}</div>
-                                                            </div>
-                                                            <div className={modal_s.item}>
-                                                                <p>Цвет события</p>
-                                                                <input type="color"
-                                                                    className={modal_s.color__input} 
-                                                                    defaultValue={color}
-                                                                    {...registerTimetable("color", {
-                                                                        "required": "Поле обязательно к заполнению"
-                                                                    })}
-                                                                />
-                                                            </div>
-                                                            <div className={modal_s.item}>
-                                                                <p>Старт</p>
-                                                                <input
-                                                                    type="date"
-                                                                    {...registerTimetable("start_date", {
-                                                                        required: "Поле обязательно к заполнению"
-                                                                    })}
-                                                                    defaultValue={calendarInfo?.selectedDay?.date ? calendarInfo.selectedDay.date : ""}
-                                                                />
-                                                                <div className={modal_s.message}>{errorsTimetable?.date && <div className={s.message}><img src={warning} /><p>{errorsTimetable?.date.message || "Error!"}</p></div>}</div>
-                                                            </div>
-                                                            <div className={modal_s.item}>
-                                                                <p>Окончание</p>
-                                                                <input
-                                                                    type="date"
-                                                                    {...registerTimetable("end_date", {
-                                                                        required: "Поле обязательно к заполнению"
-                                                                    })}
-                                                                    defaultValue={calendarInfo?.selectedDay?.date ? calendarInfo.selectedDay.date : ""}
-                                                                />
-                                                                <div className={modal_s.message}>{errorsTimetable?.date && <div className={s.message}><img src={warning} /><p>{errorsTimetable?.date.message || "Error!"}</p></div>}</div>
-                                                            </div>
-                                                            <div className={modal_s.item}>
-                                                                <p>Время начала пары</p>
-                                                                <input
-                                                                    type="time"
-                                                                    {...registerTimetable("lesson_start", {
-                                                                        required: "Поле обязательно к заполнению"
-                                                                    })}
-                                                                />
-                                                                <div className={modal_s.message}>{errorsTimetable?.lesson_start && <div className={s.message}><img src={warning} /><p>{errorsTimetable?.lesson_start.message || "Error!"}</p></div>}</div>
-                                                            </div>
-                                                            <div className={modal_s.item}>
-                                                                <p>Время окончания пары</p>
-                                                                <input
-                                                                    type="time"
-                                                                    {...registerTimetable("lesson_end", {
-                                                                        required: "Поле обязательно к заполнению"
-                                                                    })}
-                                                                />
-                                                                <div className={modal_s.message}>{errorsTimetable?.time__end && <div className={s.message}><img src={warning} /><p>{errorsTimetable?.time__end.message || "Error!"}</p></div>}</div>
+                                                            <div className={s.increment__button} onClick={() => getCalendarPage({ isNext: true, timeType: "month", calendarInfo })}>
+                                                                <Arrow__no__stick className={s.icon} />
                                                             </div>
                                                         </div>
-                                                        <div className={modal_s.buttons}>
-                                                            <button className={modal_s.close} onClick={() => setIsModalDataOpen(false)}>
-                                                                Закрыть
-                                                            </button>
-                                                            <button className={modal_s.apply} type="submit">
-                                                                Сохранить
-                                                            </button>
-                                                        </div>
-                                                    </form>
-                                                }
-                                            />
-                                            <button className={s.addEvent} onClick={() => setIsActiveAddEventModal(true)}>
-                                                Добавить пару
-                                            </button>
-                                        </div>
-                                        <time className={s.center}>
-                                            <h6>{`${NumberToMonth[calendarInfo.month]} ${calendarInfo.year}`}</h6>
-                                        </time>
-                                        <div className={s.right}>
-                                            <ul className={s.time}>
-                                                <li>Месяц</li>
-                                                <li>Сегодня</li>
-                                            </ul>
-                                        </div>
-                                    </header>
-                                    <FollowButton>
-
-                                        <table className={s.calendar__main}
-                                        >
-                                            <thead>
-                                                <tr>
-                                                    {
-                                                        calendarInfo.weekdays.map((day, weekday__index) => {
-                                                            return (
-                                                                <th key={weekday__index}>
-                                                                    {day}
-                                                                </th>
-                                                            )
-                                                        })
-                                                    }
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {
-                                                    calendarInfo.weeks.map((week, week__index) => {
-                                                        return (
-                                                            <tr key={week__index}>
+                                                        <button className={s.addEvent} onClick={() => setIsActiveAddTimetableModal(true)}>
+                                                            Добавить Расписание
+                                                        </button>
+                                                        <button className={s.addEvent} onClick={() => setIsActiveAddEventModal(true)}>
+                                                            Добавить пару
+                                                        </button>
+                                                    </div>
+                                                    <time className={s.center}>
+                                                        <h6>{`${NumberToMonth[calendarInfo.month]} ${calendarInfo.year}`}</h6>
+                                                    </time>
+                                                    <div className={s.right}>
+                                                        <ul className={s.time}>
+                                                            <li onClick={() => setUserChoice("month")}>Месяц</li>
+                                                            <li onClick={() => setUserChoice("day")}>По дню</li>
+                                                        </ul>
+                                                    </div>
+                                                </header>
+                                                <FollowButton>
+                                                    <table className={s.calendar__main}
+                                                    >
+                                                        <thead>
+                                                            <tr>
                                                                 {
-                                                                    week.map((int_day, day__index) => {
-                                                                        const isLastMonth = int_day.type === "prev";
-                                                                        const isNextMonth = int_day.type === "next";
-                                                                        
+                                                                    calendarInfo.weekdays.map((day, weekday__index) => {
                                                                         return (
-                                                                            <td
-                                                                                key={day__index}
-                                                                                className={`${isLastMonth ? s.lastMonth : ''} ${isNextMonth ? s.nextMonth : ''}`}
-                                                                                onClick={() => {
-                                                                                    const { selectedDay, ...newInfo } = calendarInfo || {};
-                                                                                    const updatedInfo = {
-                                                                                        ...newInfo,
-                                                                                        selectedDay: {
-                                                                                            day: int_day.day,
-                                                                                            date: int_day.date,
-                                                                                            isLastMonth,
-                                                                                            isNextMonth
-                                                                                        }
-                                                                                    };
-                                                                                    setCalendarInfo(updatedInfo);
-                                                                                    resetPrepare();
-                                                                                    setIsActiveAddEventModal(true);
-                                                                                }}
-                                                                            >
-                                                                                {int_day.day}
-                                                                                {
-                                                                                    lessons[0] ? (
-                                                                                        <ul className={s.lessons}>
-                                                                                            {
-                                                                                                lessons.map((lesson) => {
-                                                                                                    if (lesson.date === int_day.date) {
-                                                                                                        return (
-                                                                                                            <li className={s.lesson} style=
-                                                                                                            {{ background: lesson?.color 
-                                                                                                                ? hexToRgba(lesson.color, 0.5) 
-                                                                                                                : "rgba(0, 128, 0, .5)" 
-                                                                                                            }}
-                                                                                                            onClick={
-                                                                                                                (e) => {
-                                                                                                                    setValue("id", lesson.id);
-                                                                                                                    setValue("cabinet", lesson.cabinet);
-                                                                                                                    setValue("group", lesson.group);
-                                                                                                                    setValue("timetable", lesson.timetable_name);
-                                                                                                                    setValue("color", "#" + lesson.color);
-                                                                                                                    setValue("date", lesson.date);
-                                                                                                                    setValue("lesson_start", withoutSeconds(lesson.lesson_start));
-                                                                                                                    setValue("lesson_end", withoutSeconds(lesson.lesson_end));
-                                                                                                                    setValue("is_cancelled", Boolean(lesson.is_cancelled));
-                                                                                                                    setValue("cancellation_reason", lesson.cancellation_reason);
-                                                                                                                    setIsActiveEditEventModal(true);
-                                                                                                                    e.stopPropagation();
-                                                                                                                }
-                                                                                                            }
-                                                                                                            >
-                                                                                                            
-                                                                                                                {
-                                                                                                                    withoutSeconds(lesson.lesson_start)
-                                                                                                                }
-                                                                                                                <span style={{ background: lesson?.color ?  hexToRgba(lesson.color, 1) : "rgba(0, 128, 0, 1)" }}></span>
-                                                                                                            </li>
-                                                                                                        )
-                                                                                                    }
-                                                                                                })
-                                                                                            }
-                                                                                        </ul>
-                                                                                    ) : ""
-                                                                                }
-                                                                            </td >
-                                                                        );
+                                                                            <th key={weekday__index}>
+                                                                                {day}
+                                                                            </th>
+                                                                        )
                                                                     })
                                                                 }
                                                             </tr>
-                                                        )
-                                                    })
-                                                }
-                                            </tbody>
-
-
-
-                                        </table>
-                                    </FollowButton>
-                                    <UniversalModal
-                                        onClose={() => setIsActiveAddEventModal(false)}
-                                        isOpen={isActiveAddEventModal}
-                                        title="Добавить пару"
-                                        content={
-                                            <form className={modal_s.common} onSubmit={handlePrepareSubmit(createLesson)}>
-                                                <div className={modal_s.items}>
-                                                    <p>Чтобы добавить пару, сначала создайте расписание или выберете существующее</p>
-                                                    <div className={modal_s.item}>
-                                                        <p>Кабинет</p>
-                                                        <input
-                                                            type="text"
-                                                            {...registerPrepare("cabinet", {
-                                                                required: "Поле обязательно к заполнению"
-                                                            })}
-                                                        />
-                                                        <div className={modal_s.message}>{errorsPrepare?.cabinet && <div className={s.message}><img src={warning} /><p>{errorsPrepare?.cabinet.message || "Error!"}</p></div>}</div>
-                                                    </div>
-                                                    <div className={modal_s.item}>
-                                                        <p>Группа</p>
-                                                        <select
-                                                            {...registerPrepare("group")}
-                                                        >
-                                                            <option value="">--Выберите группу--</option>
-                                                            {groupsBackend ? (
-                                                                    groupsBackend.map((item) => (
-                                                                        <option value={item.name} key={item.id}>
-                                                                            {item.name}
-                                                                        </option>
-                                                                    ))
-                                                                ) : ""
+                                                        </thead>
+                                                        <tbody>
+                                                            {
+                                                                calendarInfo.weeks.map((week, week__index) => {
+                                                                    return (
+                                                                        <tr key={week__index}>
+                                                                            {
+                                                                                week.map((int_day, day__index) => {
+                                                                                    const isLastMonth = int_day.type === "prev";
+                                                                                    const isNextMonth = int_day.type === "next";
+            
+                                                                                    return (
+                                                                                        <td
+                                                                                            key={day__index}
+                                                                                            className={`${isLastMonth ? s.lastMonth : ''} ${isNextMonth ? s.nextMonth : ''}`}
+                                                                                            onClick={() => {
+                                                                                                const { selectedDay, ...newInfo } = calendarInfo || {};
+                                                                                                const updatedInfo = {
+                                                                                                    ...newInfo,
+                                                                                                    selectedDay: {
+                                                                                                        day: int_day.day,
+                                                                                                        date: int_day.date,
+                                                                                                        isLastMonth,
+                                                                                                        isNextMonth
+                                                                                                    }
+                                                                                                };
+                                                                                                setCalendarInfo(updatedInfo);
+                                                                                                resetPrepare();
+                                                                                                setIsActiveAddEventModal(true);
+                                                                                            }}
+                                                                                        >
+                                                                                            {int_day.day}
+                                                                                            {
+                                                                                                lessons[0] ? (
+                                                                                                    <ul className={s.lessons}>
+                                                                                                        {
+                                                                                                            lessons.map((lesson) => {
+                                                                                                                if (lesson.date === int_day.date) {
+                                                                                                                    return (
+                                                                                                                        <li className={s.lesson} style=
+                                                                                                                            {{
+                                                                                                                                background: lesson?.color
+                                                                                                                                    ? hexToRgba(lesson.color, 0.5)
+                                                                                                                                    : "rgba(0, 128, 0, .5)"
+                                                                                                                            }}
+                                                                                                                            onClick={
+                                                                                                                                (e) => {
+                                                                                                                                    setValue("id", lesson.id);
+                                                                                                                                    setValue("cabinet", lesson.cabinet);
+                                                                                                                                    setValue("group", lesson.group);
+                                                                                                                                    setValue("timetable", lesson.timetable_name);
+                                                                                                                                    setValue("color", "#" + lesson.color);
+                                                                                                                                    setValue("date", lesson.date);
+                                                                                                                                    setValue("status", lesson.status);
+                                                                                                                                    setValue("lesson_start", withoutSeconds(lesson.lesson_start));
+                                                                                                                                    setValue("lesson_end", withoutSeconds(lesson.lesson_end));
+                                                                                                                                    setValue("is_cancelled", Boolean(lesson.is_cancelled));
+                                                                                                                                    setValue("cancellation_reason", lesson.cancellation_reason);
+                                                                                                                                    setIsActiveEditEventModal(true);
+                                                                                                                                    e.stopPropagation();
+                                                                                                                                }
+                                                                                                                            }
+                                                                                                                        >
+            
+                                                                                                                            {
+                                                                                                                                withoutSeconds(lesson.lesson_start)
+                                                                                                                            }
+                                                                                                                            <span style={{ background: lesson?.color ? hexToRgba(lesson.color, 1) : "rgba(0, 128, 0, 1)" }}></span>
+                                                                                                                        </li>
+                                                                                                                    )
+                                                                                                                }
+                                                                                                            })
+                                                                                                        }
+                                                                                                    </ul>
+                                                                                                ) : ""
+                                                                                            }
+                                                                                        </td >
+                                                                                    );
+                                                                                })
+                                                                            }
+                                                                        </tr>
+                                                                    )
+                                                                })
                                                             }
-                                                        </select>
-                                                        <div className={modal_s.message}>{errorsPrepare?.group && <div className={s.message}><img src={warning} /><p>{errorsPrepare?.group.message || "Error!"}</p></div>}</div>
+                                                        </tbody>
+                                                    </table>
+                                                </FollowButton>
+                                            </div>
+                                        )
+                                    }
+                                    {
+                                        userChoice === "day" && (
+                                            <div className="today">
+                                                <header className={s.calendar__header}>
+                                                    <div className={s.left}>
+                                                        <div className={s.time__remotes}>
+                                                            <div className={s.decrement__button}>
+                                                                <Arrow__no__stick className={s.icon} />
+                                                            </div>
+                                                            <div className={s.increment__button}>
+                                                                <Arrow__no__stick className={s.icon} />
+                                                            </div>
+                                                        </div>
+                                                        <button className={s.addEvent} onClick={() => setIsActiveAddTimetableModal(true)}>
+                                                            Добавить Расписание
+                                                        </button>
+                                                        <button className={s.addEvent} onClick={() => setIsActiveAddEventModal(true)}>
+                                                            Добавить пару
+                                                        </button>
                                                     </div>
-                                                    <div className={modal_s.item}>
-                                                        <p>Расписание</p>
-                                                        <select
-                                                            {...registerPrepare("timetable_name")}
-                                                        >
-                                                            <option value="">--Выберите расписание--</option>
-                                                            {Array.isArray(timetables) ? (
-                                                                    timetables.map((item) => (
-                                                                        <option value={item.name} key={item.id}>
-                                                                            {item.name}
-                                                                        </option>
-                                                                    ))
-                                                                ) : ""
-                                                            }
-                                                        </select>
-                                                        <div className={modal_s.message}>{errorsPrepare?.group && <div className={s.message}><img src={warning} /><p>{errorsPrepare?.group.message || "Error!"}</p></div>}</div>
+                                                    <time className={s.center}>
+                                                        <h6>{`${NumberToMonth[calendarInfo.month]} ${calendarInfo.year}`}</h6>
+                                                    </time>
+                                                    <div className={s.right}>
+                                                        <ul className={s.time}>
+                                                            <li onClick={() => setUserChoice("month")}>Месяц</li>
+                                                            <li onClick={() => setUserChoice("day")}>По дню</li>
+                                                        </ul>
                                                     </div>
-                                                    <div className={modal_s.item}>
-                                                        <p>Учитель</p>
-                                                        <select
-                                                            {...registerPrepare("teacher_id")}
-                                                        >
-                                                            <option value="">--Выберите учителя--</option>
-                                                            {teachers ? (
-                                                                    teachers.map((item) => (
-                                                                        <option value={item.id} key={item.id}>
-                                                                            {item.full_name}
-                                                                        </option>
-                                                                    ))
-                                                                ) : ""
-                                                            }
-                                                        </select>
-                                                        <div className={modal_s.message}>{errorsPrepare?.group && <div className={s.message}><img src={warning} /><p>{errorsPrepare?.group.message || "Error!"}</p></div>}</div>
-                                                    </div>
-                                                    <div className={modal_s.item}>
-                                                        <p>Дата события</p>
-                                                        <input
-                                                            type="date"
-                                                            {...registerPrepare("date", {
-                                                                required: "Поле обязательно к заполнению"
-                                                            })}
-                                                            defaultValue={calendarInfo?.selectedDay?.date ? calendarInfo.selectedDay.date : ""}
-                                                        />
-                                                        <div className={modal_s.message}>{errorsPrepare?.date && <div className={s.message}><img src={warning} /><p>{errorsPrepare?.date.message || "Error!"}</p></div>}</div>
-                                                    </div>
-                                                    <div className={modal_s.item}>
-                                                        <p>Время начала пары</p>
-                                                        <input
-                                                            type="time"
-                                                            {...registerPrepare("lesson_start", {
-                                                                required: "Поле обязательно к заполнению"
-                                                            })}
-                                                        />
-                                                        <div className={modal_s.message}>{errorsPrepare?.lesson_start && <div className={s.message}><img src={warning} /><p>{errorsPrepare?.lesson_start.message || "Error!"}</p></div>}</div>
-                                                    </div>
-                                                    <div className={modal_s.item}>
-                                                        <p>Время окончания пары</p>
-                                                        <input
-                                                            type="time"
-                                                            {...registerPrepare("lesson_end", {
-                                                                required: "Поле обязательно к заполнению"
-                                                            })}
-                                                        />
-                                                        <div className={modal_s.message}>{errorsPrepare?.time__end && <div className={s.message}><img src={warning} /><p>{errorsPrepare?.time__end.message || "Error!"}</p></div>}</div>
-                                                    </div>
+                                                </header>
+                                                <div className="hours">
+                                                    
                                                 </div>
-                                                <div className={modal_s.buttons}>
-                                                    <button className={modal_s.close} onClick={() => setIsModalDataOpen(false)}>
-                                                        Закрыть
-                                                    </button>
-                                                    <button className={modal_s.apply} type="submit">
-                                                        Сохранить
-                                                    </button>
-                                                </div>
-                                            </form>
-                                        }
-                                    />
-
-                                    <UniversalModal
-                                        onClose={() => setIsActiveEditEventModal(false)}
-                                        isOpen={isActiveEditEventModal}
-                                        title="Изменить пару"
-                                        content={
-                                            <form className={modal_s.common} onSubmit={handleSubmit(updateLesson)}>
-                                                <div className={modal_s.items}>
-                                                    <div className={modal_s.item}>
-                                                        <p>id</p>
-                                                        <input
-                                                            type="text"
-                                                            {...register("id")}
-                                                            readOnly
-                                                        />
-                                                    </div>
-                                                    <div className={modal_s.item}>
-                                                        <p>Кабинет</p>
-                                                        <input
-                                                            type="text"
-                                                            {...register("cabinet", {
-                                                                required: "Поле обязательно к заполнению"
-                                                            })}
-                                                        />
-                                                        <div className={modal_s.message}>{errors?.cabinet && <div className={s.message}><img src={warning} /><p>{errors?.cabinet.message || "Error!"}</p></div>}</div>
-                                                    </div>
-                                                    <div className={modal_s.item}>
-                                                        <p>Группа</p>
-                                                        <select
-                                                            {...register("group")}
-                                                        >
-                                                            <option value="">--Выберите группу--</option>
-                                                            {groupsBackend ? (
-                                                                    groupsBackend.map((item) => (
-                                                                        <option value={item.name} key={item.id}>
-                                                                            {item.name}
-                                                                        </option>
-                                                                    ))
-                                                                ) : ""
-                                                            }
-                                                        </select>
-                                                        <div className={modal_s.message}>{errors?.group && <div className={s.message}><img src={warning} /><p>{errors?.group.message || "Error!"}</p></div>}</div>
-                                                    </div>
-                                                    <div className={modal_s.item}>
-                                                        <p>Учитель</p>
-                                                        <select
-                                                            {...register("teacher_id")}
-                                                        >
-                                                            {teachers ? (
-                                                                    teachers.map((item) => (
-                                                                        <option value={item.id} key={item.id}>
-                                                                            {item.full_name}
-                                                                        </option>
-                                                                    ))
-                                                                ) : ""
-                                                            }
-                                                        </select>
-                                                        <div className={modal_s.message}>{errors?.teachers && <div className={s.message}><img src={warning} /><p>{errors?.teachers.message || "Error!"}</p></div>}</div>
-                                                    </div>
-                                                    <div className={modal_s.item}>
-                                                        <p>Дата события</p>
-                                                        <input
-                                                            type="date"
-                                                            {...register("date", {
-                                                                required: "Поле обязательно к заполнению"
-                                                            })}
-                                                        />
-                                                        <div className={modal_s.message}>{errors?.date && <div className={s.message}><img src={warning} /><p>{errors?.date.message || "Error!"}</p></div>}</div>
-                                                    </div>
-                                                    <div className={modal_s.item}>
-                                                        <p>Время начала пары</p>
-                                                        <input
-                                                            type="time"
-                                                            {...register("lesson_start", {
-                                                                required: "Поле обязательно к заполнению"
-                                                            })}
-                                                        />
-                                                        <div className={modal_s.message}>{errors?.lesson_start && <div className={s.message}><img src={warning} /><p>{errors?.lesson_start.message || "Error!"}</p></div>}</div>
-                                                    </div>
-                                                    <div className={modal_s.item}>
-                                                        <p>Время окончания пары</p>
-                                                        <input
-                                                            type="time"
-                                                            {...register("lesson_end", {
-                                                                required: "Поле обязательно к заполнению"
-                                                            })}
-                                                        />
-                                                        <div className={modal_s.message}>{errors?.lesson_end && <div className={s.message}><img src={warning} /><p>{errors?.lesson_end.message || "Error!"}</p></div>}</div>
-                                                    </div>
-                                                    <div className={modal_s.item}>
-                                                        <p>Отменить пару</p>
-                                                        <input
-                                                            type="checkbox"
-                                                            {...register("is_cancelled")}
-                                                        />
-                                                        {
-                                                            isCancelled && (
-                                                                <div className={modal_s.item}>
-                                                                    <p>Причина отмены</p>
-                                                                    <textarea
-                                                                        {...register("cancellation_reason", {
-                                                                            required: "Поле обязательно к заполнению"
-                                                                        })}
-                                                                    />
-                                                                </div>
-                                                            )
-                                                        }
-                                                        {
-                                                            isCancelled && (
-                                                                <div className={modal_s.message}>{errors?.cancellation_reason && <div className={s.message}><img src={warning} /><p>{errors?.cancellation_reason.message || "Error!"}</p></div>}</div>
-                                                            )
-                                                        }
-                                                    </div>
-                                                </div>
-                                                <div className={modal_s.buttons}>
-                                                    <button className={modal_s.apply} type="submit">
-                                                        Сохранить
-                                                    </button>
-                                                    <button className={modal_s.close} onClick={() => deleteLesson(lessonId)}>
-                                                        Удалить
-                                                    </button>
-                                                </div>
-                                            </form>
-                                        }
-                                    />
-                                </div>
-                            ) : ""
+                                            </div>
+                                        )
+                                    }
+                                </>
+                            ) : <LoadingFallBackFullScreen />
                         }
+                        <UniversalModal
+                            onClose={() => setIsActiveAddEventModal(false)}
+                            isOpen={isActiveAddEventModal}
+                            title="Добавить занятие"
+                            content={
+                                <form className={modal_s.common} onSubmit={handlePrepareSubmit(createLesson)}>
+                                    <div className={modal_s.items}>
+                                        <p>Чтобы добавить пару, сначала создайте расписание или выберете существующее</p>
+                                        <div className={modal_s.item}>
+                                            <p>Кабинет</p>
+                                            <input
+                                                type="text"
+                                                {...registerPrepare("cabinet", {
+                                                    required: "Поле обязательно к заполнению"
+                                                })}
+                                            />
+                                            <div className={modal_s.message}>{errorsPrepare?.cabinet && <div className={s.message}><img src={warning} /><p>{errorsPrepare?.cabinet.message || "Error!"}</p></div>}</div>
+                                        </div>
+                                        <div className={modal_s.item}>
+                                            <p>Группа</p>
+                                            <select
+                                                {...registerPrepare("group")}
+                                            >
+                                                <option value="">--Выберите группу--</option>
+                                                {groupsBackend && Array.isArray(groupsBackend) ? (
+                                                    groupsBackend.map((item) => (
+                                                        <option value={item.name} key={item.id}>
+                                                            {item.name}
+                                                        </option>
+                                                    ))
+                                                ) : ""
+                                                }
+                                            </select>
+                                            <div className={modal_s.message}>{errorsPrepare?.group && <div className={s.message}><img src={warning} /><p>{errorsPrepare?.group.message || "Error!"}</p></div>}</div>
+                                        </div>
+                                        <div className={modal_s.item}>
+                                            <p>Расписание</p>
+                                            <select
+                                                {...registerPrepare("timetable_name")}
+                                            >
+                                                <option value="">--Выберите расписание--</option>
+                                                {Array.isArray(timetables) ? (
+                                                    timetables.map((item) => (
+                                                        <option value={item.name} key={item.id}>
+                                                            {item.name}
+                                                        </option>
+                                                    ))
+                                                ) : ""
+                                                }
+                                            </select>
+                                            <div className={modal_s.message}>{errorsPrepare?.group && <div className={s.message}><img src={warning} /><p>{errorsPrepare?.group.message || "Error!"}</p></div>}</div>
+                                        </div>
+                                        <div className={modal_s.item}>
+                                            <p>Учитель</p>
+                                            <select
+                                                {...registerPrepare("teacher_id")}
+                                            >
+                                                <option value="">--Выберите учителя--</option>
+                                                {teachers && Array.isArray(teachers) ? (
+                                                    teachers.map((item) => (
+                                                        <option value={item.id} key={item.id}>
+                                                            {item.full_name}
+                                                        </option>
+                                                    ))
+                                                ) : ""
+                                                }
+                                            </select>
+                                            <div className={modal_s.message}>{errorsPrepare?.group && <div className={s.message}><img src={warning} /><p>{errorsPrepare?.group.message || "Error!"}</p></div>}</div>
+                                        </div>
+                                        <div className={modal_s.item}>
+                                            <p>Дата события</p>
+                                            <input
+                                                type="date"
+                                                {...registerPrepare("date", {
+                                                    required: "Поле обязательно к заполнению"
+                                                })}
+                                                defaultValue={calendarInfo?.selectedDay?.date ? calendarInfo.selectedDay.date : ""}
+                                            />
+                                            <div className={modal_s.message}>{errorsPrepare?.date && <div className={s.message}><img src={warning} /><p>{errorsPrepare?.date.message || "Error!"}</p></div>}</div>
+                                        </div>
+                                        <div className={modal_s.item}>
+                                            <p>Время начала пары</p>
+                                            <input
+                                                type="time"
+                                                {...registerPrepare("lesson_start", {
+                                                    required: "Поле обязательно к заполнению"
+                                                })}
+                                            />
+                                            <div className={modal_s.message}>{errorsPrepare?.lesson_start && <div className={s.message}><img src={warning} /><p>{errorsPrepare?.lesson_start.message || "Error!"}</p></div>}</div>
+                                        </div>
+                                        <div className={modal_s.item}>
+                                            <p>Время окончания пары</p>
+                                            <input
+                                                type="time"
+                                                {...registerPrepare("lesson_end", {
+                                                    required: "Поле обязательно к заполнению"
+                                                })}
+                                            />
+                                            <div className={modal_s.message}>{errorsPrepare?.time__end && <div className={s.message}><img src={warning} /><p>{errorsPrepare?.time__end.message || "Error!"}</p></div>}</div>
+                                        </div>
+                                    </div>
+                                    <div className={modal_s.buttons}>
+                                        <button className={modal_s.apply} type="submit">
+                                            Сохранить
+                                        </button>
+                                        <button className={modal_s.close} onClick={() => setIsModalDataOpen(false)}>
+                                            Закрыть
+                                        </button>
+                                    </div>
+                                </form>
+                            }
+                        />
+                        <UniversalModal
+                            onClose={() => setIsActiveEditEventModal(false)}
+                            isOpen={isActiveEditEventModal}
+                            title="Изменить информацию о занятии"
+                            content={
+                                <form className={modal_s.common} onSubmit={handleSubmit(updateLesson)}>
+                                    <div className={modal_s.items}>
+                                        <div className={modal_s.item}>
+                                            <p>id</p>
+                                            <input
+                                                type="text"
+                                                {...register("id")}
+                                                readOnly
+                                            />
+                                        </div>
+                                        <div className={modal_s.item}>
+                                            <p>Кабинет</p>
+                                            <input
+                                                type="text"
+                                                {...register("cabinet", {
+                                                    required: "Поле обязательно к заполнению"
+                                                })}
+                                            />
+                                            <div className={modal_s.message}>{errors?.cabinet && <div className={s.message}><img src={warning} /><p>{errors?.cabinet.message || "Error!"}</p></div>}</div>
+                                        </div>
+                                        <div className={modal_s.item}>
+                                            <p>Группа</p>
+                                            <select
+                                                {...register("group")}
+                                            >
+                                                <option value="">--Выберите группу--</option>
+                                                {groupsBackend && Array.isArray(groupsBackend) ? (
+                                                    groupsBackend.map((item) => (
+                                                        <option value={item.name} key={item.id}>
+                                                            {item.name}
+                                                        </option>
+                                                    ))
+                                                ) : ""
+                                                }
+                                            </select>
+                                            <div className={modal_s.message}>{errors?.group && <div className={s.message}><img src={warning} /><p>{errors?.group.message || "Error!"}</p></div>}</div>
+                                        </div>
+                                        <div className={modal_s.item}>
+                                            <p>Учитель</p>
+                                            <select
+                                                {...register("teacher_id")}
+                                            >
+                                                {teachers && Array.isArray(teachers) ? (
+                                                    teachers.map((item) => (
+                                                        <option value={item.id} key={item.id}>
+                                                            {item.full_name}
+                                                        </option>
+                                                    ))
+                                                ) : ""
+                                                }
+                                            </select>
+                                            <div className={modal_s.message}>{errors?.teachers && <div className={s.message}><img src={warning} /><p>{errors?.teachers.message || "Error!"}</p></div>}</div>
+                                        </div>
+                                        <div className={modal_s.item}>
+                                            <p>Дата события</p>
+                                            <input
+                                                type="date"
+                                                {...register("date", {
+                                                    required: "Поле обязательно к заполнению"
+                                                })}
+                                            />
+                                            <div className={modal_s.message}>{errors?.date && <div className={s.message}><img src={warning} /><p>{errors?.date.message || "Error!"}</p></div>}</div>
+                                        </div>
+                                        <div className={modal_s.item}>
+                                            <p>Время начала пары</p>
+                                            <input
+                                                type="time"
+                                                {...register("lesson_start", {
+                                                    required: "Поле обязательно к заполнению"
+                                                })}
+                                            />
+                                            <div className={modal_s.message}>{errors?.lesson_start && <div className={s.message}><img src={warning} /><p>{errors?.lesson_start.message || "Error!"}</p></div>}</div>
+                                        </div>
+                                        <div className={modal_s.item}>
+                                            <p>Время окончания пары</p>
+                                            <input
+                                                type="time"
+                                                {...register("lesson_end", {
+                                                    required: "Поле обязательно к заполнению"
+                                                })}
+                                            />
+                                            <div className={modal_s.message}>{errors?.lesson_end && <div className={s.message}><img src={warning} /><p>{errors?.lesson_end.message || "Error!"}</p></div>}</div>
+                                        </div>
+                                        {
+                                            watchLessonStatus === "planned" || watchLessonStatus === "in_progress" && (
+                                                <div className={modal_s.item}>
+                                                    <p>Отменить пару</p>
+                                                    <input
+                                                        type="checkbox"
+                                                        {...register("is_cancelled")}
+                                                    />
+                                                    {
+                                                        isCancelled && (
+                                                            <div className={modal_s.item}>
+                                                                <p>Причина отмены</p>
+                                                                <textarea
+                                                                    {...register("cancellation_reason", {
+                                                                        required: "Поле обязательно к заполнению"
+                                                                    })}
+                                                                />
+                                                            </div>
+                                                        )
+                                                    }
+                                                    {
+                                                        isCancelled && (
+                                                            <div className={modal_s.message}>{errors?.cancellation_reason && <div className={s.message}><img src={warning} /><p>{errors?.cancellation_reason.message || "Error!"}</p></div>}</div>
+                                                        )
+                                                    }
+                                                </div>
+                                            )
+                                        }
+                                    </div>
+                                    <div className={modal_s.buttons}>
+                                        <button className={modal_s.apply} type="submit">
+                                            Сохранить
+                                        </button>
+                                        <button className={modal_s.close} onClick={() => deleteLesson(lessonId)}>
+                                            Удалить
+                                        </button>
+                                    </div>
+                                </form>
+                            }
+                        />
                     </div>
                 </main>
             </div>

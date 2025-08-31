@@ -17,6 +17,7 @@
     .container {
         background: white;
         padding: 30px;
+        padding-bottom: 100px;
         max-width: 750px;
         max-height: 80%;
         width: 100%;
@@ -160,10 +161,13 @@
                     }
                 }
                 .buttons {
-                    margin-top: 20px;
+                    padding-top: 30px;
+                    background: white;
                     display: flex;
+                    position: absolute;
                     align-items: center;
                     gap: 10px;
+                    bottom: 20px;
                     .close {
                         @include app.button1(transparent);
                         color: app.$accent__color;

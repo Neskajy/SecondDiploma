@@ -1,0 +1,38 @@
+@use "../../App.scss" as app;
+
+.loadingFullScreen {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: white;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .content {
+        font-weight: 600;
+        color: app.$accent__color;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+        justify-content: center;
+        @keyframes loading {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    
+        img {
+            width: 50px;
+            animation: infinite loading 2s;
+        }
+    }
+}
